@@ -1,1 +1,1 @@
-# word-vault
+### WordVault is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
