@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C737EE2F2D85029500DC5168 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,28 +25,68 @@
 			remoteGlobalIDString = C737EE1B2D85029400DC5168;
 			remoteInfo = WordVault;
 		};
+		F7FCE17C2D8951C50032C827 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C737EE142D85029400DC5168 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7FCE1732D8951C50032C827;
+			remoteInfo = WordVaultShareExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F7FCE1832D8951C50032C827 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C737EE1C2D85029400DC5168 /* WordVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE2E2D85029500DC5168 /* WordVaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE382D85029500DC5168 /* WordVaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WordVaultShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/ItemModel.swift,
+			);
+			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
+		};
+		F7FCE17F2D8951C50032C827 /* Exceptions for "WordVaultShareExtension" folder in "WordVaultShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C737EE1E2D85029400DC5168 /* WordVault */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */,
+			);
 			path = WordVault;
 			sourceTree = "<group>";
 		};
-		C737EE312D85029500DC5168 /* WordVaultTests */ = {
+		F7FCE1752D8951C50032C827 /* WordVaultShareExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordVaultTests;
-			sourceTree = "<group>";
-		};
-		C737EE3B2D85029500DC5168 /* WordVaultUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordVaultUITests;
+			exceptions = (
+				F7FCE17F2D8951C50032C827 /* Exceptions for "WordVaultShareExtension" folder in "WordVaultShareExtension" target */,
+			);
+			path = WordVaultShareExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,6 +113,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F7FCE1712D8951C50032C827 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -76,8 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				C737EE1E2D85029400DC5168 /* WordVault */,
-				C737EE312D85029500DC5168 /* WordVaultTests */,
-				C737EE3B2D85029500DC5168 /* WordVaultUITests */,
+				F7FCE1752D8951C50032C827 /* WordVaultShareExtension */,
 				C737EE1D2D85029400DC5168 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +138,7 @@
 				C737EE1C2D85029400DC5168 /* WordVault.app */,
 				C737EE2E2D85029500DC5168 /* WordVaultTests.xctest */,
 				C737EE382D85029500DC5168 /* WordVaultUITests.xctest */,
+				F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,10 +153,12 @@
 				C737EE182D85029400DC5168 /* Sources */,
 				C737EE192D85029400DC5168 /* Frameworks */,
 				C737EE1A2D85029400DC5168 /* Resources */,
+				F7FCE1832D8951C50032C827 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F7FCE17D2D8951C50032C827 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C737EE1E2D85029400DC5168 /* WordVault */,
@@ -130,9 +183,6 @@
 			dependencies = (
 				C737EE302D85029500DC5168 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				C737EE312D85029500DC5168 /* WordVaultTests */,
-			);
 			name = WordVaultTests;
 			packageProductDependencies = (
 			);
@@ -153,15 +203,34 @@
 			dependencies = (
 				C737EE3A2D85029500DC5168 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				C737EE3B2D85029500DC5168 /* WordVaultUITests */,
-			);
 			name = WordVaultUITests;
 			packageProductDependencies = (
 			);
 			productName = WordVaultUITests;
 			productReference = C737EE382D85029500DC5168 /* WordVaultUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		F7FCE1732D8951C50032C827 /* WordVaultShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F7FCE1802D8951C50032C827 /* Build configuration list for PBXNativeTarget "WordVaultShareExtension" */;
+			buildPhases = (
+				F7FCE1702D8951C50032C827 /* Sources */,
+				F7FCE1712D8951C50032C827 /* Frameworks */,
+				F7FCE1722D8951C50032C827 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F7FCE1752D8951C50032C827 /* WordVaultShareExtension */,
+			);
+			name = WordVaultShareExtension;
+			packageProductDependencies = (
+			);
+			productName = WordVaultShareExtension;
+			productReference = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -170,7 +239,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					C737EE1B2D85029400DC5168 = {
@@ -183,6 +252,9 @@
 					C737EE372D85029500DC5168 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = C737EE1B2D85029400DC5168;
+					};
+					F7FCE1732D8951C50032C827 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -203,6 +275,7 @@
 				C737EE1B2D85029400DC5168 /* WordVault */,
 				C737EE2D2D85029500DC5168 /* WordVaultTests */,
 				C737EE372D85029500DC5168 /* WordVaultUITests */,
+				F7FCE1732D8951C50032C827 /* WordVaultShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +296,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C737EE362D85029500DC5168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7FCE1722D8951C50032C827 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +333,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F7FCE1702D8951C50032C827 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +352,11 @@
 			isa = PBXTargetDependency;
 			target = C737EE1B2D85029400DC5168 /* WordVault */;
 			targetProxy = C737EE392D85029500DC5168 /* PBXContainerItemProxy */;
+		};
+		F7FCE17D2D8951C50032C827 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
+			targetProxy = F7FCE17C2D8951C50032C827 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -393,9 +485,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WordVault/WordVault.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WordVault/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -408,7 +502,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordVault;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -421,9 +515,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WordVault/WordVault.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WordVault/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -436,7 +532,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordVault;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -512,6 +608,60 @@
 			};
 			name = Release;
 		};
+		F7FCE1812D8951C50032C827 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WordVaultShareExtension/WordVaultShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordVaultShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Vault";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault.WordVaultShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F7FCE1822D8951C50032C827 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WordVaultShareExtension/WordVaultShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordVaultShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Vault";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault.WordVaultShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -547,6 +697,15 @@
 			buildConfigurations = (
 				C737EE492D85029500DC5168 /* Debug */,
 				C737EE4A2D85029500DC5168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F7FCE1802D8951C50032C827 /* Build configuration list for PBXNativeTarget "WordVaultShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F7FCE1812D8951C50032C827 /* Debug */,
+				F7FCE1822D8951C50032C827 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
