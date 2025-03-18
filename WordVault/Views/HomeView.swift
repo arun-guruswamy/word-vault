@@ -3,10 +3,18 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var words: [Word]
     @State private var isMenuOpen = false
     @State private var isAddWordPresented = false
-    @State private var selectedWord: Item?
+    @State private var selectedWord: Word?
+    @State private var searchText = ""
+    
+    var filteredWords: [Word] {
+        if searchText.isEmpty {
+            return words
+        }
+        return Word.search(query: searchText, modelContext: modelContext)
+    }
     
     var body: some View {
         ZStack {
@@ -38,13 +46,32 @@ struct HomeView: View {
                 .background(Color(uiColor: .systemBackground))
                 .shadow(radius: 2)
                 
+                // Search Bar
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray)
+                    TextField("Search words...", text: $searchText)
+                        .textFieldStyle(PlainTextFieldStyle())
+                    if !searchText.isEmpty {
+                        Button(action: { searchText = "" }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                .padding(8)
+                .background(Color(uiColor: .systemGray6))
+                .cornerRadius(10)
+                .padding(.horizontal)
+                .padding(.top, 15)
+                
                 // Word Cards List
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(items) { item in
-                            WordCardView(word: item)
+                        ForEach(filteredWords) { word in
+                            WordCardView(word: word)
                                 .onTapGesture {
-                                    selectedWord = item
+                                    selectedWord = word
                                 }
                         }
                     }
@@ -66,8 +93,8 @@ struct HomeView: View {
                             .font(.title)
                             .padding(.top, 50)
                         
-                        ForEach(["Profile", "Categories", "Favorites", "History"], id: \.self) { item in
-                            Text(item)
+                        ForEach(["Profile", "Categories", "Favorites", "History"], id: \.self) { menuItem in
+                            Text(menuItem)
                                 .font(.headline)
                         }
                         
@@ -102,30 +129,20 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $isAddWordPresented) {
-            AddItemView()
+            AddWordView()
         }
         .sheet(item: $selectedWord) { word in
             WordDetailView(word: word)
-        }
-        .onAppear {
-            checkForSharedTexts()
-        }
-    }
-    
-    private func checkForSharedTexts() {
-        let sharedTexts = SharedTextService.shared.getSharedTexts()
-        if !sharedTexts.isEmpty {
-            SharedTextService.shared.saveToItems(texts: sharedTexts, modelContext: modelContext)
         }
     }
 }
 
 struct WordCardView: View {
-    let word: Item
+    let word: Word
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(word.itemText)
+            Text(word.wordText)
                 .font(.title2)
                 .fontWeight(.bold)
             
@@ -143,13 +160,13 @@ struct WordCardView: View {
 }
 
 struct WordDetailView: View {
-    let word: Item
+    let word: Word
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 20) {
-                Text(word.itemText)
+                Text(word.wordText)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
@@ -176,5 +193,5 @@ struct WordDetailView: View {
 
 #Preview {
     HomeView()
-        .modelContainer(for: Item.self)
+        .modelContainer(for: Word.self)
 }

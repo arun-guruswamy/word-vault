@@ -1,27 +1,29 @@
 import SwiftUI
 import SwiftData
 
-struct AddItemView: View {
+struct AddWordView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var itemText = ""
+    @State private var wordText = ""
     
     var body: some View {
         NavigationView {
             Form {
-                TextField("Item", text: $itemText)
+                TextField("Word", text: $wordText)
             }
-            .navigationTitle("Add New Item")
+            .navigationTitle("Add New Word")
             .navigationBarItems(
                 leading: Button("Cancel") {
                     dismiss()
                 },
                 trailing: Button("Save") {
-                    let newItem = Item(itemText: itemText)
-                    Item.save(newItem, modelContext: modelContext)
-                    dismiss()
+                    Task {
+                        let newWord = await Word(wordText: wordText)
+                        Word.save(newWord, modelContext: modelContext)
+                        dismiss()
+                    }
                 }
-                .disabled(itemText.isEmpty)
+                .disabled(wordText.isEmpty)
             )
         }
     }

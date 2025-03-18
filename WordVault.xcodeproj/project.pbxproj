@@ -59,7 +59,7 @@
 		F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/ItemModel.swift,
+				Models/WordModel.swift,
 			);
 			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
 		};

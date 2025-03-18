@@ -23,12 +23,16 @@ class ShareViewController: SLComposeServiceViewController {
         // Get the text from the text view
         if let text = contentText {
             print("Text from contentText: \(text)")
-            saveSharedText(text)
+            Task {
+                await saveSharedText(text)
+                // Complete the extension after saving
+                print("Completing extension request")
+                self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+            }
+        } else {
+            // Complete the extension if no text
+            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
         }
-        
-        // Complete the extension
-        print("Completing extension request")
-        self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
     override func configurationItems() -> [Any]! {
@@ -42,17 +46,29 @@ class ShareViewController: SLComposeServiceViewController {
         
         // Set the title and placeholder text
         self.title = "Add to Word Vault"
-        self.placeholder = "Add a note (optional)"
+        self.placeholder = "Add a word or phrase"
+        
+        // Change "Post" button to "Add"
+        self.navigationItem.rightBarButtonItem?.title = "Add"
     }
     
-    private func saveSharedText(_ text: String) {
+    private func saveSharedText(_ text: String) async {
         print("Attempting to save text: \(text)")
 
-        let item = Item(itemText: text)
-        let container = try! ModelContainer(for: Item.self)
-        let context = container.mainContext
-        Item.save(item, modelContext: context)
-        print("Saved text as new Item: \(item.itemText)")
+        do {
+            let word = await Word(wordText: text)
+            let container = try ModelContainer(for: Word.self)
+            let context = container.mainContext
+            Word.save(word, modelContext: context)
+            print("Saved text as new Item: \(word.wordText)")
+        } catch {
+            print("Error saving word: \(error)")
+        }
+    }
+
+    // Override the localized string for the post button
+    func textForPublishButton() -> String {
+        return "Add"
     }
 
 }
