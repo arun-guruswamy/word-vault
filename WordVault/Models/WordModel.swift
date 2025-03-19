@@ -2,66 +2,69 @@ import SwiftUI
 import SwiftData
 import Foundation
 
-// MARK: - Dictionary Service
-class DictionaryService {
-    static let shared = DictionaryService()
-    
-    private init() {}
-    
-    func fetchDefinition(for word: String) async throws -> String {
-        let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? word)"
-        guard let url = URL(string: urlString) else {
-            throw URLError(.badURL)
-        }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let decoder = JSONDecoder()
-        let definitions = try decoder.decode([DictionaryEntry].self, from: data)
-        
-        // Get the first definition from the first entry
-        if let firstDefinition = definitions.first?.meanings.first?.definitions.first?.definition {
-            return firstDefinition
-        }
-        
-        return "No definition found"
-    }
-}
-
-// MARK: - Dictionary API Models
-struct DictionaryEntry: Codable {
-    let word: String
-    let meanings: [Meaning]
-}
-
-struct Meaning: Codable {
-    let partOfSpeech: String
-    let definitions: [Definition]
-    
-    enum CodingKeys: String, CodingKey {
-        case partOfSpeech = "partOfSpeech"
-        case definitions
-    }
-}
-
-struct Definition: Codable {
-    let definition: String
-    let example: String?
-}
-
 @Model
 final class Word {
     var id: UUID
     var wordText: String
     var definition: String
     var example: String
+    var notes: String
+    var meanings: [WordMeaning]
     var createdAt: Date
     
+    struct WordMeaning: Codable {
+        var partOfSpeech: String
+        var definitions: [WordDefinition]
+    }
+    
+    struct WordDefinition: Codable {
+        var definition: String
+        var example: String?
+    }
+    
     init(wordText: String) async {
+        // Initialize all properties first
         self.id = UUID()
         self.wordText = wordText
-        self.definition = (try? await DictionaryService.shared.fetchDefinition(for: wordText)) ?? "No definition found"
-        self.example = "example test"
+        self.definition = "No definition found"
+        self.example = "No example available"
+        self.notes = ""
+        self.meanings = []
         self.createdAt = Date()
+        
+        // Then fetch and update with API data
+        if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
+            self.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
+            self.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
+            
+            // Store all meanings
+            self.meanings = entry.meanings.map { meaning in
+                WordMeaning(
+                    partOfSpeech: meaning.partOfSpeech,
+                    definitions: meaning.definitions.map { def in
+                        WordDefinition(
+                            definition: def.definition,
+                            example: def.example
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+// MARK: - Sorting Options
+enum SortOption: Hashable {
+    case dateAdded(ascending: Bool)
+    case alphabetically(ascending: Bool)
+    
+    var descriptor: SortDescriptor<Word> {
+        switch self {
+        case .dateAdded(let ascending):
+            return SortDescriptor(\.createdAt, order: ascending ? .forward : .reverse)
+        case .alphabetically(let ascending):
+            return SortDescriptor(\.wordText, order: ascending ? .forward : .reverse)
+        }
     }
 }
 
@@ -77,19 +80,19 @@ extension Word {
         try? modelContext.save()
     }
     
-    static func fetchAll(modelContext: ModelContext) -> [Word] {
+    static func fetchAll(modelContext: ModelContext, sortBy: SortOption = .dateAdded(ascending: false)) -> [Word] {
         let descriptor = FetchDescriptor<Word>(
-            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+            sortBy: [sortBy.descriptor]
         )
         return (try? modelContext.fetch(descriptor)) ?? []
     }
     
-    static func search(query: String, modelContext: ModelContext) -> [Word] {
+    static func search(query: String, modelContext: ModelContext, sortBy: SortOption = .dateAdded(ascending: false)) -> [Word] {
         let descriptor = FetchDescriptor<Word>(
             predicate: #Predicate<Word> { word in
                 word.wordText.localizedStandardContains(query)
             },
-            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+            sortBy: [sortBy.descriptor]
         )
         return (try? modelContext.fetch(descriptor)) ?? []
     }

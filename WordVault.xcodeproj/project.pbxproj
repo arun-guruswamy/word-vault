@@ -60,6 +60,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/WordModel.swift,
+				Services/DictionaryService.swift,
 			);
 			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
 		};

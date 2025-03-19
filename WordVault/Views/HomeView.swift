@@ -8,12 +8,16 @@ struct HomeView: View {
     @State private var isAddWordPresented = false
     @State private var selectedWord: Word?
     @State private var searchText = ""
+    @State private var showingAddWord = false
+    @State private var sortOptions: Set<SortOption> = [.dateAdded(ascending: false)]
+    @State private var isSortModalPresented = false
     
     var filteredWords: [Word] {
         if searchText.isEmpty {
-            return words
+            return Word.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
+        } else {
+            return Word.search(query: searchText, modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
         }
-        return Word.search(query: searchText, modelContext: modelContext)
     }
     
     var body: some View {
@@ -57,6 +61,24 @@ struct HomeView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.gray)
                         }
+                    }
+                    
+                    Menu {
+                        Button(action: { sortOptions = [.dateAdded(ascending: false)] }) {
+                            Label("Newest First", systemImage: "arrow.down.circle")
+                        }
+                        Button(action: { sortOptions = [.dateAdded(ascending: true)] }) {
+                            Label("Oldest First", systemImage: "arrow.up.circle")
+                        }
+                        Button(action: { sortOptions = [.alphabetically(ascending: true)] }) {
+                            Label("A to Z", systemImage: "textformat.abc")
+                        }
+                        Button(action: { sortOptions = [.alphabetically(ascending: false)] }) {
+                            Label("Z to A", systemImage: "textformat.abc")
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .foregroundColor(.gray)
                     }
                 }
                 .padding(8)
@@ -124,7 +146,8 @@ struct HomeView: View {
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
-                    .padding()
+                    .padding(.bottom, 20)
+                    Spacer()
                 }
             }
         }
@@ -146,52 +169,16 @@ struct WordCardView: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text(word.definition)
+            Text(word.notes.isEmpty ? "No notes were added" : word.notes)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .lineLimit(2)
+                .italic(word.notes.isEmpty)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(uiColor: .systemBackground))
+        .background(.background)
         .cornerRadius(12)
         .shadow(radius: 2)
     }
-}
-
-struct WordDetailView: View {
-    let word: Word
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(word.wordText)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Text("Definition")
-                    .font(.headline)
-                Text(word.definition)
-                    .font(.body)
-                
-                Text("Example")
-                    .font(.headline)
-                Text(word.example)
-                    .font(.body)
-                    .italic()
-                
-                Spacer()
-            }
-            .padding()
-            .navigationBarItems(trailing: Button("Done") {
-                dismiss()
-            })
-        }
-    }
-}
-
-#Preview {
-    HomeView()
-        .modelContainer(for: Word.self)
 }
