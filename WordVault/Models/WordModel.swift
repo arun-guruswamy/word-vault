@@ -11,6 +11,8 @@ final class Word {
     var notes: String
     var meanings: [WordMeaning]
     var createdAt: Date
+    var collectionNames: [String]
+    var isFavorite: Bool
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
@@ -31,6 +33,8 @@ final class Word {
         self.notes = ""
         self.meanings = []
         self.createdAt = Date()
+        self.collectionNames = []
+        self.isFavorite = false
         
         // Then fetch and update with API data
         if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
@@ -95,5 +99,17 @@ extension Word {
             sortBy: [sortBy.descriptor]
         )
         return (try? modelContext.fetch(descriptor)) ?? []
+    }
+    
+    static func fetchWordsInCollection(collectionName: String, modelContext: ModelContext, sortBy: SortOption = .dateAdded(ascending: false)) -> [Word] {
+        // First fetch all words
+        let allWords = fetchAll(modelContext: modelContext, sortBy: sortBy)
+        
+        // Filter words that belong to the collection
+        let wordsInCollection = allWords.filter { word in
+            return word.collectionNames.contains(collectionName)
+        }
+        
+        return wordsInCollection
     }
 } 

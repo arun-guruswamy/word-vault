@@ -6,6 +6,7 @@ struct WordVaultApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Word.self,
+            Collection.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

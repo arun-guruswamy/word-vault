@@ -85,6 +85,14 @@ struct WordDetailView: View {
                     dismiss()
                 },
                 trailing: HStack {
+                    Button(action: {
+                        word.isFavorite.toggle()
+                        try? modelContext.save()
+                    }) {
+                        Image(systemName: word.isFavorite ? "star.fill" : "star")
+                            .foregroundColor(word.isFavorite ? .yellow : .gray)
+                    }
+                    
                     Button(action: { isEditPresented = true }) {
                         Image(systemName: "pencil")
                             .foregroundColor(.blue)
@@ -100,79 +108,10 @@ struct WordDetailView: View {
                 }
             )
             .sheet(isPresented: $isEditPresented) {
-                EditWordView(word: word)
+                WordFormView(mode: .edit, word: word)
             }
             .padding(.trailing, 12.5)
             .padding(.leading, 12.5)
-        }
-    }
-}
-
-struct EditWordView: View {
-    let word: Word
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @State private var wordText: String
-    @State private var notes: String
-    
-    init(word: Word) {
-        self.word = word
-        _wordText = State(initialValue: word.wordText)
-        _notes = State(initialValue: word.notes)
-    }
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Word")) {
-                    TextField("Word", text: $wordText)
-                }
-                
-                Section(header: Text("Notes"), footer: Text("Add any personal notes about this word")) {
-                    TextEditor(text: $notes)
-                        .frame(minHeight: 100)
-                }
-            }
-            .navigationTitle("Edit Word")
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    dismiss()
-                },
-                trailing: Button("Save") {
-                    Task {
-                        if wordText != word.wordText {
-                            // Update word text and try to fetch new definitions
-                            if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
-                                // If word exists in dictionary, update with new data
-                                word.wordText = wordText
-                                word.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
-                                word.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
-                                word.meanings = entry.meanings.map { meaning in
-                                    Word.WordMeaning(
-                                        partOfSpeech: meaning.partOfSpeech,
-                                        definitions: meaning.definitions.map { def in
-                                            Word.WordDefinition(
-                                                definition: def.definition,
-                                                example: def.example
-                                            )
-                                        }
-                                    )
-                                }
-                            } else {
-                                // If word doesn't exist in dictionary, update word text and clear dictionary data
-                                word.wordText = wordText
-                                word.definition = "No definition found"
-                                word.example = "No example available"
-                                word.meanings = []
-                            }
-                        }
-                        word.notes = notes
-                        try? modelContext.save()
-                        dismiss()
-                    }
-                }
-                .disabled(wordText.isEmpty)
-            )
         }
     }
 }
