@@ -12,7 +12,7 @@ let config = GenerationConfig(
 // guard let apiKey = ProcessInfo.processInfo.environment["GEMINI_API_KEY"] else {
 //   fatalError("Add GEMINI_API_KEY as an Environment Variable in your app's scheme.")
 // }
-let apiKey = "AIzaSyA7LTN6qMAQ0tD81mHHTU1gGiMmBwqYSVY"
+let apiKey = ""
 
 let model = GenerativeModel(
   name: "gemini-2.0-flash",
