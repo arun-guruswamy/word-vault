@@ -2,22 +2,23 @@
 
 To do list:
 
-P1:
-- Add timeline
-- Add a notification option for word of the day
-- Add a settings view in which the user can turn on/off certain preferences
-- Change post to save in share screen 
-- Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should   provide option to disable spelling check in settings)
-
-P2:
-- Focus on maximizing UI quality of app across all screens and modals
-
 P3:
 - Display fun fact about word using LLM 
 - Add Learning features
     - Write sentences with word and assess correctness of usage with LLM
     - Write definition for word and have meaning assessed by LLM
     - Mix and match words with corresponding definitions/Synonyms 
+- Add a timeline view
+
+P4:
+- Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should   provide option to disable spelling check in settings)
+
+P5:
+- Complete settings view
+    - Complete privacy policy
+    - Compete terms of Service
+    - 
+- Focus on maximizing UI quality of app across all screens and modals
 
 ## Cursor Rules
 

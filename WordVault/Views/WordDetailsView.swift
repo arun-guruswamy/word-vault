@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import Foundation
 
-struct WordDetailView: View {
+struct WordDetailsView: View {
     let word: Word
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -108,7 +108,7 @@ struct WordDetailView: View {
                 }
             )
             .sheet(isPresented: $isEditPresented) {
-                WordFormView(mode: .edit, word: word)
+                ItemFormView(mode: .editWord(word))
             }
             .padding(.trailing, 12.5)
             .padding(.leading, 12.5)
