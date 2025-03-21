@@ -13,6 +13,7 @@ final class Word {
     var createdAt: Date
     var collectionNames: [String]
     var isFavorite: Bool
+    var funFact: String
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
@@ -24,38 +25,39 @@ final class Word {
         var example: String?
     }
     
-    init(wordText: String, skipDefinition: Bool = false) async {
+    init(wordText: String) async {
         // Initialize all properties first
         self.id = UUID()
         self.wordText = wordText
-        self.definition = skipDefinition ? "" : "Loading definition..."
-        self.example = skipDefinition ? "" : "Loading example..."
+        self.definition = "Loading definition..."
+        self.example = "Loading example..."
         self.notes = ""
         self.meanings = []
         self.createdAt = Date()
         self.collectionNames = []
         self.isFavorite = false
+        self.funFact = ""
         
-        // Then fetch and update with API data if not skipping
-        if !skipDefinition {
-            if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
-                self.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
-                self.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
-                
-                // Store all meanings
-                self.meanings = entry.meanings.map { meaning in
-                    WordMeaning(
-                        partOfSpeech: meaning.partOfSpeech,
-                        definitions: meaning.definitions.map { def in
-                            WordDefinition(
-                                definition: def.definition,
-                                example: def.example
-                            )
-                        }
-                    )
-                }
-            }
-        }
+//        // Then fetch and update with API data if not skipping
+//        if !skipDefinition {
+//            if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
+//                self.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
+//                self.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
+//                
+//                // Store all meanings
+//                self.meanings = entry.meanings.map { meaning in
+//                    WordMeaning(
+//                        partOfSpeech: meaning.partOfSpeech,
+//                        definitions: meaning.definitions.map { def in
+//                            WordDefinition(
+//                                definition: def.definition,
+//                                example: def.example
+//                            )
+//                        }
+//                    )
+//                }
+//            }
+//        }
     }
 }
 

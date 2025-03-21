@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = F7465CD32D8D938300C815DB /* GoogleGenerativeAI */; };
 		F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +170,7 @@
 			);
 			name = WordVault;
 			packageProductDependencies = (
+				F7465CD32D8D938300C815DB /* GoogleGenerativeAI */,
 			);
 			productName = WordVault;
 			productReference = C737EE1C2D85029400DC5168 /* WordVault.app */;
@@ -270,6 +273,9 @@
 			);
 			mainGroup = C737EE132D85029400DC5168;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C737EE1D2D85029400DC5168 /* Products */;
 			projectDirPath = "";
@@ -714,6 +720,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google-gemini/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F7465CD32D8D938300C815DB /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C737EE142D85029400DC5168 /* Project object */;
 }

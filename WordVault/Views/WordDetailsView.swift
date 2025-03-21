@@ -7,6 +7,8 @@ struct WordDetailsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isEditPresented = false
+    @State private var isLoading: Bool = true
+    @State private var errorMessage: String?
     
     var body: some View {
         NavigationView {
@@ -74,6 +76,17 @@ struct WordDetailsView: View {
                                 .font(.body)
                         }
                         .padding(.top, 8)
+                    }
+                    
+                    Text("Fun Fact")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                    if word.funFact.isEmpty {
+                        ProgressView("Loading fun fact...")
+                    } else {
+                        Text("\(word.funFact)")
+                            .font(.body)
                     }
                     
                     Spacer()

@@ -3,7 +3,6 @@
 To do list:
 
 P3:
-- Display fun fact about word using LLM 
 - Add Learning features
     - Write sentences with word and assess correctness of usage with LLM
     - Write definition for word and have meaning assessed by LLM

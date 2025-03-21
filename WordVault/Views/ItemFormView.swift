@@ -189,13 +189,13 @@ struct ItemFormView: View {
                 return true
             } else {
                 // Create word with empty definition first
-                let newWord = await Word(wordText: itemText, skipDefinition: true)
+                let newWord = await Word(wordText: itemText)
                 newWord.notes = notes
                 newWord.isFavorite = isFavorite
                 newWord.collectionNames = Array(selectedCollectionNames)
                 Word.save(newWord, modelContext: modelContext)
                 
-                // Fetch definition in the background
+                // Fetch definition and fun fact in the background
                 Task {
                     if let entry = try? await DictionaryService.shared.fetchDefinition(for: itemText) {
                         newWord.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
@@ -211,8 +211,9 @@ struct ItemFormView: View {
                                 }
                             )
                         }
-                        try? modelContext.save()
                     }
+                    newWord.funFact = await fetchFunFact(for: newWord.wordText)
+                    try? modelContext.save()
                 }
                 return true
             }
