@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Foundation
+import MarkdownUI
 
 struct WordDetailsView: View {
     let word: Word
@@ -8,6 +9,8 @@ struct WordDetailsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isEditPresented = false
     @State private var isLoading: Bool = true
+    @State private var isRefreshingFunFact: Bool = false
+    @State private var isFetchingDefinition: Bool = false
     @State private var errorMessage: String?
     
     var body: some View {
@@ -25,7 +28,20 @@ struct WordDetailsView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.bottom, 15)
                     
-                    if word.meanings.isEmpty {
+                    if isFetchingDefinition {
+                        VStack(spacing: 12) {
+                            Image(systemName: "magnifyingglass.circle")
+                                .font(.system(size: 50))
+                                .foregroundColor(.gray)
+                            VStack(spacing: 4) {
+                                Text("Loading definition...")
+                                    .font(.title3)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                    } else if word.meanings.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "magnifyingglass.circle")
                                 .font(.system(size: 50))
@@ -78,15 +94,36 @@ struct WordDetailsView: View {
                         .padding(.top, 8)
                     }
                     
-                    Text("Fun Fact")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.blue)
-                    if word.funFact.isEmpty {
-                        ProgressView("Loading fun fact...")
+                    if !word.meanings.isEmpty {
+                    HStack {
+                        Text("Fun Fact")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            Task {
+                                isRefreshingFunFact = true
+                                word.funFact = await fetchFunFact(for: word.wordText)
+                                try? modelContext.save()
+                                isRefreshingFunFact = false
+                            }
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.blue)
+                                .rotationEffect(.degrees(isRefreshingFunFact ? 360 : 0))
+                                .animation(isRefreshingFunFact ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: isRefreshingFunFact)
+                        }
+                    }
+                    
+                    if word.funFact.isEmpty || isRefreshingFunFact {
+                        ProgressView(isRefreshingFunFact ? "Refreshing fun fact..." : "Loading fun fact...")
                     } else {
-                        Text("\(word.funFact)")
+                        Markdown("\(word.funFact)")
                             .font(.body)
+                    }
                     }
                     
                     Spacer()
@@ -125,6 +162,13 @@ struct WordDetailsView: View {
             }
             .padding(.trailing, 12.5)
             .padding(.leading, 12.5)
+            .task {
+                if word.meanings.isEmpty {
+                    isFetchingDefinition = true
+                    // Fetch definition logic here
+                    isFetchingDefinition = false
+                }
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ final class Phrase {
     var createdAt: Date
     var collectionNames: [String]
     var isFavorite: Bool
+    var funOpinion: String
     
     init(phraseText: String) {
         self.id = UUID()
@@ -18,6 +19,7 @@ final class Phrase {
         self.createdAt = Date()
         self.collectionNames = []
         self.isFavorite = false
+        self.funOpinion = ""
     }
 }
 

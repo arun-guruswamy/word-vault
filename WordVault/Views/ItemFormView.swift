@@ -186,6 +186,10 @@ struct ItemFormView: View {
                 newPhrase.isFavorite = isFavorite
                 newPhrase.collectionNames = Array(selectedCollectionNames)
                 Phrase.save(newPhrase, modelContext: modelContext)
+                Task {
+                    newPhrase.funOpinion = await fetchFunOpinion(for: newPhrase.phraseText)
+                    try? modelContext.save()
+                }
                 return true
             } else {
                 // Create word with empty definition first
@@ -211,8 +215,9 @@ struct ItemFormView: View {
                                 }
                             )
                         }
+                        newWord.funFact = await fetchFunFact(for: newWord.wordText)
                     }
-                    newWord.funFact = await fetchFunFact(for: newWord.wordText)
+                    
                     try? modelContext.save()
                 }
                 return true
@@ -245,8 +250,6 @@ struct ItemFormView: View {
                         }
                         try? modelContext.save()
                     } else {
-                        word.definition = "No definition found"
-                        word.example = "No example available"
                         word.meanings = []
                         try? modelContext.save()
                     }

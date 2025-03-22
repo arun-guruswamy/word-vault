@@ -50,6 +50,13 @@
             ReferencedContainer = "container:WordVault.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "API_KEY"
+            value = "AIzaSyBzCzKMv6APbqGv4KtCY4nDvIdCd0Z4gzo"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

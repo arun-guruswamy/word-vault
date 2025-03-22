@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = F7465CD32D8D938300C815DB /* GoogleGenerativeAI */; };
+		F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */; };
 		F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -101,6 +102,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */,
+				F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +173,7 @@
 			name = WordVault;
 			packageProductDependencies = (
 				F7465CD32D8D938300C815DB /* GoogleGenerativeAI */,
+				F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */,
 			);
 			productName = WordVault;
 			productReference = C737EE1C2D85029400DC5168 /* WordVault.app */;
@@ -275,6 +278,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+				F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C737EE1D2D85029400DC5168 /* Products */;
@@ -730,6 +734,14 @@
 				minimumVersion = 0.5.6;
 			};
 		};
+		F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -737,6 +749,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
 			productName = GoogleGenerativeAI;
+		};
+		F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

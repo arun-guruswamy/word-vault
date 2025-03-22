@@ -1,12 +1,16 @@
 import SwiftUI
 import SwiftData
 import Foundation
+import MarkdownUI
 
 struct PhraseDetailsView: View {
     let phrase: Phrase
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isEditPresented = false
+    @State private var isLoading: Bool = true
+    @State private var isRefreshingOpinion: Bool = false
+    @State private var errorMessage: String?
     
     var body: some View {
         NavigationView {
@@ -47,9 +51,45 @@ struct PhraseDetailsView: View {
                         .padding(.vertical, 40)
                     }
                     
+                    HStack {
+                        Text("Vault Overlord's Opinion")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            Task {
+                                isRefreshingOpinion = true
+                                phrase.funOpinion = await fetchFunOpinion(for: phrase.phraseText)
+                                try? modelContext.save()
+                                isRefreshingOpinion = false
+                            }
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.blue)
+                                .rotationEffect(.degrees(isRefreshingOpinion ? 360 : 0))
+                                .animation(isRefreshingOpinion ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: isRefreshingOpinion)
+                        }
+                    }
+                    
+                    if phrase.funOpinion.isEmpty || isRefreshingOpinion {
+                        ProgressView(isRefreshingOpinion ? "The Overlord is contemplating..." : "Loading Overlord's opinion...")
+                    } else {
+                        Markdown(phrase.funOpinion)
+                            .font(.body)
+                    }
+                    
                     Spacer()
                 }
                 .padding()
+            }
+            .task {
+                if phrase.funOpinion.isEmpty {
+                    phrase.funOpinion = await fetchFunOpinion(for: phrase.phraseText)
+                    try? modelContext.save()
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
