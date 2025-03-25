@@ -14,6 +14,7 @@ final class Word {
     var collectionNames: [String]
     var isFavorite: Bool
     var funFact: String
+    var audioURL: String?
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
@@ -37,6 +38,7 @@ final class Word {
         self.collectionNames = []
         self.isFavorite = false
         self.funFact = ""
+        self.audioURL = nil
         
 //        // Then fetch and update with API data if not skipping
 //        if !skipDefinition {

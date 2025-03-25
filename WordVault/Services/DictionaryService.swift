@@ -31,14 +31,25 @@ public class DictionaryService {
                         )
                     }
                 )
-            }
+            },
+            audioURL: firstEntry.phonetics.first?.audio
         )
+    }
+    
+    public func fetchAudio(from urlString: String) async throws -> Data {
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return data
     }
 }
 
 // MARK: - Dictionary API Models
 public struct DictionaryEntry {
     public var meanings: [Meaning]
+    public var audioURL: String?
     
     public struct Meaning {
         public var partOfSpeech: String
@@ -54,6 +65,7 @@ public struct DictionaryEntry {
 // MARK: - API Response Types
 private struct APIResponse: Codable {
     var meanings: [APIMeaning]
+    var phonetics: [APIPhonetic]
 }
 
 private struct APIMeaning: Codable {
@@ -64,4 +76,8 @@ private struct APIMeaning: Codable {
 private struct APIDefinition: Codable {
     var definition: String
     var example: String?
+}
+
+private struct APIPhonetic: Codable {
+    var audio: String?
 } 

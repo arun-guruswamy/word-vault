@@ -215,6 +215,7 @@ struct ItemFormView: View {
                                 }
                             )
                         }
+                        newWord.audioURL = entry.audioURL
                         newWord.funFact = await fetchFunFact(for: newWord.wordText)
                     }
                     
@@ -230,6 +231,7 @@ struct ItemFormView: View {
                 word.definition = "Loading definition..."
                 word.example = "Loading example..."
                 word.meanings = []
+                word.audioURL = nil
                 try? modelContext.save()
                 
                 // Fetch new definition in the background
@@ -248,11 +250,15 @@ struct ItemFormView: View {
                                 }
                             )
                         }
-                        try? modelContext.save()
+                        word.audioURL = entry.audioURL
+                        word.funFact = await fetchFunFact(for: word.wordText)
+                        
                     } else {
                         word.meanings = []
-                        try? modelContext.save()
+                        word.audioURL = nil
                     }
+
+                    try? modelContext.save()
                 }
             }
             word.notes = notes

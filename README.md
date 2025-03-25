@@ -2,22 +2,27 @@
 
 To do list:
 
-P3:
-- Add Learning features
-    - Write sentences with word and assess correctness of usage with LLM
-    - Write definition for word and have meaning assessed by LLM
-    - Mix and match words with corresponding definitions/Synonyms 
-- Add a timeline view
-
 P4:
-- Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should   provide option to disable spelling check in settings)
+- Add synonyms, antonyms
+- Use LLM to provide examples instead of API
+- Provide ability to set confidence level of word and display in card and details view 
+- Provide ability to sort by confidence level
+- Add preset collections for each confidence level
 
 P5:
+- Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should   provide option to disable spelling check in settings)
+- Add a timeline view
+
+P6:
 - Complete settings view
     - Complete privacy policy
-    - Compete terms of Service
+    - Complete terms of Service
     - 
 - Focus on maximizing UI quality of app across all screens and modals
+
+Possible features later:
+- Word of the day
+- Additional learning modes (mix and match, crossword) etc.
 
 ## Cursor Rules
 

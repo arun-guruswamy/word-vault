@@ -18,7 +18,6 @@ struct HomeView: View {
     @State private var isSortModalPresented = false
     @State private var selectedCollectionName: String?
     @State private var itemFilter: ItemFilter = .all
-    @State private var isLearningPresented = false
     
     enum ItemFilter {
         case all
@@ -146,7 +145,7 @@ struct HomeView: View {
                             Spacer()
                             
                             HStack(spacing: 16) {
-                                Button(action: { isLearningPresented = true }) {
+                                NavigationLink(destination: LearningView()) {
                                     Image(systemName: "brain.head.profile")
                                         .font(.title2)
                                         .foregroundColor(.primary)
@@ -357,9 +356,6 @@ struct HomeView: View {
             .sheet(item: $selectedPhrase) { phrase in
                 PhraseDetailsView(phrase: phrase)
             }
-            .sheet(isPresented: $isLearningPresented) {
-                LearningView()
-            }
         }
     }
 }
@@ -386,7 +382,6 @@ struct ItemCardView: View {
     }
     
     var isPhrase: Bool {
-        print("here")
         return phrase != nil
     }
     
