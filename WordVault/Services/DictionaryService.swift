@@ -20,18 +20,37 @@ public class DictionaryService {
             throw NSError(domain: "DictionaryService", code: 404, userInfo: [NSLocalizedDescriptionKey: "No definition found"])
         }
         
-        return DictionaryEntry(
-            meanings: firstEntry.meanings.map { meaning in
-                DictionaryEntry.Meaning(
+        // Process API response and generate examples where needed
+        var meanings: [DictionaryEntry.Meaning] = []
+        
+        for meaning in firstEntry.meanings {
+            for def in meaning.definitions {
+                let example: String?
+                
+                // Generate an example if one is not provided by the API
+                if let apiExample = def.example, !apiExample.isEmpty {
+                    example = apiExample
+                } else {
+                    // Generate example using LLM
+                    example = await generateExample(
+                        for: word,
+                        partOfSpeech: meaning.partOfSpeech,
+                        definition: def.definition
+                    )
+                }
+                
+                meanings.append(DictionaryEntry.Meaning(
                     partOfSpeech: meaning.partOfSpeech,
-                    definitions: meaning.definitions.map { def in
-                        DictionaryEntry.Definition(
-                            definition: def.definition,
-                            example: def.example
-                        )
-                    }
-                )
-            },
+                    definition: def.definition,
+                    example: example,
+                    synonyms: def.synonyms ?? [],
+                    antonyms: def.antonyms ?? []
+                ))
+            }
+        }
+        
+        return DictionaryEntry(
+            meanings: meanings,
             audioURL: firstEntry.phonetics.first?.audio
         )
     }
@@ -44,6 +63,34 @@ public class DictionaryService {
         let (data, _) = try await URLSession.shared.data(from: url)
         return data
     }
+    
+    public func generateExample(for word: String, partOfSpeech: String, definition: String) async -> String {
+        do {
+            let message = """
+            Create a natural and conversational example sentence that illustrates the usage of the word "\(word)" 
+            as a \(partOfSpeech) with this definition: "\(definition)".
+            
+            Guidelines:
+            - Use contemporary, everyday language that feels natural
+            - Create a sentence that clearly demonstrates the meaning
+            - Keep it concise (ideally 10-15 words)
+            - Make it memorable and relatable
+            - Do NOT use the word "\(word)" in the definition of itself
+            - Respond with ONLY the example sentence and nothing else
+            
+            Example sentence:
+            """
+            let response = try await chat.sendMessage(message)
+            let example = response.text ?? "No example available"
+            
+            // Clean up the response (remove quotes if they exist)
+            return example.trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: "^\"(.*)\"$", with: "$1", options: .regularExpression)
+        } catch {
+            print(error)
+            return "No example available"
+        }
+    }
 }
 
 // MARK: - Dictionary API Models
@@ -53,12 +100,18 @@ public struct DictionaryEntry {
     
     public struct Meaning {
         public var partOfSpeech: String
-        public var definitions: [Definition]
-    }
-    
-    public struct Definition {
         public var definition: String
         public var example: String?
+        public var synonyms: [String]
+        public var antonyms: [String]
+        
+        public init(partOfSpeech: String, definition: String, example: String? = nil, synonyms: [String] = [], antonyms: [String] = []) {
+            self.partOfSpeech = partOfSpeech
+            self.definition = definition
+            self.example = example
+            self.synonyms = synonyms
+            self.antonyms = antonyms
+        }
     }
 }
 
@@ -71,11 +124,15 @@ private struct APIResponse: Codable {
 private struct APIMeaning: Codable {
     var partOfSpeech: String
     var definitions: [APIDefinition]
+    var synonyms: [String]?
+    var antonyms: [String]?
 }
 
 private struct APIDefinition: Codable {
     var definition: String
     var example: String?
+    var synonyms: [String]?
+    var antonyms: [String]?
 }
 
 private struct APIPhonetic: Codable {

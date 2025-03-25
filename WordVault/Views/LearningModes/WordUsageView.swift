@@ -24,15 +24,24 @@ struct WordUsageView: View {
                 }
             }
             
+            // Filter words that have at least one meaning
             Section("Your Words") {
                 ForEach(words.filter { !$0.meanings.isEmpty }) { word in
                     NavigationLink(destination: wordDefinitionView(word: word)) {
                         HStack {
                             Text(word.wordText)
                             Spacer()
-                            if word.isFavorite {
-                                Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
+                            
+                            HStack(spacing: 8) {
+                                if word.isConfident {
+                                    Image(systemName: "checkmark.seal.fill")
+                                        .foregroundColor(.green)
+                                }
+                                
+                                if word.isFavorite {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
+                                }
                             }
                         }
                     }
@@ -42,7 +51,7 @@ struct WordUsageView: View {
     }
     
     private func wordDefinitionView(word: Word?) -> some View {
-        let selectedWord = word ?? words.randomElement()
+        let selectedWord = word ?? words.filter { !$0.meanings.isEmpty }.randomElement()
         return Group {
             if let currentWord = selectedWord {
                 VStack(spacing: 20) {
@@ -66,7 +75,7 @@ struct WordUsageView: View {
                             }
                             
                             Button("Next Word") {
-                                self.currentWord = words.randomElement()
+                                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
                                 self.userSentence = ""
                                 self.evaluationResult = nil
                                 self.feedbackCategory = nil
@@ -116,7 +125,7 @@ struct WordUsageView: View {
         }
         .onAppear {
             if selectedWord == nil {
-                self.currentWord = words.randomElement()
+                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
             } else {
                 self.currentWord = selectedWord
             }

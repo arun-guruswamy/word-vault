@@ -18,8 +18,9 @@ struct HomeView: View {
     @State private var isSortModalPresented = false
     @State private var selectedCollectionName: String?
     @State private var itemFilter: ItemFilter = .all
+    @State private var searchConfidentWords: Bool?
     
-    enum ItemFilter {
+    enum ItemFilter: Hashable {
         case all
         case words
         case phrases
@@ -30,6 +31,7 @@ struct HomeView: View {
         let text: String
         let notes: String
         let isFavorite: Bool
+        let isConfident: Bool
         let createdAt: Date
         let isPhrase: Bool
         let word: Word?
@@ -40,6 +42,7 @@ struct HomeView: View {
             self.text = word.wordText
             self.notes = word.notes
             self.isFavorite = word.isFavorite
+            self.isConfident = word.isConfident
             self.createdAt = word.createdAt
             self.isPhrase = false
             self.word = word
@@ -51,6 +54,7 @@ struct HomeView: View {
             self.text = phrase.phraseText
             self.notes = phrase.notes
             self.isFavorite = phrase.isFavorite
+            self.isConfident = false // Phrases don't have confidence level
             self.createdAt = phrase.createdAt
             self.isPhrase = true
             self.word = nil
@@ -94,9 +98,14 @@ struct HomeView: View {
         // Apply item type filter
         switch itemFilter {
         case .all:
-            break
+            break // Show everything
         case .words:
-            items = items.filter { !$0.isPhrase }
+            items = items.filter { !$0.isPhrase } // First filter to words
+            
+            // Apply confidence subfilter if set
+            if let isConfident = searchConfidentWords {
+                items = items.filter { $0.isConfident == isConfident }
+            }
         case .phrases:
             items = items.filter { $0.isPhrase }
         }
@@ -163,13 +172,75 @@ struct HomeView: View {
                         .shadow(radius: 2)
                         
                         // Filter Picker
-                        Picker("Filter", selection: $itemFilter) {
-                            Text("All").tag(ItemFilter.all)
-                            Text("Words").tag(ItemFilter.words)
-                            Text("Phrases").tag(ItemFilter.phrases)
+                        VStack(spacing: 8) {
+                            Picker("Filter", selection: $itemFilter) {
+                                Text("All").tag(ItemFilter.all)
+                                Text("Words").tag(ItemFilter.words)
+                                Text("Phrases").tag(ItemFilter.phrases)
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+                            
+                            // Show confidence filter only when Words filter is selected
+                            if itemFilter == .words {
+                                // Subfilter buttons
+                                HStack {
+                                    Text("Show: ")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                    
+                                    Button(action: { 
+                                        // Clear confidence filter - show all words
+                                        searchConfidentWords = nil
+                                    }) {
+                                        Text("All Words")
+                                            .font(.subheadline)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(searchConfidentWords == nil ? Color.blue : Color.clear)
+                                            .foregroundColor(searchConfidentWords == nil ? .white : .primary)
+                                            .cornerRadius(8)
+                                    }
+                                    
+                                    Button(action: {
+                                        // Filter to show only confident words
+                                        searchConfidentWords = true
+                                    }) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "checkmark.seal.fill")
+                                                .imageScale(.small)
+                                                .foregroundColor(searchConfidentWords == true ? .white : .green)
+                                            Text("Confident")
+                                        }
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(searchConfidentWords == true ? Color.green : Color.clear)
+                                        .foregroundColor(searchConfidentWords == true ? .white : .primary)
+                                        .cornerRadius(8)
+                                    }
+                                    
+                                    Button(action: {
+                                        // Filter to show only non-confident words
+                                        searchConfidentWords = false
+                                    }) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "book.fill")
+                                                .imageScale(.small)
+                                                .foregroundColor(searchConfidentWords == false ? .white : .orange)
+                                            Text("Learning")
+                                        }
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(searchConfidentWords == false ? Color.orange : Color.clear)
+                                        .foregroundColor(searchConfidentWords == false ? .white : .primary)
+                                        .cornerRadius(8)
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
                         }
-                        .pickerStyle(.segmented)
-                        .padding(.horizontal)
                         .padding(.vertical, 8)
                         
                         // Search Bar
@@ -392,9 +463,23 @@ struct ItemCardView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                 Spacer()
-                if isFavorite {
-                    Image(systemName: "star.fill")
-                        .foregroundColor(.yellow)
+                
+                HStack(spacing: 8) {
+                    // Only show confidence indicator for words
+                    if !isPhrase {
+                        if word?.isConfident == true {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundColor(.green)
+                        } else {
+                            Image(systemName: "book.fill")
+                                .foregroundColor(.orange)
+                        }
+                    }
+                    
+                    if isFavorite {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                    }
                 }
             }
             

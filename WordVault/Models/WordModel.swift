@@ -6,60 +6,43 @@ import Foundation
 final class Word {
     var id: UUID
     var wordText: String
-    var definition: String
-    var example: String
     var notes: String
     var meanings: [WordMeaning]
     var createdAt: Date
     var collectionNames: [String]
     var isFavorite: Bool
+    var isConfident: Bool
     var funFact: String
     var audioURL: String?
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
-        var definitions: [WordDefinition]
-    }
-    
-    struct WordDefinition: Codable {
         var definition: String
         var example: String?
+        var synonyms: [String]
+        var antonyms: [String]
+        
+        init(partOfSpeech: String, definition: String, example: String? = nil, synonyms: [String] = [], antonyms: [String] = []) {
+            self.partOfSpeech = partOfSpeech
+            self.definition = definition
+            self.example = example
+            self.synonyms = synonyms
+            self.antonyms = antonyms
+        }
     }
     
     init(wordText: String) async {
-        // Initialize all properties first
+        // Initialize all properties
         self.id = UUID()
         self.wordText = wordText
-        self.definition = "Loading definition..."
-        self.example = "Loading example..."
         self.notes = ""
         self.meanings = []
         self.createdAt = Date()
         self.collectionNames = []
         self.isFavorite = false
+        self.isConfident = false
         self.funFact = ""
         self.audioURL = nil
-        
-//        // Then fetch and update with API data if not skipping
-//        if !skipDefinition {
-//            if let entry = try? await DictionaryService.shared.fetchDefinition(for: wordText) {
-//                self.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
-//                self.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
-//                
-//                // Store all meanings
-//                self.meanings = entry.meanings.map { meaning in
-//                    WordMeaning(
-//                        partOfSpeech: meaning.partOfSpeech,
-//                        definitions: meaning.definitions.map { def in
-//                            WordDefinition(
-//                                definition: def.definition,
-//                                example: def.example
-//                            )
-//                        }
-//                    )
-//                }
-//            }
-//        }
     }
 }
 
@@ -102,5 +85,15 @@ extension Word {
         }
         
         return wordsInCollection
+    }
+    
+    static func fetchConfidentWords(modelContext: ModelContext, sortBy: SortOption = .dateAdded(ascending: false)) -> [Word] {
+        let descriptor = FetchDescriptor<Word>(
+            predicate: #Predicate<Word> { word in
+                word.isConfident == true
+            },
+            sortBy: [sortBy.wordDescriptor]
+        )
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 } 

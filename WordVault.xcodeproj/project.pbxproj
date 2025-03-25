@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */; };
 		F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = F7465CD32D8D938300C815DB /* GoogleGenerativeAI */; };
 		F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */; };
 		F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -61,10 +62,14 @@
 		F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/CollectionModel.swift,
 				Models/PhraseModel.swift,
 				Models/SortOption.swift,
 				Models/WordModel.swift,
 				Services/DictionaryService.swift,
+				Services/GeminiAPI.swift,
+				Services/PhraseService.swift,
+				Services/WordService.swift,
 			);
 			target = F7FCE1732D8951C50032C827 /* WordVaultShareExtension */;
 		};
@@ -124,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +242,7 @@
 			);
 			name = WordVaultShareExtension;
 			packageProductDependencies = (
+				C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */,
 			);
 			productName = WordVaultShareExtension;
 			productReference = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */;
@@ -743,6 +750,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
 		F7465CD32D8D938300C815DB /* GoogleGenerativeAI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;

@@ -12,6 +12,7 @@ struct ItemFormView: View {
     @State private var notes: String
     @State private var selectedCollectionNames: Set<String>
     @State private var isFavorite: Bool
+    @State private var isConfident: Bool
     @State private var showingDuplicateAlert = false
     
     // Mode and existing items (if editing)
@@ -37,6 +38,7 @@ struct ItemFormView: View {
             _notes = State(initialValue: "")
             _selectedCollectionNames = State(initialValue: [])
             _isFavorite = State(initialValue: false)
+            _isConfident = State(initialValue: false)
             
         case .editWord(let word):
             self.existingWord = word
@@ -45,6 +47,7 @@ struct ItemFormView: View {
             _notes = State(initialValue: word.notes)
             _selectedCollectionNames = State(initialValue: Set(word.collectionNames))
             _isFavorite = State(initialValue: word.isFavorite)
+            _isConfident = State(initialValue: word.isConfident)
             
         case .editPhrase(let phrase):
             self.existingWord = nil
@@ -53,6 +56,7 @@ struct ItemFormView: View {
             _notes = State(initialValue: phrase.notes)
             _selectedCollectionNames = State(initialValue: Set(phrase.collectionNames))
             _isFavorite = State(initialValue: phrase.isFavorite)
+            _isConfident = State(initialValue: false)
         }
     }
     
@@ -69,6 +73,24 @@ struct ItemFormView: View {
             Form {
                 Section(header: Text("Text")) {
                     TextField("Enter word or phrase", text: $itemText)
+                }
+                
+                // Only show confidence section for words, not phrases
+                if case .editPhrase = mode {
+                    // Don't show confidence section for phrases
+                } else {
+                    Section(header: Text("Confidence Level")) {
+                        Toggle(isOn: $isConfident) {
+                            HStack {
+                                Image(systemName: isConfident ? "checkmark.seal.fill" : "checkmark.seal")
+                                    .foregroundColor(isConfident ? .green : .gray)
+                                    .imageScale(.large)
+                                Text("I'm confident with this word")
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .green))
+                    }
                 }
                 
                 Section(header: Text("Collections")) {
@@ -150,6 +172,7 @@ struct ItemFormView: View {
         }
     }
     
+    @MainActor
     private func saveItem() async -> Bool {
         // Check for duplicates first
         let existingWords = Word.fetchAll(modelContext: modelContext)
@@ -181,46 +204,27 @@ struct ItemFormView: View {
         switch mode {
         case .add:
             if isPhrase(itemText) {
-                let newPhrase = Phrase(phraseText: itemText)
-                newPhrase.notes = notes
-                newPhrase.isFavorite = isFavorite
-                newPhrase.collectionNames = Array(selectedCollectionNames)
-                Phrase.save(newPhrase, modelContext: modelContext)
-                Task {
-                    newPhrase.funOpinion = await fetchFunOpinion(for: newPhrase.phraseText)
-                    try? modelContext.save()
-                }
+                // Create and save phrase using PhraseService
+                let newPhrase = PhraseService.shared.createPhrase(
+                    text: itemText,
+                    notes: notes,
+                    isFavorite: isFavorite,
+                    collectionNames: Array(selectedCollectionNames)
+                )
+                
+                await PhraseService.shared.savePhrase(newPhrase, modelContext: modelContext)
                 return true
             } else {
-                // Create word with empty definition first
-                let newWord = await Word(wordText: itemText)
-                newWord.notes = notes
-                newWord.isFavorite = isFavorite
-                newWord.collectionNames = Array(selectedCollectionNames)
-                Word.save(newWord, modelContext: modelContext)
+                // Create and save word using WordService
+                let newWord = await WordService.shared.createWord(
+                    text: itemText,
+                    notes: notes,
+                    isFavorite: isFavorite,
+                    isConfident: isConfident,
+                    collectionNames: Array(selectedCollectionNames)
+                )
                 
-                // Fetch definition and fun fact in the background
-                Task {
-                    if let entry = try? await DictionaryService.shared.fetchDefinition(for: itemText) {
-                        newWord.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
-                        newWord.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
-                        newWord.meanings = entry.meanings.map { meaning in
-                            Word.WordMeaning(
-                                partOfSpeech: meaning.partOfSpeech,
-                                definitions: meaning.definitions.map { def in
-                                    Word.WordDefinition(
-                                        definition: def.definition,
-                                        example: def.example
-                                    )
-                                }
-                            )
-                        }
-                        newWord.audioURL = entry.audioURL
-                        newWord.funFact = await fetchFunFact(for: newWord.wordText)
-                    }
-                    
-                    try? modelContext.save()
-                }
+                await WordService.shared.saveWord(newWord, modelContext: modelContext)
                 return true
             }
             
@@ -228,47 +232,32 @@ struct ItemFormView: View {
             if itemText != word.wordText {
                 // Update word text first
                 word.wordText = itemText
-                word.definition = "Loading definition..."
-                word.example = "Loading example..."
                 word.meanings = []
                 word.audioURL = nil
                 try? modelContext.save()
                 
-                // Fetch new definition in the background
+                // Populate word content using WordService
                 Task {
-                    if let entry = try? await DictionaryService.shared.fetchDefinition(for: itemText) {
-                        word.definition = entry.meanings.first?.definitions.first?.definition ?? "No definition found"
-                        word.example = entry.meanings.first?.definitions.first?.example ?? "No example available"
-                        word.meanings = entry.meanings.map { meaning in
-                            Word.WordMeaning(
-                                partOfSpeech: meaning.partOfSpeech,
-                                definitions: meaning.definitions.map { def in
-                                    Word.WordDefinition(
-                                        definition: def.definition,
-                                        example: def.example
-                                    )
-                                }
-                            )
-                        }
-                        word.audioURL = entry.audioURL
-                        word.funFact = await fetchFunFact(for: word.wordText)
-                        
-                    } else {
-                        word.meanings = []
-                        word.audioURL = nil
-                    }
-
-                    try? modelContext.save()
+                    await WordService.shared.populateWordContent(word, modelContext: modelContext)
                 }
             }
+            
             word.notes = notes
             word.isFavorite = isFavorite
+            word.isConfident = isConfident
             word.collectionNames = Array(selectedCollectionNames)
             try? modelContext.save()
             return true
             
         case .editPhrase(let phrase):
-            phrase.phraseText = itemText
+            if itemText != phrase.phraseText {
+                phrase.phraseText = itemText
+                // Update fun opinion in background
+                Task {
+                    await PhraseService.shared.populatePhraseContent(phrase, modelContext: modelContext)
+                }
+            }
+            
             phrase.notes = notes
             phrase.isFavorite = isFavorite
             phrase.collectionNames = Array(selectedCollectionNames)
@@ -276,4 +265,4 @@ struct ItemFormView: View {
             return true
         }
     }
-} 
+}

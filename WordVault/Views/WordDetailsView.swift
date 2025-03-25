@@ -15,6 +15,11 @@ struct WordDetailsView: View {
     @State private var isPlaying: Bool = false
     @State private var isLoadingAudio: Bool = false
     
+    // Group meanings by part of speech
+    private var groupedMeanings: [String: [Word.WordMeaning]] {
+        Dictionary(grouping: word.meanings) { $0.partOfSpeech }
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -45,6 +50,38 @@ struct WordDetailsView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                     
+                    HStack(spacing: 16) {
+                        if word.isFavorite {
+                            Label("Favorite", systemImage: "star.fill")
+                                .font(.subheadline)
+                                .foregroundColor(.yellow)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.yellow.opacity(0.2))
+                                .cornerRadius(8)
+                        }
+                        
+                        // Always show confidence status - either confident or not confident
+                        if word.isConfident {
+                            Label("Confident", systemImage: "checkmark.seal.fill")
+                                .font(.subheadline)
+                                .foregroundColor(.green)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.green.opacity(0.2))
+                                .cornerRadius(8)
+                        } else {
+                            Label("Learning", systemImage: "book.fill")
+                                .font(.subheadline)
+                                .foregroundColor(.orange)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.orange.opacity(0.2))
+                                .cornerRadius(8)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    
                     Text("Added on \(word.createdAt.formatted(date: .long, time: .shortened))")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
@@ -65,29 +102,62 @@ struct WordDetailsView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 40)
                     } else {
-                        ForEach(word.meanings, id: \.partOfSpeech) { meaning in
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text(meaning.partOfSpeech.capitalized)
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.blue)
-                                
-                                ForEach(meaning.definitions.indices, id: \.self) { index in
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text("\(index + 1). \(meaning.definitions[index].definition)")
-                                            .font(.body)
-                                        
-                                        if let example = meaning.definitions[index].example {
-                                            Text("Example: \(example)")
+                        ForEach(Array(groupedMeanings.keys.sorted()), id: \.self) { partOfSpeech in
+                            if let meanings = groupedMeanings[partOfSpeech] {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text(partOfSpeech.capitalized)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.blue)
+                                    
+                                    ForEach(meanings.indices, id: \.self) { index in
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text("\(index + 1). \(meanings[index].definition)")
                                                 .font(.body)
-                                                .italic()
-                                                .foregroundColor(.secondary)
+                                            
+                                            // Example is now always available
+                                            if let example = meanings[index].example {
+                                                Text("Example: \(example)")
+                                                    .font(.body)
+                                                    .italic()
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            
+                                            // Display synonyms if available
+                                            if !meanings[index].synonyms.isEmpty {
+                                                HStack(alignment: .top) {
+                                                    Text("Synonyms:")
+                                                        .font(.subheadline)
+                                                        .fontWeight(.medium)
+                                                        .foregroundColor(.blue)
+                                                    
+                                                    Text(meanings[index].synonyms.joined(separator: ", "))
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.secondary)
+                                                        .lineLimit(3)
+                                                }
+                                            }
+                                            
+                                            // Display antonyms if available
+                                            if !meanings[index].antonyms.isEmpty {
+                                                HStack(alignment: .top) {
+                                                    Text("Antonyms:")
+                                                        .font(.subheadline)
+                                                        .fontWeight(.medium)
+                                                        .foregroundColor(.red)
+                                                    
+                                                    Text(meanings[index].antonyms.joined(separator: ", "))
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.secondary)
+                                                        .lineLimit(3)
+                                                }
+                                            }
                                         }
+                                        .padding(.bottom, 8)
                                     }
-                                    .padding(.bottom, 8)
                                 }
+                                .padding(.bottom, 16)
                             }
-                            .padding(.bottom, 16)
                         }
                     }
                     
@@ -146,17 +216,29 @@ struct WordDetailsView: View {
                 },
                 trailing: HStack {
                     Button(action: {
+                        word.isConfident.toggle()
+                        try? modelContext.save()
+                    }) {
+                        Image(systemName: word.isConfident ? "checkmark.seal.fill" : "checkmark.seal")
+                            .foregroundColor(word.isConfident ? .green : .gray)
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
+                    .help("Mark whether you're confident with this word")
+                    
+                    Button(action: {
                         word.isFavorite.toggle()
                         try? modelContext.save()
                     }) {
                         Image(systemName: word.isFavorite ? "star.fill" : "star")
                             .foregroundColor(word.isFavorite ? .yellow : .gray)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                     
                     Button(action: { isEditPresented = true }) {
                         Image(systemName: "pencil")
                             .foregroundColor(.blue)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                     
                     Button(action: {
                         Word.delete(word, modelContext: modelContext)
@@ -165,6 +247,7 @@ struct WordDetailsView: View {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             )
             .sheet(isPresented: $isEditPresented) {

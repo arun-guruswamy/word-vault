@@ -1,23 +1,14 @@
 ### WordVault is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
 
 To do list:
-
-P4:
-- Add synonyms, antonyms
-- Use LLM to provide examples instead of API
-- Provide ability to set confidence level of word and display in card and details view 
-- Provide ability to sort by confidence level
-- Add preset collections for each confidence level
-
 P5:
 - Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should   provide option to disable spelling check in settings)
-- Add a timeline view
 
 P6:
 - Complete settings view
     - Complete privacy policy
     - Complete terms of Service
-    - 
+    - Complete contact us section
 - Focus on maximizing UI quality of app across all screens and modals
 
 Possible features later:
