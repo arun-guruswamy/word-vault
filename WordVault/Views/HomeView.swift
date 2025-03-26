@@ -6,6 +6,7 @@ struct HomeView: View {
     @Query(sort: \Word.createdAt) private var words: [Word]
     @Query(sort: \Phrase.createdAt) private var phrases: [Phrase]
     @Query(sort: \Collection.createdAt) private var collections: [Collection]
+    @AppStorage("defaultSortOrder") private var defaultSortOrder = "dateAdded"
     @State private var isMenuOpen = false
     @State private var isAddWordPresented = false
     @State private var isAddCollectionPresented = false
@@ -14,11 +15,27 @@ struct HomeView: View {
     @State private var selectedPhrase: Phrase?
     @State private var searchText = ""
     @State private var showingAddWord = false
-    @State private var sortOptions: Set<SortOption> = [.dateAdded(ascending: false)]
+    @State private var sortOptions: Set<SortOption>
     @State private var isSortModalPresented = false
     @State private var selectedCollectionName: String?
     @State private var itemFilter: ItemFilter = .all
     @State private var searchConfidentWords: Bool?
+    
+    init() {
+        // Initialize sortOptions based on defaultSortOrder
+        let initialSortOption: SortOption
+        switch UserDefaults.standard.string(forKey: "defaultSortOrder") ?? "newestFirst" {
+        case "oldestFirst":
+            initialSortOption = .dateAdded(ascending: true)
+        case "alphabeticalAscending":
+            initialSortOption = .alphabetically(ascending: true)
+        case "alphabeticalDescending":
+            initialSortOption = .alphabetically(ascending: false)
+        default:
+            initialSortOption = .dateAdded(ascending: false)
+        }
+        _sortOptions = State(initialValue: [initialSortOption])
+    }
     
     enum ItemFilter: Hashable {
         case all
@@ -280,6 +297,19 @@ struct HomeView: View {
                         .cornerRadius(10)
                         .padding(.horizontal)
                         .padding(.top, geometry.size.height * 0.01)
+                        .onAppear {
+                            // Update sort options based on default sort order
+                            switch defaultSortOrder {
+                            case "oldestFirst":
+                                sortOptions = [.dateAdded(ascending: true)]
+                            case "alphabeticalAscending":
+                                sortOptions = [.alphabetically(ascending: true)]
+                            case "alphabeticalDescending":
+                                sortOptions = [.alphabetically(ascending: false)]
+                            default:
+                                sortOptions = [.dateAdded(ascending: false)]
+                            }
+                        }
                         
                         // Word and Phrase Cards List
                         ScrollView {

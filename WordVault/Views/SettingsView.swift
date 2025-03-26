@@ -1,32 +1,32 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("enableHapticFeedback") private var enableHapticFeedback = true
-    @AppStorage("enableAutoDefinition") private var enableAutoDefinition = true
-    @AppStorage("defaultSortOrder") private var defaultSortOrder = "dateAdded"
+    @AppStorage("defaultSortOrder") private var defaultSortOrder = "newestFirst"
     @State private var isShowingTermsOfService = false
     @State private var isShowingPrivacyPolicy = false
+    @State private var isShowingTutorial = false
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationView {
             List {
                 Section(header: Text("Preferences")) {
-                    Toggle("Haptic Feedback", isOn: $enableHapticFeedback)
-                    Toggle("Auto-fetch Definitions", isOn: $enableAutoDefinition)
-                    
                     Picker("Default Sort Order", selection: $defaultSortOrder) {
-                        Text("Date Added").tag("dateAdded")
-                        Text("Alphabetical").tag("alphabetical")
+                        Text("Newest First").tag("newestFirst")
+                        Text("Oldest First").tag("oldestFirst")
+                        Text("A to Z").tag("alphabeticalAscending")
+                        Text("Z to A").tag("alphabeticalDescending")
                     }
                 }
                 
-                Section(header: Text("Contact")) {
-                    Link("Contact Support", destination: URL(string: "mailto:support@wordvault.app")!)
-                        .foregroundColor(.primary)
+                Section(header: Text("Support")) {
+                    Button(action: { isShowingTutorial = true }) {
+                        Label("App Overview", systemImage: "book")
+                    }
                     
-                    Link("Follow us on Twitter", destination: URL(string: "https://twitter.com/wordvault")!)
-                        .foregroundColor(.primary)
+                    Link(destination: URL(string: "mailto:arunguruswamy22@gmail.com")!) {
+                        Label("Contact Us", systemImage: "envelope")
+                    }
                 }
                 
                 Section(header: Text("About")) {
@@ -39,7 +39,7 @@ struct SettingsView: View {
                     }
                     
                     HStack {
-                        Text("Version")
+                        Label("Version", systemImage: "info.circle")
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
                             .foregroundColor(.secondary)
@@ -53,8 +53,109 @@ struct SettingsView: View {
             .sheet(isPresented: $isShowingPrivacyPolicy) {
                 PrivacyPolicyView()
             }
+            .sheet(isPresented: $isShowingTutorial) {
+                TutorialView()
+            }
         }
     }
+}
+
+struct TutorialView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var currentStep = 0
+    
+    let tutorialSteps = [
+        TutorialStep(
+            title: "Welcome to Word Vault",
+            description: "Let's learn how to use Word Vault to build your vocabulary!",
+            image: "book.fill"
+        ),
+        TutorialStep(
+            title: "Adding Words",
+            description: "Tap the + button to add new words. You can add definitions, notes, and organize them into collections.",
+            image: "plus.circle.fill"
+        ),
+        TutorialStep(
+            title: "Organizing Words",
+            description: "Create collections to organize your words by topic or category. Mark words as favorites for quick access.",
+            image: "folder.fill"
+        ),
+        TutorialStep(
+            title: "Learning Mode",
+            description: "Use the brain icon to access learning modes. Practice writing definitions and improve your understanding.",
+            image: "brain.head.profile"
+        ),
+        TutorialStep(
+            title: "Word Details",
+            description: "Tap any word to view its details, including definitions, examples, and your personal notes.",
+            image: "text.book.closed.fill"
+        )
+    ]
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: tutorialSteps[currentStep].image)
+                    .font(.system(size: 60))
+                    .foregroundColor(.blue)
+                    .padding()
+                
+                Text(tutorialSteps[currentStep].title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                
+                Text(tutorialSteps[currentStep].description)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+                
+                Spacer()
+                
+                HStack {
+                    ForEach(0..<tutorialSteps.count, id: \.self) { index in
+                        Circle()
+                            .fill(index == currentStep ? Color.blue : Color.gray.opacity(0.3))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .padding(.bottom)
+                
+                HStack(spacing: 20) {
+                    if currentStep > 0 {
+                        Button("Previous") {
+                            withAnimation {
+                                currentStep -= 1
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    
+                    Button(currentStep == tutorialSteps.count - 1 ? "Done" : "Next") {
+                        if currentStep == tutorialSteps.count - 1 {
+                            dismiss()
+                        } else {
+                            withAnimation {
+                                currentStep += 1
+                            }
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding(.bottom)
+            }
+            .navigationBarItems(trailing: Button("Skip") {
+                dismiss()
+            })
+        }
+    }
+}
+
+struct TutorialStep {
+    let title: String
+    let description: String
+    let image: String
 }
 
 struct TermsOfServiceView: View {
