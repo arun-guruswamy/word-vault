@@ -69,79 +69,187 @@ struct ItemFormView: View {
     }
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Text")) {
-                    TextField("Enter word or phrase", text: $itemText)
-                }
+        NavigationStack {
+            ZStack {
+                // Background color matching the app
+                Color(red: 0.86, green: 0.75, blue: 0.6)
+                    .ignoresSafeArea()
+                    .overlay(
+                        Image(systemName: "circle.grid.cross.fill")
+                            .foregroundColor(.brown.opacity(0.1))
+                            .font(.system(size: 20))
+                    )
                 
-                // Only show confidence section for words, not phrases
-                if case .editPhrase = mode {
-                    // Don't show confidence section for phrases
-                } else {
-                    Section(header: Text("Confidence Level")) {
-                        Toggle(isOn: $isConfident) {
-                            HStack {
-                                Image(systemName: isConfident ? "checkmark.seal.fill" : "checkmark.seal")
-                                    .foregroundColor(isConfident ? .green : .gray)
-                                    .imageScale(.large)
-                                Text("I'm confident with this word")
-                                    .foregroundColor(.primary)
-                            }
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Text Input Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Text")
+                                .font(.custom("Marker Felt", size: 20))
+                                .foregroundColor(.black)
+                            
+                            TextField("Enter word or phrase", text: $itemText)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color.white.opacity(0.9))
+                                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 3)
+                                                .stroke(Color.black.opacity(1), lineWidth: 2)
+                                        )
+                                )
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: .green))
-                    }
-                }
-                
-                Section(header: Text("Collections")) {
-                    Button(action: {
-                        isFavorite.toggle()
-                    }) {
-                        HStack {
-                            Text("Favorites")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            if isFavorite {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.blue)
+                        .padding(.horizontal)
+                        
+                        // Only show confidence section for words, not phrases
+                        if case .editPhrase = mode {
+                            // Don't show confidence section for phrases
+                        } else {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Confidence Level")
+                                    .font(.custom("Marker Felt", size: 20))
+                                    .foregroundColor(.black)
+                                
+                                Toggle(isOn: $isConfident) {
+                                    HStack {
+                                        Image(systemName: isConfident ? "checkmark.seal.fill" : "checkmark.seal")
+                                            .foregroundColor(isConfident ? .green : .gray)
+                                            .imageScale(.large)
+                                        Text("I'm confident with this word")
+                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .foregroundColor(.black)
+                                    }
+                                }
+                                .toggleStyle(SwitchToggleStyle(tint: .green))
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color.white.opacity(0.9))
+                                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 3)
+                                                .stroke(Color.black.opacity(1), lineWidth: 2)
+                                        )
+                                )
                             }
+                            .padding(.horizontal)
                         }
-                    }
-                    
-                    ForEach(collections) { collection in
-                        Button(action: {
-                            if selectedCollectionNames.contains(collection.name) {
-                                selectedCollectionNames.remove(collection.name)
-                            } else {
-                                selectedCollectionNames.insert(collection.name)
-                            }
-                        }) {
-                            HStack {
-                                Text(collection.name)
-                                    .foregroundColor(.primary)
-                                Spacer()
-                                if selectedCollectionNames.contains(collection.name) {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.blue)
+                        
+                        // Collections Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Collections")
+                                .font(.custom("Marker Felt", size: 20))
+                                .foregroundColor(.black)
+                            
+                            VStack(spacing: 8) {
+                                Button(action: {
+                                    isFavorite.toggle()
+                                }) {
+                                    HStack {
+                                        Text("Favorites")
+                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        if isFavorite {
+                                            Image(systemName: "star.fill")
+                                                .foregroundColor(.yellow)
+                                        } else {
+                                            Image(systemName: "star")
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                    .padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 3)
+                                            .fill(Color.white.opacity(0.9))
+                                            .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .stroke(Color.black.opacity(1), lineWidth: 2)
+                                            )
+                                    )
+                                }
+                                
+                                ForEach(collections) { collection in
+                                    Button(action: {
+                                        if selectedCollectionNames.contains(collection.name) {
+                                            selectedCollectionNames.remove(collection.name)
+                                        } else {
+                                            selectedCollectionNames.insert(collection.name)
+                                        }
+                                    }) {
+                                        HStack {
+                                            Text(collection.name)
+                                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                            if selectedCollectionNames.contains(collection.name) {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.blue)
+                                            }
+                                        }
+                                        .padding()
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 3)
+                                                .fill(Color.white.opacity(0.9))
+                                                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 3)
+                                                        .stroke(Color.black.opacity(1), lineWidth: 2)
+                                                )
+                                        )
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        // Notes Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Notes")
+                                .font(.custom("Marker Felt", size: 20))
+                                .foregroundColor(.black)
+                            
+                            TextEditor(text: $notes)
+                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .frame(minHeight: 100)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color.white.opacity(0.9))
+                                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 3)
+                                                .stroke(Color.black.opacity(1), lineWidth: 2)
+                                        )
+                                )
+                        }
+                        .padding(.horizontal)
                     }
-                }
-                
-                Section(header: Text("Notes"), footer: Text("Add any personal notes")) {
-                    TextEditor(text: $notes)
-                        .frame(minHeight: 100)
+                    .padding(.vertical)
                 }
             }
             .navigationTitle(navigationTitle)
+                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .foregroundColor(.black)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .font(.custom("Marker Felt", size: 16))
+                    .foregroundColor(.black)
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .principal) {
+                    Text(navigationTitle)
+                        .font(.custom("Marker Felt", size: 20))
+                        .foregroundColor(.black)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         Task {
                             let success = await saveItem()
@@ -150,6 +258,8 @@ struct ItemFormView: View {
                             }
                         }
                     }
+                    .font(.custom("Marker Felt", size: 16))
+                    .foregroundColor(.black)
                     .disabled(itemText.isEmpty)
                 }
             }

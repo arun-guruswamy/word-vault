@@ -55,7 +55,6 @@ struct HomeView: View {
     @State private var isMenuOpen = false
     @State private var isAddWordPresented = false
     @State private var isAddCollectionPresented = false
-    @State private var isDeleteCollectionPresented = false
     @State private var selectedWord: Word?
     @State private var selectedPhrase: Phrase?
     @State private var searchText = ""
@@ -65,6 +64,7 @@ struct HomeView: View {
     @State private var selectedCollectionName: String?
     @State private var itemFilter: ItemFilter = .all
     @State private var searchConfidentWords: Bool?
+    @State private var collectionToEdit: Collection?
     @FocusState private var isSearchFocused: Bool
     
     init() {
@@ -364,7 +364,7 @@ struct HomeView: View {
                             if !searchText.isEmpty {
                                 Button(action: { searchText = "" }) {
                                     Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.brown.opacity(0.6))
+                                        .foregroundColor(.black)
                                 }
                             }
                             
@@ -383,7 +383,7 @@ struct HomeView: View {
                                 }
                             } label: {
                                 Image(systemName: "arrow.up.arrow.down")
-                                    .foregroundColor(.brown.opacity(0.6))
+                                    .foregroundColor(.black)
                             }
                         }
                         .padding()
@@ -480,75 +480,99 @@ struct HomeView: View {
                                 }
                         }
                         
-                        HStack {
+                        HStack(spacing: 0) {
                             VStack(alignment: .leading, spacing: geometry.size.height * 0.03) {
-                                Text("Collections")
-                                    .font(.headline)
-                                    .foregroundColor(.secondary)
-                                    .padding(.top, geometry.size.height * 0.06)
-                                
-                                Button(action: { selectedCollectionName = nil }) {
+                                // Header Section
+                                VStack(alignment: .leading, spacing: 8) {
                                     HStack {
-                                        Text("All")
-                                            .font(.subheadline)
+                                        Text("Collections")
+                                            .font(.custom("Marker Felt", size: 24))
                                             .foregroundColor(.black)
+                                        
                                         Spacer()
-                                        if selectedCollectionName == nil {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.blue)
-                                        }
-                                    }
-                                }
-                                
-                                Button(action: { selectedCollectionName = "Favorites" }) {
-                                    HStack {
-                                        Text("Favorites")
-                                            .font(.subheadline)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        if selectedCollectionName == "Favorites" {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.blue)
-                                        }
-                                    }
-                                }
-                                
-                                ForEach(collections) { collection in
-                                    Button(action: {
-                                        selectedCollectionName = collection.name
-                                    }) {
-                                        HStack {
-                                            Text(collection.name)
-                                                .font(.subheadline)
+                                        
+                                        Button(action: { isAddCollectionPresented = true }) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .font(.title2)
                                                 .foregroundColor(.black)
+                                        }
+                                    }
+                                }
+                                .padding(.top, geometry.size.height * 0.06)
+                                .padding(.bottom, 8)
+                                
+                                // Collections List
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Button(action: { selectedCollectionName = "Favorites" }) {
+                                        HStack {
+                                            Text("Favorites")
+                                                .font(.custom("Marker Felt", size: 16))
+                                                .foregroundColor(.black)
+                                            Image(systemName: "star.fill")
+                                                .foregroundColor(.yellow)
+                                                .padding(.bottom, 3)
                                             Spacer()
-                                            if selectedCollectionName == collection.name {
+                                            if selectedCollectionName == "Favorites" {
                                                 Image(systemName: "checkmark")
-                                                    .foregroundColor(.blue)
+                                                    .foregroundColor(.black)
+                                            }
+                                        }
+                                        .padding(.vertical, 8)
+                                    }
+                                    
+                                    ForEach(collections) { collection in
+                                        HStack {
+                                            Button(action: {
+                                                selectedCollectionName = collection.name
+                                            }) {
+                                                HStack {
+                                                    Text(collection.name)
+                                                        .font(.custom("Marker Felt", size: 16))
+                                                        .foregroundColor(.black)
+                                                    Spacer()
+                                                    if selectedCollectionName == collection.name {
+                                                        Image(systemName: "checkmark")
+                                                            .foregroundColor(.black)
+                                                    }
+                                                }
+                                                .padding(.vertical, 8)
+                                            }
+                                            
+                                            Menu {
+                                                Button(action: {
+                                                    collectionToEdit = collection
+                                                }) {
+                                                    Label("Edit", systemImage: "pencil")
+                                                }
+                                                
+                                                Button(role: .destructive, action: {
+                                                    Collection.delete(collection, modelContext: modelContext)
+                                                }) {
+                                                    Label("Delete", systemImage: "trash")
+                                                }
+                                            } label: {
+                                                Image(systemName: "ellipsis.circle")
+                                                    .foregroundColor(.black.opacity(0.6))
                                             }
                                         }
                                     }
                                 }
+                                .padding(.vertical, 8)
                                 
                                 Spacer()
-                                
-                                Divider()
-                                
-                                Button(action: { isAddCollectionPresented = true }) {
-                                    Label("New Collection", systemImage: "folder.badge.plus")
-                                        .font(.subheadline)
-                                }
-                                
-                                Button(action: { isDeleteCollectionPresented = true }) {
-                                    Label("Delete Collections", systemImage: "folder.badge.minus")
-                                        .font(.subheadline)
-                                        .foregroundColor(.red)
-                                }
-                                .padding(.bottom, geometry.size.height * 0.03)
                             }
                             .padding()
                             .frame(width: geometry.size.width * 0.525)
-                            .background(Color(uiColor: .systemBackground))
+                            .background(
+                                ZStack {
+                                    Color.white
+                                        .opacity(0.95)
+                                    
+                                    // Add subtle texture
+                                    Color.brown.opacity(0.05)
+                                        .background(.ultraThinMaterial)
+                                }
+                            )
                             .edgesIgnoringSafeArea(.vertical)
                             .zIndex(1)
                             .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 0)
@@ -567,16 +591,16 @@ struct HomeView: View {
                 ItemFormView(mode: .add)
             }
             .sheet(isPresented: $isAddCollectionPresented) {
-                AddCollectionView()
-            }
-            .sheet(isPresented: $isDeleteCollectionPresented) {
-                DeleteCollectionView()
+                AddCollectionView(mode: .add)
             }
             .sheet(item: $selectedWord) { word in
                 WordDetailsView(word: word)
             }
             .sheet(item: $selectedPhrase) { phrase in
                 PhraseDetailsView(phrase: phrase)
+            }
+            .sheet(item: $collectionToEdit) { collection in
+                AddCollectionView(mode: .edit(collection))
             }
         }
     }
