@@ -1,6 +1,51 @@
 import SwiftUI
 import SwiftData
 
+struct CustomSegmentedControl: UIViewRepresentable {
+    @Binding var selection: Int
+    let items: [String]
+    
+    func makeUIView(context: Context) -> UISegmentedControl {
+        let control = UISegmentedControl(items: items)
+        control.selectedSegmentIndex = selection
+        control.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
+        
+        // Customize appearance
+        control.backgroundColor = .clear
+        control.setTitleTextAttributes([
+            .font: UIFont(name: "BradleyHandITCTT-Bold", size: 16) ?? .systemFont(ofSize: 16),
+            .foregroundColor: UIColor.black
+        ], for: .normal)
+        
+        control.setTitleTextAttributes([
+            .font: UIFont(name: "BradleyHandITCTT-Bold", size: 16) ?? .systemFont(ofSize: 16),
+            .foregroundColor: UIColor.black
+        ], for: .selected)
+        
+        return control
+    }
+    
+    func updateUIView(_ uiView: UISegmentedControl, context: Context) {
+        uiView.selectedSegmentIndex = selection
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject {
+        var parent: CustomSegmentedControl
+        
+        init(_ parent: CustomSegmentedControl) {
+            self.parent = parent
+        }
+        
+        @objc func valueChanged(_ sender: UISegmentedControl) {
+            parent.selection = sender.selectedSegmentIndex
+        }
+    }
+}
+
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Word.createdAt) private var words: [Word]
@@ -20,6 +65,7 @@ struct HomeView: View {
     @State private var selectedCollectionName: String?
     @State private var itemFilter: ItemFilter = .all
     @State private var searchConfidentWords: Bool?
+    @FocusState private var isSearchFocused: Bool
     
     init() {
         // Initialize sortOptions based on defaultSortOrder
@@ -148,25 +194,42 @@ struct HomeView: View {
         NavigationStack {
             GeometryReader { geometry in
                 ZStack {
-                    // Main Content
+                    // Cork board background
+                    Color(red: 0.86, green: 0.75, blue: 0.6)
+                        .ignoresSafeArea()
+                        .overlay(
+                            Image(systemName: "circle.grid.cross.fill")
+                                .foregroundColor(.brown.opacity(0.1))
+                                .font(.system(size: 20))
+                        )
+                    
                     VStack(spacing: 0) {
-                        // Header
+                        // Header with a paper-like texture
                         HStack {
-                            Button(action: {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    isMenuOpen.toggle()
+                            HStack(spacing: 16) {
+                                Button(action: {
+                                    withAnimation(.spring()) {
+                                        isMenuOpen.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.title2)
+                                        .foregroundColor(.black)
                                 }
-                            }) {
-                                Image(systemName: "line.3.horizontal")
+                                // Just to keep title in center
+                                Image(systemName: "brain.head.profile")
                                     .font(.title2)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.clear)
                             }
                             
                             Spacer()
                             
                             Text(currentCollectionName)
-                                .font(.title2)
+                                .font(.custom("Marker Felt", size: 24))
                                 .fontWeight(.bold)
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
                             
                             Spacer()
                             
@@ -174,102 +237,134 @@ struct HomeView: View {
                                 NavigationLink(destination: LearningView()) {
                                     Image(systemName: "brain.head.profile")
                                         .font(.title2)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.black)
                                 }
                                 
                                 NavigationLink(destination: SettingsView()) {
                                     Image(systemName: "gear")
                                         .font(.title2)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.black)
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color(uiColor: .systemBackground))
-                        .shadow(radius: 2)
+                        .padding(.top, geometry.size.height * 0.05)
+                        .padding(.horizontal)
+                        .frame(height: geometry.size.height * 0.12)
+                        .background(
+                            ZStack {
+                                Color.white
+                                    .opacity(0.9)
+                                    .shadow(radius: 2)
+                                
+                                // Add bottom border
+                                VStack {
+                                    Rectangle()
+                                        .frame(height: 2)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Rectangle()
+                                        .frame(height: 2)
+                                        .foregroundColor(.black)
+                                }
+                            }
+                        )
+                        .edgesIgnoringSafeArea(.top)
                         
                         // Filter Picker
                         VStack(spacing: 8) {
-                            Picker("Filter", selection: $itemFilter) {
-                                Text("All").tag(ItemFilter.all)
-                                Text("Words").tag(ItemFilter.words)
-                                Text("Phrases").tag(ItemFilter.phrases)
-                            }
-                            .pickerStyle(.segmented)
+                            CustomSegmentedControl(
+                                selection: Binding(
+                                    get: {
+                                        switch itemFilter {
+                                        case .all: return 0
+                                        case .words: return 1
+                                        case .phrases: return 2
+                                        }
+                                    },
+                                    set: { newValue in
+                                        switch newValue {
+                                        case 0: itemFilter = .all
+                                        case 1: itemFilter = .words
+                                        case 2: itemFilter = .phrases
+                                        default: break
+                                        }
+                                    }
+                                ),
+                                items: ["All", "Words", "Phrases"]
+                            )
                             .padding(.horizontal)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.black.opacity(1), lineWidth: 2)
+                                    .padding(.horizontal)
+                            )
                             
                             // Show confidence filter only when Words filter is selected
                             if itemFilter == .words {
                                 // Subfilter buttons
                                 HStack {
                                     Text("Show: ")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                        .foregroundColor(.brown)
                                     
                                     Button(action: { 
-                                        // Clear confidence filter - show all words
                                         searchConfidentWords = nil
                                     }) {
                                         Text("All Words")
-                                            .font(.subheadline)
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 4)
+                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
                                             .background(searchConfidentWords == nil ? Color.blue : Color.clear)
-                                            .foregroundColor(searchConfidentWords == nil ? .white : .primary)
+                                            .foregroundColor(searchConfidentWords == nil ? .black : .brown)
                                             .cornerRadius(8)
                                     }
                                     
                                     Button(action: {
-                                        // Filter to show only confident words
                                         searchConfidentWords = true
                                     }) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "checkmark.seal.fill")
-                                                .imageScale(.small)
-                                                .foregroundColor(searchConfidentWords == true ? .white : .green)
-                                            Text("Confident")
-                                        }
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(searchConfidentWords == true ? Color.green : Color.clear)
-                                        .foregroundColor(searchConfidentWords == true ? .white : .primary)
-                                        .cornerRadius(8)
+                                        Text("Confident")
+                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(searchConfidentWords == true ? Color.green : Color.clear)
+                                            .foregroundColor(searchConfidentWords == true ? .black : .brown)
+                                            .cornerRadius(8)
                                     }
                                     
                                     Button(action: {
-                                        // Filter to show only non-confident words
                                         searchConfidentWords = false
                                     }) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "book.fill")
-                                                .imageScale(.small)
-                                                .foregroundColor(searchConfidentWords == false ? .white : .orange)
-                                            Text("Learning")
-                                        }
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(searchConfidentWords == false ? Color.orange : Color.clear)
-                                        .foregroundColor(searchConfidentWords == false ? .white : .primary)
-                                        .cornerRadius(8)
+                                        Text("Learning")
+                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(searchConfidentWords == false ? Color.orange : Color.clear)
+                                            .foregroundColor(searchConfidentWords == false ? .black : .brown)
+                                            .cornerRadius(8)
                                     }
                                 }
                                 .padding(.horizontal)
                             }
                         }
-                        .padding(.vertical, 8)
+                        .padding(.top, -geometry.size.height * 0.035)
+                        .padding(.bottom, geometry.size.height * 0.02)
                         
-                        // Search Bar
+                        // Updated Search Bar
                         HStack {
                             Image(systemName: "magnifyingglass")
-                                .foregroundColor(.gray)
+                                .foregroundColor(.brown.opacity(0.6))
                             TextField("Search words and phrases...", text: $searchText)
                                 .textFieldStyle(PlainTextFieldStyle())
+                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .focused($isSearchFocused)
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    isSearchFocused = false
+                                }
                             if !searchText.isEmpty {
                                 Button(action: { searchText = "" }) {
                                     Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.brown.opacity(0.6))
                                 }
                             }
                             
@@ -288,15 +383,20 @@ struct HomeView: View {
                                 }
                             } label: {
                                 Image(systemName: "arrow.up.arrow.down")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.brown.opacity(0.6))
                             }
                         }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color.white.opacity(0.9))
+                                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .stroke(Color.black.opacity(1), lineWidth: 2)
+                                )
+                        )
                         .padding(.horizontal)
-                        .padding(.vertical, geometry.size.height * 0.02)
-                        .background(Color(uiColor: .systemGray6))
-                        .cornerRadius(10)
-                        .padding(.horizontal)
-                        .padding(.top, geometry.size.height * 0.01)
                         .onAppear {
                             // Update sort options based on default sort order
                             switch defaultSortOrder {
@@ -313,9 +413,10 @@ struct HomeView: View {
                         
                         // Word and Phrase Cards List
                         ScrollView {
-                            LazyVStack(spacing: geometry.size.height * 0.02) {
+                            LazyVStack(spacing: 16) {
                                 ForEach(filteredItems) { item in
                                     ItemCardView(word: item.word, phrase: item.phrase)
+                                        .frame(height: geometry.size.height * 0.125) // Make height responsive
                                         .onTapGesture {
                                             if item.isPhrase {
                                                 selectedPhrase = item.phrase
@@ -329,19 +430,36 @@ struct HomeView: View {
                         }
                     }
                     
-                    // Add Button
+                    // Update the add button to look more playful
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
                             Button(action: { isAddWordPresented = true }) {
                                 Image(systemName: "plus")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
+                                    .font(.title)
+                                    .foregroundColor(.black)
                                     .frame(width: geometry.size.width * 0.15, height: geometry.size.width * 0.15)
-                                    .background(Color.blue)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 4)
+                                    .background(
+                                        ZStack {
+                                            Circle()
+                                                .fill(Color.yellow) // Soft yellow post-it color
+                                                .shadow(color: .black.opacity(0.2), radius: 3, x: 2, y: 2)
+                                            
+                                            // Add a subtle paper texture effect
+                                            Circle()
+                                                .fill(Color.white.opacity(0.1))
+                                                .background(.ultraThinMaterial)
+                                            
+                                            // Add border as a separate layer
+                                            Circle()
+                                                .stroke(Color.black.opacity(1), lineWidth: 2)
+                                                .padding(1)
+                                        }
+                                    )
+                                    .clipShape(Circle()) // Ensure the entire button is circular
+                                    .rotationEffect(.degrees(.random(in: -3...3)))
+                                    .offset(x: .random(in: -2...2), y: .random(in: -2...2))
                             }
                             .padding(.bottom, geometry.size.height * 0.03)
                             Spacer()
@@ -441,6 +559,9 @@ struct HomeView: View {
                     }
                     .animation(.easeInOut(duration: 0.3), value: isMenuOpen)
                 }
+                .onTapGesture {
+                    isSearchFocused = false
+                }
             }
             .sheet(isPresented: $isAddWordPresented) {
                 ItemFormView(mode: .add)
@@ -464,11 +585,11 @@ struct HomeView: View {
 struct ItemCardView: View {
     let word: Word?
     let phrase: Phrase?
-    
-    init(word: Word? = nil, phrase: Phrase? = nil) {
-        self.word = word
-        self.phrase = phrase
-    }
+    @State private var rotation: Double = .random(in: -3...3)
+    @State private var offset: CGSize = CGSize(
+        width: .random(in: -5...5),
+        height: .random(in: -5...5)
+    )
     
     var text: String {
         word?.wordText ?? phrase?.phraseText ?? ""
@@ -486,42 +607,45 @@ struct ItemCardView: View {
         return phrase != nil
     }
     
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(text)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                Spacer()
-                
-                HStack(spacing: 8) {
-                    // Only show confidence indicator for words
-                    if !isPhrase {
-                        if word?.isConfident == true {
-                            Image(systemName: "checkmark.seal.fill")
-                                .foregroundColor(.green)
-                        } else {
-                            Image(systemName: "book.fill")
-                                .foregroundColor(.orange)
-                        }
-                    }
-                    
-                    if isFavorite {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                    }
-                }
-            }
-            
-            Text(notes.isEmpty ? "No notes were added" : notes)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .lineLimit(2)
-                .italic(notes.isEmpty)
+    var postItColor: Color {
+        if isPhrase {
+            return Color(red: 0.78, green: 0.87, blue: 0.97) // Soft blue that complements both red and green
+        } else {
+            return word?.isConfident == true ? 
+                Color(red: 0.87, green: 0.97, blue: 0.78) : // Sage green
+                Color(red: 0.97, green: 0.78, blue: 0.87)   // Dusty rose
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(isPhrase ? Color.blue.opacity(0.1) : Color.green.opacity(0.1))
-        .cornerRadius(12)
+    }
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            
+            Spacer()
+            
+            Text(text)
+                .font(.custom("BradleyHandITCTT-Bold", size: 28))
+                .fontWeight(.bold)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(
+            ZStack {
+                postItColor
+                    .shadow(color: .black.opacity(0.2), radius: 3, x: 2, y: 2)
+                
+                // Add a subtle paper texture effect
+                Color.white.opacity(0.1)
+                    .background(.ultraThinMaterial)
+                
+                // Add border as a separate layer
+                RoundedRectangle(cornerRadius: 3)
+                    .stroke(Color.black.opacity(1), lineWidth: 3)
+                    .padding(1)
+            }
+        )
+        .cornerRadius(3)
     }
 }

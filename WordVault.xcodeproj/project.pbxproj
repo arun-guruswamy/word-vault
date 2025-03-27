@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */; };
+		C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */; };
+		C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */; };
 		F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = F7465CD32D8D938300C815DB /* GoogleGenerativeAI */; };
 		F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */; };
 		F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -55,10 +57,19 @@
 		C737EE1C2D85029400DC5168 /* WordVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE2E2D85029500DC5168 /* WordVaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE382D85029500DC5168 /* WordVaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BradleyHandITCTT-Bold.ttf"; sourceTree = "<group>"; };
+		C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bradleys Pen.ttf"; sourceTree = "<group>"; };
 		F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WordVaultShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C737EF242D959CFE00DC5168 /* Exceptions for "WordVault" folder in "WordVault" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C737EE1B2D85029400DC5168 /* WordVault */;
+		};
 		F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -86,6 +97,7 @@
 		C737EE1E2D85029400DC5168 /* WordVault */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				C737EF242D959CFE00DC5168 /* Exceptions for "WordVault" folder in "WordVault" target */,
 				F71C78F42D89849E0043EBC8 /* Exceptions for "WordVault" folder in "WordVaultShareExtension" target */,
 			);
 			path = WordVault;
@@ -142,6 +154,7 @@
 				C737EE1E2D85029400DC5168 /* WordVault */,
 				F7FCE1752D8951C50032C827 /* WordVaultShareExtension */,
 				C737EE1D2D85029400DC5168 /* Products */,
+				C737EF202D959C9E00DC5168 /* bradley-hand-2 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -154,6 +167,15 @@
 				F7FCE1742D8951C50032C827 /* WordVaultShareExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C737EF202D959C9E00DC5168 /* bradley-hand-2 */ = {
+			isa = PBXGroup;
+			children = (
+				C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */,
+				C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */,
+			);
+			path = "bradley-hand-2";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -305,6 +327,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */,
+				C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,6 +536,8 @@
 				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordVault/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -541,6 +567,8 @@
 				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordVault/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

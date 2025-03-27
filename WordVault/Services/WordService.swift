@@ -9,8 +9,9 @@ class WordService {
     func createWord(text: String, notes: String = "", isFavorite: Bool = false, 
                    isConfident: Bool = false, collectionNames: [String] = []) async -> Word {
         print("WordService: Creating word with text: \(text)")
-        let word = await Word(wordText: text)
-        word.notes = notes
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let word = await Word(wordText: trimmedText)
+        word.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         word.isFavorite = isFavorite
         word.isConfident = isConfident
         word.collectionNames = collectionNames

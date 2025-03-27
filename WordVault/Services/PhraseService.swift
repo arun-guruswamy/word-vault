@@ -8,8 +8,9 @@ class PhraseService {
     
     func createPhrase(text: String, notes: String = "", isFavorite: Bool = false, 
                      collectionNames: [String] = []) -> Phrase {
-        let phrase = Phrase(phraseText: text)
-        phrase.notes = notes
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let phrase = Phrase(phraseText: trimmedText)
+        phrase.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         phrase.isFavorite = isFavorite
         phrase.collectionNames = collectionNames
         

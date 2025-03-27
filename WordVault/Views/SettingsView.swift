@@ -71,24 +71,24 @@ struct TutorialView: View {
             image: "book.fill"
         ),
         TutorialStep(
-            title: "Adding Words",
-            description: "Tap the + button to add new words. You can add definitions, notes, and organize them into collections.",
+            title: "Adding Words or Phrases",
+            description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.",
             image: "plus.circle.fill"
-        ),
-        TutorialStep(
-            title: "Organizing Words",
-            description: "Create collections to organize your words by topic or category. Mark words as favorites for quick access.",
-            image: "folder.fill"
-        ),
-        TutorialStep(
-            title: "Learning Mode",
-            description: "Use the brain icon to access learning modes. Practice writing definitions and improve your understanding.",
-            image: "brain.head.profile"
         ),
         TutorialStep(
             title: "Word Details",
             description: "Tap any word to view its details, including definitions, examples, and your personal notes.",
             image: "text.book.closed.fill"
+        ),
+        TutorialStep(
+            title: "Organizing Words",
+            description: "Create collections to organize your words by topic or category. Mark words as favorites for quick access. Clicking on the menu button in the top left corner lets you manage collections.",
+            image: "folder.fill"
+        ),
+        TutorialStep(
+            title: "Learning Mode",
+            description: "Use the brain icon to access learning modes. Practice writing definitions or using the words in sentences and get AI feedback to improve your understanding.",
+            image: "brain.head.profile"
         )
     ]
     
