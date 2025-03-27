@@ -10,119 +10,283 @@ struct WordDefinitionWritingView: View {
     @State private var isEvaluating = false
     @State private var evaluationResult: String?
     @State private var feedbackCategory: FeedbackCategory?
+    @State private var searchText = ""
+    
+    var filteredWords: [Word] {
+        let wordsWithMeanings = words.filter { !$0.meanings.isEmpty }
+        
+        if searchText.isEmpty {
+            return wordsWithMeanings
+        } else {
+            return wordsWithMeanings.filter { word in
+                word.wordText.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
     var body: some View {
-        List {
-            Section {
-                NavigationLink(destination: wordDefinitionView(word: nil)) {
-                    HStack {
-                        Image(systemName: "shuffle")
-                            .foregroundColor(.blue)
-                        Text("Random Word")
-                    }
-                }
-            }
-            
-            // Filter words that have at least one meaning
-            Section("Your Words") {
-                ForEach(words.filter { !$0.meanings.isEmpty }) { word in
-                    NavigationLink(destination: wordDefinitionView(word: word)) {
+        NavigationStack {
+            ZStack {
+                // Background color matching the app
+                Color(red: 0.86, green: 0.75, blue: 0.6)
+                    .ignoresSafeArea()
+                    .overlay(
+                        Image(systemName: "circle.grid.cross.fill")
+                            .foregroundColor(.brown.opacity(0.1))
+                            .font(.system(size: 20))
+                    )
+                
+                List {
+                    // Search Bar
+                    Section {
                         HStack {
-                            Text(word.wordText)
-                            Spacer()
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.black)
+                            TextField("Search words...", text: $searchText)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .submitLabel(.search)
                             
-                            HStack(spacing: 8) {
-                                if word.isConfident {
-                                    Image(systemName: "checkmark.seal.fill")
-                                        .foregroundColor(.green)
-                                }
-                                
-                                if word.isFavorite {
-                                    Image(systemName: "star.fill")
-                                        .foregroundColor(.yellow)
+                            if !searchText.isEmpty {
+                                Button(action: { searchText = "" }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.black)
                                 }
                             }
                         }
+                        .padding(.vertical, 8)
                     }
+                    .listRowBackground(Color.white.opacity(0.7))
+                    
+                    // Filter words that have at least one meaning
+                    Section {
+                        ForEach(filteredWords) { word in
+                            NavigationLink(destination: wordDefinitionView(word: word)) {
+                                HStack {
+                                    Text(word.wordText)
+                                        .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    
+                                    HStack(spacing: 8) {
+                                        if word.isConfident {
+                                            Image(systemName: "checkmark.seal.fill")
+                                                .foregroundColor(.green)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("Your Words")
+                            .font(.custom("Marker Felt", size: 18))
+                            .foregroundColor(.black)
+                    }
+                    .listRowBackground(Color.white.opacity(0.7))
+                }
+                .scrollContentBackground(.hidden)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Definition Writing")
+                        .font(.custom("Marker Felt", size: 20))
+                        .foregroundColor(.black)
                 }
             }
         }
     }
     
-    private func wordDefinitionView(word: Word?) -> some View {
-        let selectedWord = word ?? words.filter { !$0.meanings.isEmpty }.randomElement()
-        return Group {
-            if let currentWord = selectedWord {
+    private func wordDefinitionView(word: Word) -> some View {
+        ZStack {
+            // Background color matching the app
+            Color(red: 0.86, green: 0.75, blue: 0.6)
+                .ignoresSafeArea()
+                .overlay(
+                    Image(systemName: "circle.grid.cross.fill")
+                        .foregroundColor(.brown.opacity(0.1))
+                        .font(.system(size: 20))
+                )
+            
+            ScrollView {
                 VStack(spacing: 20) {
-                    Text(currentWord.wordText)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                    Text(word.wordText)
+                        .font(.custom("Marker Felt", size: 30))
+                        .foregroundColor(.black)
                         .padding()
+                        .id("wordHeader-\(word.id)")  // Add a stable ID to prevent recreation
                     
                     if let evaluation = evaluationResult {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Your definition:")
-                                .font(.headline)
-                            Text(userDefinition)
-                                .font(.body)
-                                .padding()
-                                .background(Color(uiColor: .systemGray6))
-                                .cornerRadius(8)
-                            
-                            if let category = feedbackCategory {
-                                FeedbackView(category: category, evaluation: evaluation)
-                            }
-                            
-                            Button("Next Word") {
-                                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
-                                self.userDefinition = ""
-                                self.evaluationResult = nil
-                                self.feedbackCategory = nil
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding(.top)
-                        }
-                        .padding()
-                        .transition(.opacity)
+                        evaluationResultView(evaluation: evaluation, definition: userDefinition)
                     } else {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Write a definition for the word:")
-                                .font(.headline)
-                            
-                            TextField("Enter your definition...", text: $userDefinition, axis: .vertical)
-                                .textFieldStyle(.roundedBorder)
-                                .lineLimit(3...6)
-                            
-                            Button("Submit") {
-                                Task {
-                                    isEvaluating = true
-                                    evaluationResult = await evaluateDefinition(word: currentWord.wordText, definition: userDefinition)
-                                    isEvaluating = false
-                                }
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .disabled(userDefinition.isEmpty || isEvaluating)
+                        inputFormView(word: word)
+                        
+                        if isEvaluating {
+                            loadingView
                         }
-                        .padding()
                     }
                 }
-                .navigationTitle("Definition Writing")
-                .navigationBarTitleDisplayMode(.inline)
-            } else {
-                Text("No words available")
-                    .font(.headline)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.8))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                        .padding()
+                )
             }
         }
-        .onAppear {
-            if selectedWord == nil {
-                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
-            } else {
-                self.currentWord = selectedWord
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Definition Writing")
+                    .font(.custom("Marker Felt", size: 20))
+                    .foregroundColor(.black)
             }
+        }
+        .id(word.id)  // Add a stable ID to prevent recreation
+        .onAppear {
+            self.currentWord = word
             self.userDefinition = ""
             self.evaluationResult = nil
             self.feedbackCategory = nil
         }
+    }
+    
+    // Loading animation view
+    private var loadingView: some View {
+        VStack {
+            Text("Getting feedback...")
+                .font(.custom("Marker Felt", size: 16))
+                .foregroundColor(.black)
+                .padding(.bottom, 8)
+            
+            HStack(spacing: 12) {
+                ForEach(0..<3) { index in
+                    Circle()
+                        .fill(Color.brown)
+                        .frame(width: 12, height: 12)
+                        .opacity(0.4)
+                        .animation(
+                            Animation.easeInOut(duration: 0.6)
+                                .repeatForever()
+                                .delay(0.2 * Double(index)),
+                            value: isEvaluating
+                        )
+                        .scaleEffect(isEvaluating ? 1.2 : 0.8)
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.white.opacity(0.9))
+                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+        )
+        .padding()
+    }
+    
+    @ViewBuilder
+    private func evaluationResultView(evaluation: String, definition: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Your definition:")
+                .font(.custom("Marker Felt", size: 18))
+                .foregroundColor(.black)
+                
+            Text(definition)
+                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .foregroundColor(.black)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.9))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                )
+            
+            if let category = feedbackCategory {
+                FeedbackView(category: category, evaluation: evaluation)
+            }
+            
+            Button("Try Again") {
+                self.userDefinition = ""
+                self.evaluationResult = nil
+                self.feedbackCategory = nil
+            }
+            .font(.custom("Marker Felt", size: 16))
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.brown.opacity(0.8))
+                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 3)
+                            .stroke(Color.black, lineWidth: 2)
+                    )
+            )
+            .foregroundColor(.white)
+            .padding(.top)
+        }
+        .padding()
+        .transition(.opacity)
+    }
+    
+    @ViewBuilder
+    private func inputFormView(word: Word) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Write a definition for the word:")
+                .font(.custom("Marker Felt", size: 18))
+                .foregroundColor(.black)
+            
+            TextField("Enter your definition...", text: $userDefinition, axis: .vertical)
+                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .foregroundColor(.black)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.9))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                )
+                .lineLimit(3...6)
+            
+            Button("Submit") {
+                Task {
+                    isEvaluating = true
+                    evaluationResult = await evaluateDefinition(word: word.wordText, definition: userDefinition)
+                    isEvaluating = false
+                }
+            }
+            .font(.custom("Marker Felt", size: 16))
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.brown.opacity(0.8))
+                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 3)
+                            .stroke(Color.black, lineWidth: 2)
+                    )
+            )
+            .foregroundColor(.white)
+            .disabled(userDefinition.isEmpty || isEvaluating)
+        }
+        .padding()
     }
     
     private func evaluateDefinition(word: String, definition: String) async -> String {
@@ -131,21 +295,16 @@ struct WordDefinitionWritingView: View {
             As a language expert, evaluate if this definition for the word "\(word)" is accurate:
             "\(definition)"
             
-            Evaluate the definition based on these criteria:
-            1. Accuracy: Is the definition correct and precise?
-            2. Completeness: Does it cover the essential aspects of the word's meaning?
-            3. Clarity: Is the explanation clear and well-structured?
-            4. Depth: Does it show understanding of the word's nuances and usage?
-            5. Originality: Does it demonstrate personal understanding rather than just memorization?
+            BE VERY CONCISE in your feedback. Provide no more than 2-3 short sentences focusing only on the most important points.
             
-            Provide a detailed explanation of the strengths and areas for improvement in the definition.
+            First, quickly determine if the definition is:
+            1. Accurate and complete
+            2. Somewhat accurate but missing elements
+            3. Inaccurate or off-target
             
-            At the end of your response, categorize the definition into exactly ONE of these categories:
-            - EXCEPTIONAL: Perfect definition showing deep understanding and mastery
-            - EXCELLENT: Strong definition with minor room for improvement
-            - GOOD: Correct definition with some room for enhancement
-            - FAIR: Basic understanding with significant room for improvement
-            - NEEDS_IMPROVEMENT: Incorrect or incomplete understanding
+            Then provide your brief feedback focusing on the most important issue.
+            
+            At the end, categorize the definition as: EXCEPTIONAL, EXCELLENT, GOOD, FAIR, or NEEDS_IMPROVEMENT
             
             Format your category as: CATEGORY: [category_name]
             """

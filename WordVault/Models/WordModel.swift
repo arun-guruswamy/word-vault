@@ -34,7 +34,7 @@ final class Word {
     init(wordText: String) async {
         // Initialize all properties
         self.id = UUID()
-        self.wordText = wordText
+        self.wordText = wordText.trimmingCharacters(in: .whitespacesAndNewlines)
         self.notes = ""
         self.meanings = []
         self.createdAt = Date()

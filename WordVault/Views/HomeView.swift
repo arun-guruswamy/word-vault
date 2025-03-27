@@ -352,7 +352,7 @@ struct HomeView: View {
                         // Updated Search Bar
                         HStack {
                             Image(systemName: "magnifyingglass")
-                                .foregroundColor(.brown.opacity(0.6))
+                                .foregroundColor(.black)
                             TextField("Search words and phrases...", text: $searchText)
                                 .textFieldStyle(PlainTextFieldStyle())
                                 .font(.custom("BradleyHandITCTT-Bold", size: 16))

@@ -51,21 +51,6 @@ enum FeedbackCategory: String {
         case .needsImprovement: return 1
         }
     }
-    
-    var feedbackGuidelines: String {
-        switch self {
-        case .exceptional:
-            return "Your response shows mastery in:\n• Deep understanding of the concept\n• Creative and original application\n• Precise and clear expression\n• Comprehensive coverage of the topic"
-        case .excellent:
-            return "Your response demonstrates:\n• Strong understanding of the concept\n• Good application of knowledge\n• Clear and effective communication\n• Well-structured explanation"
-        case .good:
-            return "Your response shows:\n• Basic understanding of the concept\n• Appropriate application\n• Clear communication\n• Room for more detail"
-        case .fair:
-            return "Areas to focus on:\n• Strengthening core understanding\n• Providing more specific examples\n• Improving clarity of explanation\n• Adding more detail"
-        case .needsImprovement:
-            return "Key areas for improvement:\n• Understanding the basic concept\n• Providing relevant examples\n• Clear communication\n• Supporting your explanation"
-        }
-    }
 }
 
 enum LearningMode: String, CaseIterable {

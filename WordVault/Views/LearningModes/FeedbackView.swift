@@ -17,8 +17,7 @@ struct FeedbackView: View {
                     .background(Circle().fill(category.color))
                 
                 Text(category.rawValue)
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.custom("Marker Felt", size: 18))
                     .foregroundColor(category.color)
                 
                 Spacer()
@@ -35,53 +34,37 @@ struct FeedbackView: View {
             
             // Feedback content
             ZStack {
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 3)
                     .fill(category.color.opacity(0.15))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(category.color, lineWidth: 2)
+                        RoundedRectangle(cornerRadius: 3)
+                            .strokeBorder(Color.black, lineWidth: 2)
                     )
                 
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(alignment: .leading, spacing: 16) {
                         // Description banner
                         Text(category.description)
-                            .font(.subheadline)
+                            .font(.custom("BradleyHandITCTT-Bold", size: 14))
                             .fontWeight(.bold)
                             .italic()
                             .padding(10)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(
-                                RoundedRectangle(cornerRadius: 8)
+                                RoundedRectangle(cornerRadius: 3)
                                     .fill(category.color)
                             )
-                        
-                        // Feedback guidelines
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Feedback Guidelines:")
-                                .font(.headline)
-                                .foregroundColor(category.color)
-                            
-                            Text(category.feedbackGuidelines)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .padding(10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color(uiColor: .systemGray6))
-                                )
-                        }
                         
                         // Evaluation content
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Detailed Feedback:")
-                                .font(.headline)
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(category.color)
                             
                             Markdown(evaluation)
-                                .font(.body)
-                                .foregroundColor(.primary)
+                                .font(.custom("BradleyHandITCTT-Bold", size: 14))
+                                .foregroundColor(.black)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(nil)
                         }

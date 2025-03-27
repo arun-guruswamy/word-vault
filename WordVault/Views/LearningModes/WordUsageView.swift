@@ -11,128 +11,303 @@ struct WordUsageView: View {
     @State private var evaluationResult: String?
     @State private var feedbackCategory: FeedbackCategory?
     @State private var showMissingWordAlert = false
+    @State private var searchText = ""
+    
+    var filteredWords: [Word] {
+        let wordsWithMeanings = words.filter { !$0.meanings.isEmpty }
+        
+        if searchText.isEmpty {
+            return wordsWithMeanings
+        } else {
+            return wordsWithMeanings.filter { word in
+                word.wordText.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
     var body: some View {
-        List {
-            Section {
-                NavigationLink(destination: wordDefinitionView(word: nil)) {
-                    HStack {
-                        Image(systemName: "shuffle")
-                            .foregroundColor(.blue)
-                        Text("Random Word")
-                    }
-                }
-            }
-            
-            // Filter words that have at least one meaning
-            Section("Your Words") {
-                ForEach(words.filter { !$0.meanings.isEmpty }) { word in
-                    NavigationLink(destination: wordDefinitionView(word: word)) {
+        NavigationStack {
+            ZStack {
+                // Background color matching the app
+                Color(red: 0.86, green: 0.75, blue: 0.6)
+                    .ignoresSafeArea()
+                    .overlay(
+                        Image(systemName: "circle.grid.cross.fill")
+                            .foregroundColor(.brown.opacity(0.1))
+                            .font(.system(size: 20))
+                    )
+                
+                List {
+                    // Search Bar
+                    Section {
                         HStack {
-                            Text(word.wordText)
-                            Spacer()
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.black)
+                            TextField("Search words...", text: $searchText)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .submitLabel(.search)
                             
-                            HStack(spacing: 8) {
-                                if word.isConfident {
-                                    Image(systemName: "checkmark.seal.fill")
-                                        .foregroundColor(.green)
-                                }
-                                
-                                if word.isFavorite {
-                                    Image(systemName: "star.fill")
-                                        .foregroundColor(.yellow)
+                            if !searchText.isEmpty {
+                                Button(action: { searchText = "" }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.black)
                                 }
                             }
                         }
+                        .padding(.vertical, 8)
                     }
+                    .listRowBackground(Color.white.opacity(0.7))
+                    
+                    // Filter words that have at least one meaning
+                    Section {
+                        ForEach(filteredWords) { word in
+                            NavigationLink(destination: wordUsageView(word: word)) {
+                                HStack {
+                                    Text(word.wordText)
+                                        .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    
+                                    HStack(spacing: 8) {
+                                        if word.isConfident {
+                                            Image(systemName: "checkmark.seal.fill")
+                                                .foregroundColor(.green)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("Your Words")
+                            .font(.custom("Marker Felt", size: 18))
+                            .foregroundColor(.black)
+                    }
+                    .listRowBackground(Color.white.opacity(0.7))
+                }
+                .scrollContentBackground(.hidden)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Word Usage")
+                        .font(.custom("Marker Felt", size: 20))
+                        .foregroundColor(.black)
                 }
             }
         }
     }
     
-    private func wordDefinitionView(word: Word?) -> some View {
-        let selectedWord = word ?? words.filter { !$0.meanings.isEmpty }.randomElement()
-        return Group {
-            if let currentWord = selectedWord {
+    private func wordUsageView(word: Word) -> some View {
+        ZStack {
+            // Background color matching the app
+            Color(red: 0.86, green: 0.75, blue: 0.6)
+                .ignoresSafeArea()
+                .overlay(
+                    Image(systemName: "circle.grid.cross.fill")
+                        .foregroundColor(.brown.opacity(0.1))
+                        .font(.system(size: 20))
+                )
+            
+            ScrollView {
                 VStack(spacing: 20) {
-                    Text(currentWord.wordText)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                    Text(word.wordText)
+                        .font(.custom("Marker Felt", size: 30))
+                        .foregroundColor(.black)
                         .padding()
+                        .id("wordHeader-\(word.id)")  // Add a stable ID to prevent recreation
                     
                     if let evaluation = evaluationResult {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Your sentence:")
-                                .font(.headline)
-                            Text(userSentence)
-                                .font(.body)
-                                .padding()
-                                .background(Color(uiColor: .systemGray6))
-                                .cornerRadius(8)
-                            
-                            if let category = feedbackCategory {
-                                FeedbackView(category: category, evaluation: evaluation)
-                            }
-                            
-                            Button("Next Word") {
-                                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
-                                self.userSentence = ""
-                                self.evaluationResult = nil
-                                self.feedbackCategory = nil
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding(.top)
-                        }
-                        .padding()
-                        .transition(.opacity)
+                        evaluationResultView(evaluation: evaluation, sentence: userSentence, currentWord: word)
                     } else {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Create a sentence using the word:")
-                                .font(.headline)
-                            
-                            TextField("Enter your sentence...", text: $userSentence, axis: .vertical)
-                                .textFieldStyle(.roundedBorder)
-                                .lineLimit(3...6)
-                            
-                            Button("Submit") {
-                                if containsWord(sentence: userSentence, word: currentWord.wordText) {
-                                    Task {
-                                        isEvaluating = true
-                                        evaluationResult = await evaluateSentence(word: currentWord.wordText, sentence: userSentence)
-                                        isEvaluating = false
-                                    }
-                                } else {
-                                    showMissingWordAlert = true
-                                }
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .disabled(userSentence.isEmpty || isEvaluating)
+                        inputFormView(currentWord: word)
+                        
+                        if isEvaluating {
+                            loadingView
                         }
-                        .padding()
                     }
                 }
-                .navigationTitle("Word Usage")
-                .navigationBarTitleDisplayMode(.inline)
-                .alert("Missing Word", isPresented: $showMissingWordAlert) {
-                    Button("OK", role: .cancel) { }
-                } message: {
-                    Text("Your sentence doesn't include the word '\(currentWord.wordText)'. Please make sure to use the word in your sentence.")
-                }
-            } else {
-                Text("No words available")
-                    .font(.headline)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.8))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                        .padding()
+                )
             }
         }
-        .onAppear {
-            if selectedWord == nil {
-                self.currentWord = words.filter { !$0.meanings.isEmpty }.randomElement()
-            } else {
-                self.currentWord = selectedWord
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Word Usage")
+                    .font(.custom("Marker Felt", size: 20))
+                    .foregroundColor(.black)
             }
+        }
+        .alert("Missing Word", isPresented: $showMissingWordAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Your sentence doesn't include the word '\(word.wordText)'. Please make sure to use the word in your sentence.")
+                .font(.custom("BradleyHandITCTT-Bold", size: 14))
+        }
+        .id(word.id)  // Add a stable ID to prevent recreation
+        .onAppear {
+            self.currentWord = word
             self.userSentence = ""
             self.evaluationResult = nil
             self.feedbackCategory = nil
         }
+    }
+    
+    // Loading animation view
+    private var loadingView: some View {
+        VStack {
+            Text("Getting feedback...")
+                .font(.custom("Marker Felt", size: 16))
+                .foregroundColor(.black)
+                .padding(.bottom, 8)
+            
+            HStack(spacing: 12) {
+                ForEach(0..<3) { index in
+                    Circle()
+                        .fill(Color.brown)
+                        .frame(width: 12, height: 12)
+                        .opacity(0.4)
+                        .animation(
+                            Animation.easeInOut(duration: 0.6)
+                                .repeatForever()
+                                .delay(0.2 * Double(index)),
+                            value: isEvaluating
+                        )
+                        .scaleEffect(isEvaluating ? 1.2 : 0.8)
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.white.opacity(0.9))
+                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+        )
+        .padding()
+    }
+    
+    // Break down complex views into separate components
+    @ViewBuilder
+    private func evaluationResultView(evaluation: String, sentence: String, currentWord: Word) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Your sentence:")
+                .font(.custom("Marker Felt", size: 18))
+                .foregroundColor(.black)
+                
+            Text(sentence)
+                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .foregroundColor(.black)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.9))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                )
+            
+            if let category = feedbackCategory {
+                FeedbackView(category: category, evaluation: evaluation)
+            }
+            
+            nextWordButton
+        }
+        .padding()
+        .transition(.opacity)
+    }
+    
+    @ViewBuilder
+    private func inputFormView(currentWord: Word) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Create a sentence using the word:")
+                .font(.custom("Marker Felt", size: 18))
+                .foregroundColor(.black)
+            
+            TextField("Enter your sentence...", text: $userSentence, axis: .vertical)
+                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .foregroundColor(.black)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.9))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(Color.black, lineWidth: 2)
+                        )
+                )
+                .lineLimit(3...6)
+            
+            submitButton(currentWord: currentWord)
+        }
+        .padding()
+    }
+    
+    private var nextWordButton: some View {
+        Button("Try Again") {
+            self.userSentence = ""
+            self.evaluationResult = nil
+            self.feedbackCategory = nil
+        }
+        .font(.custom("Marker Felt", size: 16))
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.brown.opacity(0.8))
+                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+        )
+        .foregroundColor(.white)
+        .padding(.top)
+    }
+    
+    @ViewBuilder
+    private func submitButton(currentWord: Word) -> some View {
+        Button("Submit") {
+            if containsWord(sentence: userSentence, word: currentWord.wordText) {
+                Task {
+                    isEvaluating = true
+                    evaluationResult = await evaluateSentence(word: currentWord.wordText, sentence: userSentence)
+                    isEvaluating = false
+                }
+            } else {
+                showMissingWordAlert = true
+            }
+        }
+        .font(.custom("Marker Felt", size: 16))
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.brown.opacity(0.8))
+                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+        )
+        .foregroundColor(.white)
+        .disabled(userSentence.isEmpty || isEvaluating)
     }
     
     private func containsWord(sentence: String, word: String) -> Bool {
@@ -155,21 +330,16 @@ struct WordUsageView: View {
             As a language expert, evaluate if the word "\(word)" is used correctly in this sentence:
             "\(sentence)"
             
-            Evaluate the response based on these criteria:
-            1. Accuracy: Is the word used correctly according to its meaning?
-            2. Context: Is the word used in an appropriate context?
-            3. Creativity: Does the usage show originality and depth of understanding?
-            4. Clarity: Is the meaning clear and well-expressed?
-            5. Complexity: Does the usage demonstrate understanding of the word's nuances?
+            BE VERY CONCISE in your feedback. Provide no more than 2-3 short sentences focusing only on the most important points.
             
-            Provide a detailed explanation of the strengths and areas for improvement in the usage.
+            First, quickly determine if the usage is:
+            1. Correct and appropriate
+            2. Somewhat correct but could be improved
+            3. Incorrect or inappropriate
             
-            At the end of your response, categorize the usage into exactly ONE of these categories:
-            - EXCEPTIONAL: Perfect usage showing deep understanding, creativity, and mastery
-            - EXCELLENT: Strong usage with minor room for improvement
-            - GOOD: Correct usage with some room for enhancement
-            - FAIR: Basic understanding with significant room for improvement
-            - NEEDS_IMPROVEMENT: Incorrect or inappropriate usage
+            Then provide your brief feedback focusing on the most important issue.
+            
+            At the end, categorize the usage as: EXCEPTIONAL, EXCELLENT, GOOD, FAIR, or NEEDS_IMPROVEMENT
             
             Format your category as: CATEGORY: [category_name]
             """
