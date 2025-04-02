@@ -503,6 +503,20 @@ struct HomeView: View {
                                 
                                 // Collections List
                                 VStack(alignment: .leading, spacing: 12) {
+                                    Button(action: { selectedCollectionName = nil }) {
+                                        HStack {
+                                            Text("All")
+                                                .font(.custom("Marker Felt", size: 16))
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                            if selectedCollectionName == nil {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.black)
+                                            }
+                                        }
+                                        .padding(.vertical, 8)
+                                    }
+                                    
                                     Button(action: { selectedCollectionName = "Favorites" }) {
                                         HStack {
                                             Text("Favorites")

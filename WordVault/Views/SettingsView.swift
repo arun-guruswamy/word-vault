@@ -181,7 +181,7 @@ struct TutorialView: View {
                         .multilineTextAlignment(.center)
                     
                     Text(tutorialSteps[currentStep].description)
-                        .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                        .font(.custom("Marker Felt", size: 16))
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -288,11 +288,11 @@ struct TermsOfServiceView: View {
                             .foregroundColor(.black)
                         
                         Text("Last updated: March 2025")
-                            .font(.custom("BradleyHandITCTT-Bold", size: 14))
+                            .font(.custom("Marker Felt", size: 14))
                             .foregroundColor(.gray)
                         
                         Text("Welcome to Word Vault! By using our app, you agree to these terms.")
-                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                            .font(.custom("Marker Felt", size: 16))
                             .foregroundColor(.black)
                         
                         Group {
@@ -301,7 +301,7 @@ struct TermsOfServiceView: View {
                                 .foregroundColor(.black)
                             
                             Text("By accessing and using Word Vault, you accept and agree to be bound by the terms and provision of this agreement.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                             
                             Text("2. Use License")
@@ -309,7 +309,7 @@ struct TermsOfServiceView: View {
                                 .foregroundColor(.black)
                             
                             Text("Permission is granted to temporarily download one copy of Word Vault for personal, non-commercial use only.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                             
                             Text("3. Disclaimer")
@@ -317,7 +317,7 @@ struct TermsOfServiceView: View {
                                 .foregroundColor(.black)
                             
                             Text("The materials on Word Vault are provided on an 'as is' basis. Word Vault makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                         }
                     }
@@ -376,11 +376,11 @@ struct PrivacyPolicyView: View {
                             .foregroundColor(.black)
                         
                         Text("Last updated: March 2025")
-                            .font(.custom("BradleyHandITCTT-Bold", size: 14))
+                            .font(.custom("Marker Felt", size: 14))
                             .foregroundColor(.gray)
                         
                         Text("Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.")
-                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                            .font(.custom("Marker Felt", size: 16))
                             .foregroundColor(.black)
                         
                         Group {
@@ -389,7 +389,7 @@ struct PrivacyPolicyView: View {
                                 .foregroundColor(.black)
                             
                             Text("We collect information that you provide directly to us when using Word Vault, including words, phrases, and notes you save.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                             
                             Text("2. Data Storage")
@@ -397,7 +397,7 @@ struct PrivacyPolicyView: View {
                                 .foregroundColor(.black)
                             
                             Text("All your data is stored locally on your device. We do not store any personal information on our servers.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                             
                             Text("3. Third-Party Services")
@@ -405,7 +405,7 @@ struct PrivacyPolicyView: View {
                                 .foregroundColor(.black)
                             
                             Text("We use third-party services for dictionary definitions. These services may collect usage data according to their own privacy policies.")
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .foregroundColor(.black)
                         }
                     }

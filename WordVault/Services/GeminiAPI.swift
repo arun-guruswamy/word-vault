@@ -29,10 +29,19 @@ let chat = model.startChat(history: [
 func fetchFunFact(for word: String) async -> String {
     do {
         let message = """
-        As a witty and knowledgeable language expert, share a fascinating fact about the word "\(word)". 
-        Make it entertaining and memorable, like a fun party fact. 
-        Include unexpected connections, historical tidbits, or cultural significance.
-        Keep it concise but engaging, and add a touch of humor if appropriate.
+        As a witty and knowledgeable language expert, share a truly unexpected and surprising fun fact about the word "\(word)". 
+        AVOID discussing etymology or Latin/Greek origins unless it's genuinely fascinating.
+        Instead, focus on one of these types of facts:
+        1. Bizarre historical usage or events connected to the word
+        2. Unexpected pop culture references or appearances
+        3. Strange scientific connections or applications
+        4. Quirky statistics or record-breaking instances
+        5. Unusual laws or regulations involving the word
+        6. Surprising cultural differences in how the word is perceived
+        
+        Make it sound like "Wow, I never knew that about this word!"
+        Keep it concise (2-3 sentences), engaging, and genuinely surprising.
+        Add a touch of humor if appropriate.
         """
         let response = try await chat.sendMessage(message)
         return response.text ?? "No response received"

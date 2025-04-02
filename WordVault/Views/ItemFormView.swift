@@ -90,7 +90,7 @@ struct ItemFormView: View {
                             
                             TextField("Enter word or phrase", text: $itemText)
                                 .textFieldStyle(PlainTextFieldStyle())
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .font(.custom("Marker Felt", size: 16))
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 3)
@@ -119,7 +119,7 @@ struct ItemFormView: View {
                                             .foregroundColor(isConfident ? .green : .gray)
                                             .imageScale(.large)
                                         Text("I'm confident with this word")
-                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .font(.custom("Marker Felt", size: 16))
                                             .foregroundColor(.black)
                                     }
                                 }
@@ -150,7 +150,7 @@ struct ItemFormView: View {
                                 }) {
                                     HStack {
                                         Text("Favorites")
-                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .font(.custom("Marker Felt", size: 16))
                                             .foregroundColor(.black)
                                         Spacer()
                                         if isFavorite {
@@ -183,7 +183,7 @@ struct ItemFormView: View {
                                     }) {
                                         HStack {
                                             Text(collection.name)
-                                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                                .font(.custom("Marker Felt", size: 16))
                                                 .foregroundColor(.black)
                                             Spacer()
                                             if selectedCollectionNames.contains(collection.name) {
@@ -214,7 +214,9 @@ struct ItemFormView: View {
                                 .foregroundColor(.black)
                             
                             TextEditor(text: $notes)
-                                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.custom("Marker Felt", size: 16))
+                                .lineLimit(5...10)
                                 .frame(minHeight: 100)
                                 .padding()
                                 .background(
@@ -233,7 +235,7 @@ struct ItemFormView: View {
                 }
             }
             .navigationTitle(navigationTitle)
-                .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                .font(.custom("Marker Felt", size: 16))
                 .foregroundColor(.black)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -294,12 +296,20 @@ struct ItemFormView: View {
             if case .editWord(let currentWord) = mode, word.id == currentWord.id {
                 return false
             }
+            // If we're editing and the text hasn't changed, it's not a duplicate
+            if case .editWord(let currentWord) = mode, word.id == currentWord.id && word.wordText.lowercased() == itemText.lowercased() {
+                return false
+            }
             return word.wordText.lowercased() == itemText.lowercased()
         }
         
         let isDuplicatePhrase = existingPhrases.contains { phrase in
             // Skip the current phrase if we're editing it
             if case .editPhrase(let currentPhrase) = mode, phrase.id == currentPhrase.id {
+                return false
+            }
+            // If we're editing and the text hasn't changed, it's not a duplicate
+            if case .editPhrase(let currentPhrase) = mode, phrase.id == currentPhrase.id && phrase.phraseText.lowercased() == itemText.lowercased() {
                 return false
             }
             return phrase.phraseText.lowercased() == itemText.lowercased()
