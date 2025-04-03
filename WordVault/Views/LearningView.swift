@@ -48,6 +48,7 @@ struct LearningView: View {
                 }
             }
         }
+        .accentColor(.black) // Set back button color to black
     }
     
     @ViewBuilder
@@ -59,4 +60,4 @@ struct LearningView: View {
             WordUsageView()
         }
     }
-} 
+}

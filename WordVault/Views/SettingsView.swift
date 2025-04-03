@@ -2,11 +2,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("defaultSortOrder") private var defaultSortOrder = "newestFirst"
-    @State private var isShowingTermsOfService = false
-    @State private var isShowingPrivacyPolicy = false
     @State private var isShowingTutorial = false
+    @State private var isShowingPremium = false
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -46,7 +45,17 @@ struct SettingsView: View {
                                     .foregroundColor(.black)
                             }
                         }
-                        
+
+                        Button(action: { isShowingPremium = true }) {
+                            HStack {
+                                Image(systemName: "star")
+                                    .foregroundColor(.black)
+                                Text("Premium")
+                                    .font(.custom("Marker Felt", size: 16))
+                                    .foregroundColor(.black)
+                            }
+                        }
+
                         Link(destination: URL(string: "mailto:arunguruswamy22@gmail.com")!) {
                             HStack {
                                 Image(systemName: "envelope")
@@ -62,26 +71,14 @@ struct SettingsView: View {
                             .foregroundColor(.black)
                     }
                     .listRowBackground(Color.white.opacity(0.7))
-                    
+
                     Section {
-                        Button(action: { isShowingTermsOfService = true }) {
-                            HStack {
-                                Image(systemName: "doc.text")
-                                    .foregroundColor(.black)
-                                Text("Terms of Service")
-                                    .font(.custom("Marker Felt", size: 16))
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        Button(action: { isShowingPrivacyPolicy = true }) {
-                            HStack {
-                                Image(systemName: "hand.raised")
-                                    .foregroundColor(.black)
-                                Text("Privacy Policy")
-                                    .font(.custom("Marker Felt", size: 16))
-                                    .foregroundColor(.black)
-                            }
+                        HStack {
+                            Image(systemName: "hand.raised")
+                                .foregroundColor(.black)
+                            Link("Privacy Policy", destination: URL(string: "https://arun-guruswamy.github.io/personal-portfolio/word-vault-privacy")!)
+                                .font(.custom("Marker Felt", size: 16))
+                                .foregroundColor(.black)
                         }
                         
                         HStack {
@@ -112,16 +109,14 @@ struct SettingsView: View {
                         .foregroundColor(.black)
                 }
             }
-            .sheet(isPresented: $isShowingTermsOfService) {
-                TermsOfServiceView()
-            }
-            .sheet(isPresented: $isShowingPrivacyPolicy) {
-                PrivacyPolicyView()
-            }
             .sheet(isPresented: $isShowingTutorial) {
                 TutorialView()
             }
+            .sheet(isPresented: $isShowingPremium) {
+                PremiumView()
+            }
         }
+        .accentColor(.black) // Set back button color to black
     }
 }
 
@@ -132,28 +127,43 @@ struct TutorialView: View {
     let tutorialSteps = [
         TutorialStep(
             title: "Welcome to Word Vault",
-            description: "Let's learn how to use Word Vault to build your vocabulary!",
+            description: "Let's learn how to use Word Vault to build your vocabulary and store your favorite words or phrases!",
             image: "book.fill"
         ),
         TutorialStep(
-            title: "Adding Words or Phrases",
-            description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.",
+            title: "Adding Words or Phrases in the app",
+            description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.\nThe app automatically distinguishes between words and phrases based on whether there are any space separated characters are in your input.",
             image: "plus.circle.fill"
         ),
         TutorialStep(
+            title: "Adding Words or Phrases from other apps",
+            description: "You can also add words or phrases by highlighting them in other apps, and then sharing to the Word Vault app. The app automatically stores the text shared",
+            image: "shareWord"
+        ),
+        TutorialStep(
             title: "Word Details",
-            description: "Tap any word to view its details, including definitions, examples, and your personal notes.",
+        description: "Tap any word to view its details, including its definitions, pronounciation, examples, your personal notes, and even a fun fact!",
             image: "text.book.closed.fill"
         ),
         TutorialStep(
-            title: "Organizing Words",
+            title: "Phrase Details",
+        description: "Tap any phrase to view any personal notes you recorded, and an AI's interpretation of the phrase's meaning and potential significance!",
+            image: "text.book.closed.fill"
+        ),
+        TutorialStep(
+            title: "Organizing Words and Phrases",
             description: "Create collections to organize your words by topic or category. Mark words as favorites for quick access. Clicking on the menu button in the top left corner lets you manage collections.",
             image: "folder.fill"
         ),
         TutorialStep(
-            title: "Learning Mode",
-            description: "Use the brain icon to access learning modes. Practice writing definitions or using the words in sentences and get AI feedback to improve your understanding.",
+            title: "Learning Words",
+            description: "Use the brain icon to access learning modes. Practice writing definitions or using the words in sentences and get AI feedback to improve your understanding. Once you are confident with a word, you can mark that you are confident in it!",
             image: "brain.head.profile"
+        ),
+        TutorialStep(
+            title: "Enjoy trying out the app!",
+            description: "The app is free to use for storing up to 50 words or phrases after which you can buy a monthly, annual or lifetime subscription of the app to get access to storing unlimited words!",
+            image: "sparkles"
         )
     ]
     
@@ -170,10 +180,20 @@ struct TutorialView: View {
                     )
                 
                 VStack(spacing: 30) {
-                    Image(systemName: tutorialSteps[currentStep].image)
-                        .font(.system(size: 60))
-                        .foregroundColor(.brown)
-                        .padding()
+                    if (tutorialSteps[currentStep].title == "Adding Words or Phrases from other apps") {
+                        Image(tutorialSteps[currentStep].image)
+                            .resizable() // Make the image resizable
+                            .scaledToFit()
+                            .cornerRadius(10)
+                            .foregroundColor(.brown)
+                            .padding()
+                    }
+                    else {
+                        Image(systemName: tutorialSteps[currentStep].image)
+                            .font(.system(size: 60))
+                            .foregroundColor(.brown)
+                            .padding()
+                    }
                     
                     Text(tutorialSteps[currentStep].title)
                         .font(.custom("Marker Felt", size: 24))
@@ -264,180 +284,4 @@ struct TutorialStep {
     let title: String
     let description: String
     let image: String
-}
-
-struct TermsOfServiceView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                // Background color matching the app
-                Color(red: 0.86, green: 0.75, blue: 0.6)
-                    .ignoresSafeArea()
-                    .overlay(
-                        Image(systemName: "circle.grid.cross.fill")
-                            .foregroundColor(.brown.opacity(0.1))
-                            .font(.system(size: 20))
-                    )
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Terms of Service")
-                            .font(.custom("Marker Felt", size: 24))
-                            .foregroundColor(.black)
-                        
-                        Text("Last updated: March 2025")
-                            .font(.custom("Marker Felt", size: 14))
-                            .foregroundColor(.gray)
-                        
-                        Text("Welcome to Word Vault! By using our app, you agree to these terms.")
-                            .font(.custom("Marker Felt", size: 16))
-                            .foregroundColor(.black)
-                        
-                        Group {
-                            Text("1. Acceptance of Terms")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("By accessing and using Word Vault, you accept and agree to be bound by the terms and provision of this agreement.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                            
-                            Text("2. Use License")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("Permission is granted to temporarily download one copy of Word Vault for personal, non-commercial use only.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                            
-                            Text("3. Disclaimer")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("The materials on Word Vault are provided on an 'as is' basis. Word Vault makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(Color.white.opacity(0.8))
-                            .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .stroke(Color.black, lineWidth: 2)
-                            )
-                            .padding()
-                    )
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { 
-                        dismiss() 
-                    }
-                    .font(.custom("Marker Felt", size: 16))
-                    .foregroundColor(.black)
-                }
-                
-                ToolbarItem(placement: .principal) {
-                    Text("Terms of Service")
-                        .font(.custom("Marker Felt", size: 20))
-                        .foregroundColor(.black)
-                }
-            }
-        }
-    }
-}
-
-struct PrivacyPolicyView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                // Background color matching the app
-                Color(red: 0.86, green: 0.75, blue: 0.6)
-                    .ignoresSafeArea()
-                    .overlay(
-                        Image(systemName: "circle.grid.cross.fill")
-                            .foregroundColor(.brown.opacity(0.1))
-                            .font(.system(size: 20))
-                    )
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Privacy Policy")
-                            .font(.custom("Marker Felt", size: 24))
-                            .foregroundColor(.black)
-                        
-                        Text("Last updated: March 2025")
-                            .font(.custom("Marker Felt", size: 14))
-                            .foregroundColor(.gray)
-                        
-                        Text("Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.")
-                            .font(.custom("Marker Felt", size: 16))
-                            .foregroundColor(.black)
-                        
-                        Group {
-                            Text("1. Information Collection")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("We collect information that you provide directly to us when using Word Vault, including words, phrases, and notes you save.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                            
-                            Text("2. Data Storage")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("All your data is stored locally on your device. We do not store any personal information on our servers.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                            
-                            Text("3. Third-Party Services")
-                                .font(.custom("Marker Felt", size: 18))
-                                .foregroundColor(.black)
-                            
-                            Text("We use third-party services for dictionary definitions. These services may collect usage data according to their own privacy policies.")
-                                .font(.custom("Marker Felt", size: 16))
-                                .foregroundColor(.black)
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(Color.white.opacity(0.8))
-                            .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .stroke(Color.black, lineWidth: 2)
-                            )
-                            .padding()
-                    )
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { 
-                        dismiss() 
-                    }
-                    .font(.custom("Marker Felt", size: 16))
-                    .foregroundColor(.black)
-                }
-                
-                ToolbarItem(placement: .principal) {
-                    Text("Privacy Policy")
-                        .font(.custom("Marker Felt", size: 20))
-                        .foregroundColor(.black)
-                }
-            }
-        }
-    }
 }

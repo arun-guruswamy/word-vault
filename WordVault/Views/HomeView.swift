@@ -13,12 +13,12 @@ struct CustomSegmentedControl: UIViewRepresentable {
         // Customize appearance
         control.backgroundColor = .clear
         control.setTitleTextAttributes([
-            .font: UIFont(name: "BradleyHandITCTT-Bold", size: 16) ?? .systemFont(ofSize: 16),
+            .font: UIFont(name: "Marker Felt", size: 16) ?? .systemFont(ofSize: 16),
             .foregroundColor: UIColor.black
         ], for: .normal)
         
         control.setTitleTextAttributes([
-            .font: UIFont(name: "BradleyHandITCTT-Bold", size: 16) ?? .systemFont(ofSize: 16),
+            .font: UIFont(name: "Marker Felt", size: 16) ?? .systemFont(ofSize: 16),
             .foregroundColor: UIColor.black
         ], for: .selected)
         
@@ -66,7 +66,8 @@ struct HomeView: View {
     @State private var searchConfidentWords: Bool?
     @State private var collectionToEdit: Collection?
     @FocusState private var isSearchFocused: Bool
-    
+    @State private var isPremiumViewPresented = false // State for premium modal
+
     init() {
         // Initialize sortOptions based on defaultSortOrder
         let initialSortOption: SortOption
@@ -190,6 +191,16 @@ struct HomeView: View {
         selectedCollectionName ?? "Word Vault"
     }
     
+    func onAddClick() {
+        let totalItemCount = words.count + phrases.count
+
+        if totalItemCount >= 50 {
+            isPremiumViewPresented = true
+        } else {
+            isAddWordPresented = true
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -216,12 +227,14 @@ struct HomeView: View {
                                         .font(.title2)
                                         .foregroundColor(.black)
                                 }
-                                // Just to keep title in center
-                                Image(systemName: "brain.head.profile")
-                                    .font(.title2)
-                                    .foregroundColor(.clear)
+                                // Premium Button
+                                Button(action: { isPremiumViewPresented = true }) {
+                                    Image(systemName: "sparkles")
+                                        .font(.title2)
+                                        .foregroundColor(.black)
+                                }
                             }
-                            
+
                             Spacer()
                             
                             Text(currentCollectionName)
@@ -304,14 +317,14 @@ struct HomeView: View {
                                 // Subfilter buttons
                                 HStack {
                                     Text("Show: ")
-                                        .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                        .font(.custom("Marker Felt", size: 16))
                                         .foregroundColor(.brown)
                                     
                                     Button(action: { 
                                         searchConfidentWords = nil
                                     }) {
                                         Text("All Words")
-                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .font(.custom("Marker Felt", size: 16))
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 6)
                                             .background(searchConfidentWords == nil ? Color.blue : Color.clear)
@@ -323,7 +336,7 @@ struct HomeView: View {
                                         searchConfidentWords = true
                                     }) {
                                         Text("Confident")
-                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .font(.custom("Marker Felt", size: 16))
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 6)
                                             .background(searchConfidentWords == true ? Color.green : Color.clear)
@@ -335,7 +348,7 @@ struct HomeView: View {
                                         searchConfidentWords = false
                                     }) {
                                         Text("Learning")
-                                            .font(.custom("BradleyHandITCTT-Bold", size: 16))
+                                            .font(.custom("Marker Felt", size: 16))
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 6)
                                             .background(searchConfidentWords == false ? Color.orange : Color.clear)
@@ -435,7 +448,7 @@ struct HomeView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            Button(action: { isAddWordPresented = true }) {
+                            Button(action: onAddClick) {
                                 Image(systemName: "plus")
                                     .font(.title)
                                     .foregroundColor(.black)
@@ -616,7 +629,11 @@ struct HomeView: View {
             .sheet(item: $collectionToEdit) { collection in
                 AddCollectionView(mode: .edit(collection))
             }
+            .sheet(isPresented: $isPremiumViewPresented) { // Add sheet for PremiumView
+                PremiumView()
+            }
         }
+        .accentColor(.black) // Set back button color to black
     }
 }
 

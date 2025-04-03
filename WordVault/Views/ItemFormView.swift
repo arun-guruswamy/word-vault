@@ -289,6 +289,7 @@ struct ItemFormView: View {
         // Check for duplicates first
         let existingWords = Word.fetchAll(modelContext: modelContext)
         let existingPhrases = Phrase.fetchAll(modelContext: modelContext)
+        let trimmedItemText = itemText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         // Check for duplicates (case-insensitive), excluding the current item being edited
         let isDuplicateWord = existingWords.contains { word in
@@ -300,7 +301,7 @@ struct ItemFormView: View {
             if case .editWord(let currentWord) = mode, word.id == currentWord.id && word.wordText.lowercased() == itemText.lowercased() {
                 return false
             }
-            return word.wordText.lowercased() == itemText.lowercased()
+            return word.wordText.lowercased() == trimmedItemText.lowercased()
         }
         
         let isDuplicatePhrase = existingPhrases.contains { phrase in
@@ -312,21 +313,21 @@ struct ItemFormView: View {
             if case .editPhrase(let currentPhrase) = mode, phrase.id == currentPhrase.id && phrase.phraseText.lowercased() == itemText.lowercased() {
                 return false
             }
-            return phrase.phraseText.lowercased() == itemText.lowercased()
+            return phrase.phraseText.lowercased() == trimmedItemText.lowercased()
         }
         
         if isDuplicateWord || isDuplicatePhrase {
-            print("Duplicate item found: \(itemText)")
+            print("Duplicate item found: \(trimmedItemText)")
             showingDuplicateAlert = true
             return false
         }
         
         switch mode {
         case .add:
-            if isPhrase(itemText) {
+            if isPhrase(trimmedItemText) {
                 // Create and save phrase using PhraseService
                 let newPhrase = PhraseService.shared.createPhrase(
-                    text: itemText,
+                    text: trimmedItemText,
                     notes: notes,
                     isFavorite: isFavorite,
                     collectionNames: Array(selectedCollectionNames)
@@ -337,7 +338,7 @@ struct ItemFormView: View {
             } else {
                 // Create and save word using WordService
                 let newWord = await WordService.shared.createWord(
-                    text: itemText,
+                    text: trimmedItemText,
                     notes: notes,
                     isFavorite: isFavorite,
                     isConfident: isConfident,
@@ -349,9 +350,9 @@ struct ItemFormView: View {
             }
             
         case .editWord(let word):
-            if itemText != word.wordText {
+            if trimmedItemText != word.wordText {
                 // Update word text first
-                word.wordText = itemText
+                word.wordText = trimmedItemText
                 word.meanings = []
                 word.audioURL = nil
                 try? modelContext.save()
@@ -370,8 +371,8 @@ struct ItemFormView: View {
             return true
             
         case .editPhrase(let phrase):
-            if itemText != phrase.phraseText {
-                phrase.phraseText = itemText
+            if trimmedItemText != phrase.phraseText {
+                phrase.phraseText = trimmedItemText
                 // Update fun opinion in background
                 Task {
                     await PhraseService.shared.populatePhraseContent(phrase, modelContext: modelContext)

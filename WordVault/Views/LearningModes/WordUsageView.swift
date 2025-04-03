@@ -10,7 +10,6 @@ struct WordUsageView: View {
     @State private var isEvaluating = false
     @State private var evaluationResult: String?
     @State private var feedbackCategory: FeedbackCategory?
-    @State private var showMissingWordAlert = false
     @State private var searchText = ""
     
     var filteredWords: [Word] {
@@ -96,6 +95,7 @@ struct WordUsageView: View {
                 }
             }
         }
+        .accentColor(.black) // Set back button color to black
     }
     
     private func wordUsageView(word: Word) -> some View {
@@ -147,12 +147,6 @@ struct WordUsageView: View {
                     .font(.custom("Marker Felt", size: 20))
                     .foregroundColor(.black)
             }
-        }
-        .alert("Missing Word", isPresented: $showMissingWordAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("Your sentence doesn't include the word '\(word.wordText)'. Please make sure to use the word in your sentence.")
-                .font(.custom("BradleyHandITCTT-Bold", size: 14))
         }
         .id(word.id)  // Add a stable ID to prevent recreation
         .onAppear {
@@ -284,14 +278,10 @@ struct WordUsageView: View {
     @ViewBuilder
     private func submitButton(currentWord: Word) -> some View {
         Button("Submit") {
-            if containsWord(sentence: userSentence, word: currentWord.wordText) {
-                Task {
-                    isEvaluating = true
-                    evaluationResult = await evaluateSentence(word: currentWord.wordText, sentence: userSentence)
-                    isEvaluating = false
-                }
-            } else {
-                showMissingWordAlert = true
+            Task {
+                isEvaluating = true
+                evaluationResult = await evaluateSentence(word: currentWord.wordText, sentence: userSentence)
+                isEvaluating = false
             }
         }
         .font(.custom("Marker Felt", size: 16))
@@ -310,32 +300,20 @@ struct WordUsageView: View {
         .disabled(userSentence.isEmpty || isEvaluating)
     }
     
-    private func containsWord(sentence: String, word: String) -> Bool {
-        // Convert both to lowercase for case-insensitive comparison
-        let sentenceLower = sentence.lowercased()
-        let wordLower = word.lowercased()
-        
-        // Split the sentence into words
-        let words = sentenceLower.components(separatedBy: .whitespacesAndNewlines)
-            .map { $0.trimmingCharacters(in: .punctuationCharacters) }
-            .filter { !$0.isEmpty }
-        
-        // Check if the word is in the sentence
-        return words.contains(wordLower)
-    }
-    
     private func evaluateSentence(word: String, sentence: String) async -> String {
         do {
             let message = """
             As a language expert, evaluate if the word "\(word)" is used correctly in this sentence:
             "\(sentence)"
             
-            BE VERY CONCISE in your feedback. Provide no more than 2-3 short sentences focusing only on the most important points.
+            BE VERY CONCISE in your feedback. Provide no more than 2-3 short sentences focusing only on the most important points. Any tenses or derivations of the word are acceptable.
             
             First, quickly determine if the usage is:
             1. Correct and appropriate
             2. Somewhat correct but could be improved
-            3. Incorrect or inappropriate
+            3. Incorrect or inappropriate or word was not used at all in an form.
+
+            But don't include this determination in your response.
             
             Then provide your brief feedback focusing on the most important issue.
             
@@ -358,7 +336,7 @@ struct WordUsageView: View {
             } else if responseText.contains("CATEGORY: NEEDS_IMPROVEMENT") {
                 self.feedbackCategory = .needsImprovement
             } else {
-                self.feedbackCategory = .good // Default if no category found
+                self.feedbackCategory = .needsImprovement // Default if no category found
             }
             
             // Remove the category from the displayed text
@@ -371,4 +349,4 @@ struct WordUsageView: View {
             return "Error evaluating the sentence."
         }
     }
-} 
+}

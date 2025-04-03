@@ -14,8 +14,9 @@ struct WordDetailsView: View {
     @State private var audioPlayer: AVAudioPlayer?
     @State private var isPlaying: Bool = false
     @State private var isLoadingAudio: Bool = false
+    @State private var isRefreshingDetails: Bool = false
     @State private var selectedTab = 0
-    
+
     // Group meanings by part of speech
     private var groupedMeanings: [String: [Word.WordMeaning]] {
         Dictionary(grouping: word.meanings) { $0.partOfSpeech }
@@ -295,12 +296,37 @@ struct WordDetailsView: View {
             }
         }
     }
+
+    private func refreshDetails() async {
+        isRefreshingDetails = true
+        await WordService.shared.refreshWordDetails(word, modelContext: modelContext)
+        isRefreshingDetails = false
+    }
     
     // MARK: - Component Views
     
     // Meanings section view
     private var meaningsSectionView: some View {
         VStack(alignment: .leading, spacing: 24) {
+            HStack {
+                Spacer()
+
+                Button(action: {
+                    Task {
+                        await refreshDetails()
+                    }
+                }) {
+                    if isRefreshingDetails {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(.black)
+                    }
+                }
+                .disabled(isRefreshingDetails)
+            }
+
             ForEach(Array(groupedMeanings.keys.sorted()), id: \.self) { partOfSpeech in
                 if let meanings = groupedMeanings[partOfSpeech] {
                     VStack(alignment: .leading, spacing: 16) {
@@ -309,9 +335,9 @@ struct WordDetailsView: View {
                             Text(partOfSpeech.capitalized)
                                 .font(.custom("Marker Felt", size: 22))
                                 .foregroundColor(.black)
-                            
+
                             Spacer()
-                            
+
                             Text("\(meanings.count) \(meanings.count == 1 ? "meaning" : "meanings")")
                                 .font(.custom("Marker Felt", size: 14))
                                 .foregroundColor(.black.opacity(0.6))
@@ -322,7 +348,7 @@ struct WordDetailsView: View {
                                         .fill(Color.brown.opacity(0.2))
                                 )
                         }
-                        
+
                         // Meanings
                         ForEach(meanings.indices, id: \.self) { index in
                             meaningCardView(meaning: meanings[index], index: index)
@@ -361,60 +387,58 @@ struct WordDetailsView: View {
             
             // Synonyms and Antonyms
             if !meaning.synonyms.isEmpty || !meaning.antonyms.isEmpty {
-                HStack(alignment: .top, spacing: 16) {
-                    // Synonyms
-                    if !meaning.synonyms.isEmpty {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Synonyms")
-                                .font(.custom("Marker Felt", size: 14))
-                                .foregroundColor(.brown)
-                            
-                            FlowLayout(spacing: 4) {
-                                ForEach(meaning.synonyms, id: \.self) { synonym in
-                                    Text(synonym)
-                                        .font(.custom("Marker Felt", size: 12))
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 3)
-                                                .fill(Color.green.opacity(0.1))
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 3)
-                                                        .stroke(Color.green.opacity(0.3), lineWidth: 1)
-                                                )
-                                        )
-                                }
+                // Synonyms
+                if !meaning.synonyms.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Synonyms")
+                            .font(.custom("Marker Felt", size: 14))
+                            .foregroundColor(.brown)
+                        
+                        FlowLayout(spacing: 4) {
+                            ForEach(meaning.synonyms, id: \.self) { synonym in
+                                Text(synonym)
+                                    .font(.custom("Marker Felt", size: 12))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 3)
+                                            .fill(Color.green.opacity(0.1))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .stroke(Color.green.opacity(0.3), lineWidth: 1)
+                                            )
+                                    )
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    
-                    // Antonyms
-                    if !meaning.antonyms.isEmpty {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Antonyms")
-                                .font(.custom("Marker Felt", size: 14))
-                                .foregroundColor(.brown)
-                            
-                            FlowLayout(spacing: 4) {
-                                ForEach(meaning.antonyms, id: \.self) { antonym in
-                                    Text(antonym)
-                                        .font(.custom("Marker Felt", size: 12))
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 3)
-                                                .fill(Color.red.opacity(0.1))
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 3)
-                                                        .stroke(Color.red.opacity(0.3), lineWidth: 1)
-                                                )
-                                        )
-                                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                // Antonyms
+                if !meaning.antonyms.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Antonyms")
+                            .font(.custom("Marker Felt", size: 14))
+                            .foregroundColor(.brown)
+                        
+                        FlowLayout(spacing: 4) {
+                            ForEach(meaning.antonyms, id: \.self) { antonym in
+                                Text(antonym)
+                                    .font(.custom("Marker Felt", size: 12))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 3)
+                                            .fill(Color.red.opacity(0.1))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
+                                            )
+                                    )
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -433,9 +457,30 @@ struct WordDetailsView: View {
     // Empty state view
     private var emptyStateView: some View {
         VStack(spacing: 16) {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 50))
-                .foregroundColor(.brown)
+            HStack(alignment: .top) {
+                Spacer()
+                
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 50))
+                    .foregroundColor(.brown)
+                
+                Spacer()
+                
+                Button(action: {
+                    Task {
+                        await refreshDetails()
+                    }
+                }) {
+                    if isRefreshingDetails {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(.black)
+                    }
+                }
+                .disabled(isRefreshingDetails)
+            }
             
             Text("No definitions available")
                 .font(.custom("Marker Felt", size: 18))

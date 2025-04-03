@@ -67,6 +67,50 @@ class WordService {
             print("WordService: Error populating word content: \(error)")
         }
     }
+
+    func refreshWordDetails(_ word: Word, modelContext: ModelContext? = nil) async {
+        print("WordService: Refreshing details for word: \(word.wordText)")
+        do {
+            // Fetch only definition and audio
+            var meanings: [Word.WordMeaning] = []
+            var audioURL: String? = nil
+
+            print("WordService: Fetching dictionary definition for refresh: \(word.wordText)")
+            if let entry = try? await DictionaryService.shared.fetchDefinition(for: word.wordText) {
+                print("WordService: Successfully fetched definition for refresh with \(entry.meanings.count) meanings")
+                meanings = entry.meanings.map { meaning in
+                    Word.WordMeaning(
+                        partOfSpeech: meaning.partOfSpeech,
+                        definition: meaning.definition,
+                        example: meaning.example,
+                        synonyms: meaning.synonyms,
+                        antonyms: meaning.antonyms
+                    )
+                }
+                audioURL = entry.audioURL
+            } else {
+                print("WordService: Failed to fetch dictionary definition for refresh: \(word.wordText)")
+            }
+
+            // Update the model on the main thread
+            await MainActor.run {
+                print("WordService: Updating word model with refreshed details (\(meanings.count) meanings)")
+                word.meanings = meanings
+                word.audioURL = audioURL
+                
+                // Save if context provided
+                if let context = modelContext {
+                    print("WordService: Saving refreshed word details to database")
+                    try? context.save()
+                    print("WordService: Refreshed word details saved successfully")
+                } else {
+                    print("WordService: No context provided, skipping save after refresh")
+                }
+            }
+        } catch {
+            print("WordService: Error refreshing word details: \(error)")
+        }
+    }
     
     @MainActor
     func saveWord(_ word: Word, modelContext: ModelContext) async {
@@ -81,4 +125,4 @@ class WordService {
             print("WordService: Background task completed")
         }
     }
-} 
+}

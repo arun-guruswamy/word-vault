@@ -54,16 +54,16 @@ func fetchFunFact(for word: String) async -> String {
 func fetchFunOpinion(for phrase: String) async -> String {
     do {
         let message = """
-        As the mysterious Vault Overlord, share your unique perspective on the phrase "\(phrase)".
-        Be dramatic, witty, and slightly theatrical in your response.
+        Share your perspective on the phrase "\(phrase)".
         If the phrase is interesting, share an unexpected insight or a thought-provoking observation.
+        If the phrase is a popular quote referenced from somew media or person then point out its origin.
         If the phrase is mundane or unclear, respond with playful sarcasm or mockery.
-        Keep it concise but entertaining, and maintain your overlord persona throughout.
+        Keep it concise but entertaining.
         """
         let response = try await chat.sendMessage(message)
         return response.text ?? "No response received"
     } catch {
         print(error)
-        return "The Overlord is currently preoccupied with more important matters."
+        return "The Vault Overlord is currently preoccupied with more important matters."
     }
 }

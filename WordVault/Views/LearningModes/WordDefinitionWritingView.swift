@@ -95,6 +95,7 @@ struct WordDefinitionWritingView: View {
                 }
             }
         }
+        .accentColor(.black) // Set back button color to black
     }
     
     private func wordDefinitionView(word: Word) -> some View {
@@ -301,6 +302,8 @@ struct WordDefinitionWritingView: View {
             1. Accurate and complete
             2. Somewhat accurate but missing elements
             3. Inaccurate or off-target
+
+            But don't include this determination in your response.
             
             Then provide your brief feedback focusing on the most important issue.
             
@@ -323,7 +326,7 @@ struct WordDefinitionWritingView: View {
             } else if responseText.contains("CATEGORY: NEEDS_IMPROVEMENT") {
                 self.feedbackCategory = .needsImprovement
             } else {
-                self.feedbackCategory = .good // Default if no category found
+                self.feedbackCategory = .needsImprovement // Default if no category found
             }
             
             // Remove the category from the displayed text
@@ -336,4 +339,4 @@ struct WordDefinitionWritingView: View {
             return "Error evaluating the definition."
         }
     }
-} 
+}
