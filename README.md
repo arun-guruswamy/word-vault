@@ -2,15 +2,15 @@
 
 To do list:
 P7:
-- Provide option to link words
+- Block adding words through sharing at 50
+- Provide option to link words 
 - Make body text font style more readable
-- Connect paywall to payment options in app store 
-- Block adding words through sharing at 50 
-- Add secret content easter eggs
-- Add loading image 
-- Add app icon 
 - Ensure UI responsiveness across many different devices
 - Resolve warnings
+- Add loading image 
+- Add app icon 
+- Add secret content easter eggs
+- Connect paywall to payment options in app store
 
 Possible features later:
 - Word of the day

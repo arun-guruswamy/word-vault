@@ -73,9 +73,9 @@ public class DictionaryService {
             Guidelines:
             - Use contemporary, everyday language that feels natural
             - Create a sentence that clearly demonstrates the meaning
+            - Be sure to use "\(word)" in the sentence
             - Keep it concise (ideally 10-15 words)
             - Make it memorable and relatable
-            - Do NOT use the word "\(word)" in the definition of itself
             - Respond with ONLY the example sentence and nothing else
             
             Example sentence:

@@ -104,13 +104,40 @@ class ShareViewController: SLComposeServiceViewController {
             
             let context = modelContainer.mainContext
             
+            // Fetch existing words and phrases to check item count
+            let existingWords = Word.fetchAll(modelContext: context)
+            let existingPhrases = Phrase.fetchAll(modelContext: context)
+            let totalItemCount = existingWords.count + existingPhrases.count
+            
+            if totalItemCount >= 50 {
+                print("Item limit reached. Cannot save new item.")
+                return // Skip saving if item limit is reached
+            }
+            
+            let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            // Check for duplicates (case-insensitive)
+            let isDuplicateWord = existingWords.contains { word in
+                word.wordText.lowercased() == trimmedText.lowercased()
+            }
+            
+            let isDuplicatePhrase = existingPhrases.contains { phrase in
+                phrase.phraseText.lowercased() == trimmedText.lowercased()
+            }
+            
+            if isDuplicateWord || isDuplicatePhrase {
+                print("Duplicate item found: \(trimmedText)")
+                // Handle duplicate (e.g., show an alert, skip saving)
+                return // Skip saving if duplicate
+            }
+            
             // Determine if text is a word or phrase
-            let isPhrase = text.split(separator: " ").count > 1
+            let isPhrase = trimmedText.split(separator: " ").count > 1
             
             if isPhrase {
                 // Create and save a phrase using the service
-                print("Creating phrase from text: \(text)")
-                let phrase = PhraseService.shared.createPhrase(text: text)
+                print("Creating phrase from text: \(trimmedText)")
+                let phrase = PhraseService.shared.createPhrase(text: trimmedText)
                 await PhraseService.shared.savePhrase(phrase, modelContext: context)
                 print("Saved text as Phrase: \(phrase.phraseText)")
                 
@@ -118,8 +145,8 @@ class ShareViewController: SLComposeServiceViewController {
                 await PhraseService.shared.populatePhraseContent(phrase, modelContext: context)
             } else {
                 // Create and save a word using the service
-                print("Creating word from text: \(text)")
-                let word = await WordService.shared.createWord(text: text)
+                print("Creating word from text: \(trimmedText)")
+                let word = await WordService.shared.createWord(text: trimmedText)
                 await WordService.shared.saveWord(word, modelContext: context)
                 print("Saved text as Word: \(word.wordText)")
                 
