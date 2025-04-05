@@ -67,6 +67,7 @@ struct HomeView: View {
     @State private var collectionToEdit: Collection?
     @FocusState private var isSearchFocused: Bool
     @State private var isPremiumViewPresented = false // State for premium modal
+    @State private var wordToNavigateTo: Word? = nil // Changed for word-only navigation
 
     init() {
         // Initialize sortOptions based on defaultSortOrder
@@ -621,9 +622,11 @@ struct HomeView: View {
                 AddCollectionView(mode: .add)
             }
             .sheet(item: $selectedWord) { word in
-                WordDetailsView(word: word)
+                // Pass callback to handle navigation requests
+                WordDetailsView(word: word, navigateTo: handleNavigationRequest)
             }
             .sheet(item: $selectedPhrase) { phrase in
+                // Phrases no longer need the navigateTo callback
                 PhraseDetailsView(phrase: phrase)
             }
             .sheet(item: $collectionToEdit) { collection in
@@ -632,8 +635,28 @@ struct HomeView: View {
             .sheet(isPresented: $isPremiumViewPresented) { // Add sheet for PremiumView
                 PremiumView()
             }
+            // Handle navigation requests from WordDetailsView
+            .onChange(of: wordToNavigateTo) { _, newWord in
+                if let newWord = newWord {
+                    // Dismiss current sheet first
+                    selectedWord = nil
+                    selectedPhrase = nil // Ensure phrase sheet is also dismissed if open
+
+                    // Short delay to allow dismissal animation
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        selectedWord = newWord
+                        // Reset wordToNavigateTo after handling
+                        wordToNavigateTo = nil
+                    }
+                }
+            }
         }
         .accentColor(.black) // Set back button color to black
+    }
+
+    // Callback function for WordDetailsView to request navigation
+    private func handleNavigationRequest(word: Word) {
+        wordToNavigateTo = word
     }
 }
 

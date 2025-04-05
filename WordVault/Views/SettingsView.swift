@@ -132,7 +132,7 @@ struct TutorialView: View {
         ),
         TutorialStep(
             title: "Adding Words or Phrases in the app",
-            description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.\nThe app automatically distinguishes between words and phrases based on whether there are any space separated characters are in your input.",
+            description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.\n\nThe app automatically distinguishes between words and phrases based on whether there are any space separated characters in your input.",
             image: "plus.circle.fill"
         ),
         TutorialStep(
@@ -146,8 +146,13 @@ struct TutorialView: View {
             image: "text.book.closed.fill"
         ),
         TutorialStep(
+            title: "Interacting with Words",
+        description: "Words can be marked as favorite or confident by clicking the respective toggle buttons underneath the word",
+            image: "WordTitle"
+        ),
+        TutorialStep(
             title: "Phrase Details",
-        description: "Tap any phrase to view any personal notes you recorded, and an AI's interpretation of the phrase's meaning and potential significance!",
+        description: "Tap a phrase to view any personal notes you recorded, and an AI's interpretation of the phrase's meaning and potential significance!",
             image: "text.book.closed.fill"
         ),
         TutorialStep(
@@ -159,6 +164,11 @@ struct TutorialView: View {
             title: "Learning Words",
             description: "Use the brain icon to access learning modes. Practice writing definitions or using the words in sentences and get AI feedback to improve your understanding. Once you are confident with a word, you can mark that you are confident in it!",
             image: "brain.head.profile"
+        ),
+        TutorialStep(
+            title: "Linking Words",
+            description: "Connect related words! In a word's detail view, go to the 'Links' tab and tap 'Manage Links' to manage connections to other words.",
+            image: "link"
         ),
         TutorialStep(
             title: "Enjoy trying out the app!",
@@ -182,7 +192,15 @@ struct TutorialView: View {
                 VStack(spacing: 30) {
                     if (tutorialSteps[currentStep].title == "Adding Words or Phrases from other apps") {
                         Image(tutorialSteps[currentStep].image)
-                            .resizable() // Make the image resizable
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(10)
+                            .foregroundColor(.brown)
+                            .padding()
+                    }
+                    else if (tutorialSteps[currentStep].title == "Interacting with Words") {
+                        Image(tutorialSteps[currentStep].image)
+                            .resizable()
                             .scaledToFit()
                             .cornerRadius(10)
                             .foregroundColor(.brown)
@@ -201,7 +219,7 @@ struct TutorialView: View {
                         .multilineTextAlignment(.center)
                     
                     Text(tutorialSteps[currentStep].description)
-                        .font(.custom("Marker Felt", size: 16))
+                        .font(.custom("Inter-Regular", size: 16))
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)

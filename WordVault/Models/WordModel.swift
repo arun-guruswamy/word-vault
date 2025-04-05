@@ -14,6 +14,7 @@ final class Word {
     var isConfident: Bool
     var funFact: String
     var audioURL: String?
+    var linkedItemIDs: [UUID] // Added for linking
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
@@ -43,6 +44,7 @@ final class Word {
         self.isConfident = false
         self.funFact = ""
         self.audioURL = nil
+        self.linkedItemIDs = [] // Initialize as empty
     }
 }
 
@@ -96,4 +98,4 @@ extension Word {
         )
         return (try? modelContext.fetch(descriptor)) ?? []
     }
-} 
+}

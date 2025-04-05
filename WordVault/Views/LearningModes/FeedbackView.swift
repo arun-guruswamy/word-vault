@@ -59,11 +59,11 @@ struct FeedbackView: View {
                         // Evaluation content
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Detailed Feedback:")
-                                .font(.custom("Marker Felt", size: 16))
+                                .font(.custom("Marker Felt", size: 20))
                                 .foregroundColor(category.color)
                             
                             Markdown(evaluation)
-                                .font(.custom("BradleyHandITCTT-Bold", size: 14))
+                                .font(.custom("Inter-Regular", size: 14))
                                 .foregroundColor(.black)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(nil)

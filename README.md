@@ -2,15 +2,14 @@
 
 To do list:
 P7:
-- Block adding words through sharing at 50
-- Provide option to link words 
-- Make body text font style more readable
 - Ensure UI responsiveness across many different devices
 - Resolve warnings
 - Add loading image 
 - Add app icon 
+- Check 50 word block
 - Add secret content easter eggs
 - Connect paywall to payment options in app store
+- Make app aware of version/edition it is on
 
 Possible features later:
 - Word of the day

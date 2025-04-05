@@ -5,6 +5,7 @@ import MarkdownUI
 
 struct PhraseDetailsView: View {
     let phrase: Phrase
+    // Removed navigateTo callback
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isEditPresented = false
@@ -12,8 +13,9 @@ struct PhraseDetailsView: View {
     @State private var errorMessage: String?
     @State private var selectedTab = 0
     
-    // Tab titles
+    // Tab titles - Removed "Linked Items"
     private let tabs = ["Notes", "Overlord's Opinion"]
+    // Removed isManageLinksPresented state
     
     var body: some View {
         NavigationStack {
@@ -85,6 +87,7 @@ struct PhraseDetailsView: View {
         .sheet(isPresented: $isEditPresented) {
             ItemFormView(mode: .editPhrase(phrase))
         }
+        // Removed sheet for ManageLinksView
         .task {
             if phrase.funOpinion.isEmpty {
                 phrase.funOpinion = await fetchFunOpinion(for: phrase.phraseText)
@@ -207,6 +210,7 @@ struct PhraseDetailsView: View {
             else if selectedTab == 1 {
                 opinionView
             }
+            // Removed Linked Items tab case
         }
     }
     
@@ -348,4 +352,5 @@ struct PhraseDetailsView: View {
                 )
         )
     }
-} 
+    // Removed linkedItemsView
+}

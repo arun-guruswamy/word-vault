@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ACB8CE502DA03F3F001ECA50 /* InterVariable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */; };
+		ACB8CE522DA04135001ECA50 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */; };
+		ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */; };
+		ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */; };
+		ACB8CE582DA04861001ECA50 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */; };
 		C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */; };
 		C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */; };
 		C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */; };
@@ -54,6 +59,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = InterVariable.ttf; sourceTree = "<group>"; };
+		ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
+		ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Bold.ttf"; sourceTree = "<group>"; };
+		ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
+		ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
 		C737EE1C2D85029400DC5168 /* WordVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE2E2D85029500DC5168 /* WordVaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE382D85029500DC5168 /* WordVaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -154,7 +164,7 @@
 				C737EE1E2D85029400DC5168 /* WordVault */,
 				F7FCE1752D8951C50032C827 /* WordVaultShareExtension */,
 				C737EE1D2D85029400DC5168 /* Products */,
-				C737EF202D959C9E00DC5168 /* bradley-hand-2 */,
+				C737EF202D959C9E00DC5168 /* fonts */,
 			);
 			sourceTree = "<group>";
 		};
@@ -169,13 +179,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C737EF202D959C9E00DC5168 /* bradley-hand-2 */ = {
+		C737EF202D959C9E00DC5168 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
+				ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */,
+				ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */,
 				C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */,
 				C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */,
+				ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */,
+				ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */,
+				ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */,
 			);
-			path = "bradley-hand-2";
+			path = fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,7 +343,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */,
+				ACB8CE582DA04861001ECA50 /* Inter-Regular.ttf in Resources */,
 				C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */,
+				ACB8CE522DA04135001ECA50 /* Inter-Medium.ttf in Resources */,
+				ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */,
+				ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */,
+				ACB8CE502DA03F3F001ECA50 /* InterVariable.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

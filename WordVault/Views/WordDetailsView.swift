@@ -6,6 +6,7 @@ import AVFoundation
 
 struct WordDetailsView: View {
     let word: Word
+    var navigateTo: ((Word) -> Void)? // Changed to expect Word
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isEditPresented = false
@@ -16,14 +17,16 @@ struct WordDetailsView: View {
     @State private var isLoadingAudio: Bool = false
     @State private var isRefreshingDetails: Bool = false
     @State private var selectedTab = 0
-
+    
     // Group meanings by part of speech
     private var groupedMeanings: [String: [Word.WordMeaning]] {
         Dictionary(grouping: word.meanings) { $0.partOfSpeech }
     }
     
     // Tab titles
-    private let tabs = ["Meanings", "Notes", "Fun Fact"]
+    private let tabs = ["Meanings", "Notes", "Fun Fact", "Links"] // Shortened label
+    @State private var isManageLinksPresented = false // State to present ManageLinksView
+    @Query(sort: \Word.wordText) private var allWords: [Word] // Query for linked items view
     
     var body: some View {
         NavigationStack {
@@ -94,6 +97,9 @@ struct WordDetailsView: View {
         }
         .sheet(isPresented: $isEditPresented) {
             ItemFormView(mode: .editWord(word))
+        }
+        .sheet(isPresented: $isManageLinksPresented) { // Sheet for ManageLinksView
+            ManageLinksView(word: word) // Pass the Word object directly
         }
     }
     
@@ -294,9 +300,13 @@ struct WordDetailsView: View {
             else if selectedTab == 2 {
                 funFactView
             }
+            // Linked Items tab
+            else if selectedTab == 3 {
+                linkedItemsView
+            }
         }
     }
-
+    
     private func refreshDetails() async {
         isRefreshingDetails = true
         await WordService.shared.refreshWordDetails(word, modelContext: modelContext)
@@ -310,7 +320,7 @@ struct WordDetailsView: View {
         VStack(alignment: .leading, spacing: 24) {
             HStack {
                 Spacer()
-
+                
                 Button(action: {
                     Task {
                         await refreshDetails()
@@ -326,7 +336,7 @@ struct WordDetailsView: View {
                 }
                 .disabled(isRefreshingDetails)
             }
-
+            
             ForEach(Array(groupedMeanings.keys.sorted()), id: \.self) { partOfSpeech in
                 if let meanings = groupedMeanings[partOfSpeech] {
                     VStack(alignment: .leading, spacing: 16) {
@@ -335,9 +345,9 @@ struct WordDetailsView: View {
                             Text(partOfSpeech.capitalized)
                                 .font(.custom("Marker Felt", size: 22))
                                 .foregroundColor(.black)
-
+                            
                             Spacer()
-
+                            
                             Text("\(meanings.count) \(meanings.count == 1 ? "meaning" : "meanings")")
                                 .font(.custom("Marker Felt", size: 14))
                                 .foregroundColor(.black.opacity(0.6))
@@ -348,7 +358,7 @@ struct WordDetailsView: View {
                                         .fill(Color.brown.opacity(0.2))
                                 )
                         }
-
+                        
                         // Meanings
                         ForEach(meanings.indices, id: \.self) { index in
                             meaningCardView(meaning: meanings[index], index: index)
@@ -364,7 +374,7 @@ struct WordDetailsView: View {
     private func meaningCardView(meaning: Word.WordMeaning, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("\(index + 1). \(meaning.definition)")
-                .font(.custom("Marker Felt", size: 16))
+                .font(.custom("Inter-Medium", size: 16))
                 .foregroundColor(.black)
                 .fixedSize(horizontal: false, vertical: true)
             
@@ -376,7 +386,7 @@ struct WordDetailsView: View {
                         .foregroundColor(.brown)
                     
                     Text("\"\(example)\"")
-                        .font(.custom("Marker Felt", size: 14))
+                        .font(.custom("Inter-Medium", size: 14))
                         .italic()
                         .foregroundColor(.black.opacity(0.7))
                         .padding(.leading, 8)
@@ -550,9 +560,6 @@ struct WordDetailsView: View {
             } else {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Image(systemName: "note.text")
-                            .foregroundColor(.brown)
-                        
                         Text("Personal Notes")
                             .font(.custom("Marker Felt", size: 20))
                             .foregroundColor(.black)
@@ -566,7 +573,7 @@ struct WordDetailsView: View {
                     }
                     
                     Text(word.notes)
-                        .font(.custom("Marker Felt", size: 16))
+                        .font(.custom("Inter-Regular", size: 16))
                         .foregroundColor(.black)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -626,7 +633,7 @@ struct WordDetailsView: View {
                 .padding()
             } else {
                 Markdown(word.funFact)
-                    .font(.custom("Marker Felt", size: 16))
+                    .font(.custom("Inter-Regular", size: 16))
                     .foregroundColor(.black)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -675,10 +682,72 @@ struct WordDetailsView: View {
         
         isLoadingAudio = false
     }
+    
+    // Linked Items View
+    private var linkedItemsView: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Linked Words")
+                    .font(.custom("Marker Felt", size: 20))
+                    .foregroundColor(.black)
+                Spacer()
+                Button("Manage Links") {
+                    isManageLinksPresented = true
+                }
+                .font(.custom("Marker Felt", size: 16))
+                .foregroundColor(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.blue)
+                )
+            }
+            
+            // Filter the queried words to find linked ones
+            let linkedWords = allWords.filter { word.linkedItemIDs.contains($0.id) }
+            
+            if linkedWords.isEmpty {
+                Text("No words linked yet.")
+                    .font(.custom("Marker Felt", size: 16))
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding()
+            } else {
+                ForEach(linkedWords) { linkedWord in
+                    Button(action: {
+                        // Use the callback to request navigation
+                        navigateTo?(linkedWord)
+                    }) {
+                        HStack {
+                            Text(linkedWord.wordText)
+                                .font(.custom("Marker Felt", size: 16))
+                                .foregroundColor(.black)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color.white.opacity(0.9))
+                                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .stroke(Color.black, lineWidth: 1)
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain) // Use plain style for list buttons
+                }
+            }
+        }
+        .padding()
+    }
 }
 
 // MARK: - FlowLayout
-struct FlowLayout: Layout {
+struct FlowLayout: Layout { // Removed the extra closing brace here
     var alignment: HorizontalAlignment = .leading
     var spacing: CGFloat = 8
     
