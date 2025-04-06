@@ -32,6 +32,7 @@ final class Word {
         }
     }
     
+    @MainActor // Explicitly mark initializer as MainActor
     init(wordText: String) async {
         // Initialize all properties
         self.id = UUID()

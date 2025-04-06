@@ -202,6 +202,10 @@ struct HomeView: View {
         }
     }
     
+    func isDeviceAniPad_SwiftUI() -> Bool {
+        return UIDevice.current.userInterfaceIdiom == .pad
+    }
+    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -263,7 +267,8 @@ struct HomeView: View {
                         }
                         .padding(.top, geometry.size.height * 0.05)
                         .padding(.horizontal)
-                        .frame(height: geometry.size.height * 0.12)
+                        .frame(height: isDeviceAniPad_SwiftUI() ? geometry.size.height * 0.09 : geometry.size.height * 0.12)
+                        
                         .background(
                             ZStack {
                                 Color.white
@@ -360,7 +365,7 @@ struct HomeView: View {
                                 .padding(.horizontal)
                             }
                         }
-                        .padding(.top, -geometry.size.height * 0.035)
+                        .padding(.top, isDeviceAniPad_SwiftUI() ? 0 : -geometry.size.height * 0.035)
                         .padding(.bottom, geometry.size.height * 0.02)
                         
                         // Updated Search Bar

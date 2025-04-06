@@ -2,8 +2,7 @@
 
 To do list:
 P7:
-- Ensure UI responsiveness across many different devices
-- Resolve warnings
+- Create new project for API key
 - Add loading image 
 - Add app icon 
 - Check 50 word block

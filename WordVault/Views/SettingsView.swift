@@ -147,7 +147,7 @@ struct TutorialView: View {
         ),
         TutorialStep(
             title: "Interacting with Words",
-        description: "Words can be marked as favorite or confident by clicking the respective toggle buttons underneath the word",
+        description: "Words can be marked as favorite or confident by clicking the respective toggle buttons underneath the word. Click on the speaker icon to hear the word's pronounciation! (If phone is not on silent)",
             image: "WordTitle"
         ),
         TutorialStep(

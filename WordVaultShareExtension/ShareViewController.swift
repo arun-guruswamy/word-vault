@@ -138,26 +138,27 @@ class ShareViewController: SLComposeServiceViewController {
                 // Create and save a phrase using the service
                 print("Creating phrase from text: \(trimmedText)")
                 let phrase = PhraseService.shared.createPhrase(text: trimmedText)
-                await PhraseService.shared.savePhrase(phrase, modelContext: context)
+                PhraseService.shared.savePhrase(phrase, modelContext: context) // Removed await
                 print("Saved text as Phrase: \(phrase.phraseText)")
-                
-                // Manually populate phrase content to ensure it's completed
-                await PhraseService.shared.populatePhraseContent(phrase, modelContext: context)
+                // Content population (fun opinion) is now handled within savePhrase
             } else {
                 // Create and save a word using the service
                 print("Creating word from text: \(trimmedText)")
-                let word = await WordService.shared.createWord(text: trimmedText)
-                await WordService.shared.saveWord(word, modelContext: context)
-                print("Saved text as Word: \(word.wordText)")
-                
-                // Manually populate word content to ensure it's completed
-                await WordService.shared.populateWordContent(word, modelContext: context)
-                
-                // Print confirmation with meanings count to verify data was saved
-                if !word.meanings.isEmpty {
-                    print("Word saved with \(word.meanings.count) meanings")
+                if let wordToSave = await WordService.shared.createWord(text: trimmedText) {
+                    WordService.shared.saveWord(wordToSave, modelContext: context) // Pass unwrapped word, removed await
+                    print("Saved text as Word: \(wordToSave.wordText)")
+                    
+                    // Content population is handled within saveWord, check might be premature here
+                    // Consider removing this check or adjusting logic if needed after testing
+                    // This check might still report empty meanings as population happens async after saveWord returns
+                    if !wordToSave.meanings.isEmpty { 
+                        print("Word saved with \(wordToSave.meanings.count) meanings (Note: may be checked before async population completes)")
+                    } else {
+                        print("Warning: Word meanings may be empty - dictionary fetch likely in progress")
+                    }
                 } else {
-                    print("Warning: Word meanings may be empty - dictionary fetch in progress")
+                    print("Error: Failed to create word instance in Share Extension.")
+                    // Decide if we should still call context.save() or return/throw
                 }
             }
             

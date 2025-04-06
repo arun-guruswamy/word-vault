@@ -333,7 +333,7 @@ struct ItemFormView: View {
                     collectionNames: Array(selectedCollectionNames)
                 )
                 
-                await PhraseService.shared.savePhrase(newPhrase, modelContext: modelContext)
+                PhraseService.shared.savePhrase(newPhrase, modelContext: modelContext) // Removed await
                 return true
             } else {
                 // Create and save word using WordService
@@ -345,8 +345,15 @@ struct ItemFormView: View {
                     collectionNames: Array(selectedCollectionNames)
                 )
                 
-                await WordService.shared.saveWord(newWord, modelContext: modelContext)
-                return true
+                // Safely unwrap the optional Word before saving
+                if let wordToSave = newWord {
+                    WordService.shared.saveWord(wordToSave, modelContext: modelContext) // Pass unwrapped word
+                    return true
+                } else {
+                    // Handle case where word creation failed (though unlikely with current setup)
+                    print("Error: Failed to create word instance.")
+                    return false 
+                }
             }
             
         case .editWord(let word):
@@ -371,14 +378,14 @@ struct ItemFormView: View {
             return true
             
         case .editPhrase(let phrase):
+            // If text changed, update it and trigger savePhrase to handle potential fun opinion update
             if trimmedItemText != phrase.phraseText {
                 phrase.phraseText = trimmedItemText
-                // Update fun opinion in background
-                Task {
-                    await PhraseService.shared.populatePhraseContent(phrase, modelContext: modelContext)
-                }
+                // Calling savePhrase will save the text change and trigger the fun opinion update task
+                PhraseService.shared.savePhrase(phrase, modelContext: modelContext)
             }
             
+            // Update other properties regardless of text change
             phrase.notes = notes
             phrase.isFavorite = isFavorite
             phrase.collectionNames = Array(selectedCollectionNames)

@@ -35,7 +35,7 @@ struct WordDetailsView: View {
     }
     
     // MARK: - Main Content Views
-    
+
     private var mainContentView: some View {
         ZStack {
             // Cork board background
@@ -59,6 +59,9 @@ struct WordDetailsView: View {
                 }
                 .background(Color.white.opacity(0.6))
             }
+        }
+        .onAppear {
+            checkForMissingExamplesAndRefresh()
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -318,36 +321,19 @@ struct WordDetailsView: View {
     // Meanings section view
     private var meaningsSectionView: some View {
         VStack(alignment: .leading, spacing: 24) {
-            HStack {
-                Spacer()
-                
-                Button(action: {
-                    Task {
-                        await refreshDetails()
-                    }
-                }) {
-                    if isRefreshingDetails {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                    } else {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(.black)
-                    }
-                }
-                .disabled(isRefreshingDetails)
-            }
-            
+            // Header and Divider removed
+
             ForEach(Array(groupedMeanings.keys.sorted()), id: \.self) { partOfSpeech in
                 if let meanings = groupedMeanings[partOfSpeech] {
                     VStack(alignment: .leading, spacing: 16) {
                         // Part of speech header
                         HStack {
                             Text(partOfSpeech.capitalized)
-                                .font(.custom("Marker Felt", size: 22))
+                                .font(.custom("Marker Felt", size: 20)) // Slightly smaller to differentiate from main header
                                 .foregroundColor(.black)
-                            
+
                             Spacer()
-                            
+
                             Text("\(meanings.count) \(meanings.count == 1 ? "meaning" : "meanings")")
                                 .font(.custom("Marker Felt", size: 14))
                                 .foregroundColor(.black.opacity(0.6))
@@ -651,8 +637,9 @@ struct WordDetailsView: View {
     }
     
     private func playAudio(from urlString: String) async {
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
+        // Check if the URL string is valid, but don't assign the URL variable if not needed
+        guard URL(string: urlString) != nil else {
+            print("Invalid URL string: \(urlString)")
             return
         }
         
@@ -744,10 +731,29 @@ struct WordDetailsView: View {
         }
         .padding()
     }
+
+    // MARK: - Helper Functions
+
+    private func checkForMissingExamplesAndRefresh() {
+        // Trigger refresh if meanings are empty OR if any example is missing
+        let needsRefresh = word.meanings.isEmpty || word.meanings.contains { $0.example == "No example available" }
+
+        if needsRefresh {
+            print("WordDetailsView: Meanings empty or missing examples detected for '\(word.wordText)', triggering refresh.")
+            Task {
+                // Use the state variable to prevent multiple simultaneous refreshes if needed
+                // Although onAppear usually runs once, complex navigation might trigger it again.
+                // Adding a check against isRefreshingDetails might be prudent if issues arise.
+                await refreshDetails()
+            }
+        } else {
+             print("WordDetailsView: Meanings are present and no missing examples found for '\(word.wordText)'.")
+        }
+    }
 }
 
 // MARK: - FlowLayout
-struct FlowLayout: Layout { // Removed the extra closing brace here
+struct FlowLayout: Layout {
     var alignment: HorizontalAlignment = .leading
     var spacing: CGFloat = 8
     

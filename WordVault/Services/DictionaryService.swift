@@ -77,7 +77,7 @@ public class DictionaryService {
             - Keep it concise (ideally 10-15 words)
             - Make it memorable and relatable
             - Respond with ONLY the example sentence and nothing else
-            - If you cant think of example, just state No example available
+            - If you cant think of example, just state Could not come up with an example
             
             Example sentence:
             """
