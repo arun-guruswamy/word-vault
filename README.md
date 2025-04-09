@@ -1,9 +1,7 @@
-### WordVault is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
+### WordLocker is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
 
 To do list:
 P7:
-- Add loading image 
-- Add app icon
 - Add secret content easter eggs
 - Publish App
 
@@ -15,7 +13,7 @@ Monetization update:
 Possible features later:
 - Word of the day
 - Additional learning modes (mix and match, crossword) etc.
-- Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should provide option to disable spelling check in settings)
+- Add Siri integration, store word when user says "Hey Siri, word Locker <insert word>". Siri double checks spelling with user and asks confirmation (Should provide option to disable spelling check in settings)
 - Different Languages
 - Consider phrasal words
 - Word stats
@@ -30,7 +28,7 @@ don't remove any comments.
 
 SwiftUI Project structure: 
 
-The main folder contains a "WordVault" folder with "App" for main files, "Views" for all the frontend views, and "Shared" for reusable components and modifiers. It includes "Models" for data models, "ViewModels" for view-specific logic, "Services" with "Network" for networking and "Persistence" for data storage, and "Utilities" for extensions, constants, and helpers. The "Assets" folder for images and colors. Lastly, the "Tests" folder includes files for unit tests adn UI tests.
+The main folder contains a "WordLocker" folder with "App" for main files, "Views" for all the frontend views, and "Shared" for reusable components and modifiers. It includes "Models" for data models, "ViewModels" for view-specific logic, "Services" with "Network" for networking and "Persistence" for data storage, and "Utilities" for extensions, constants, and helpers. The "Assets" folder for images and colors. Lastly, the "Tests" folder includes files for unit tests adn UI tests.
 
 SwiftUI UI Design Rules:
 

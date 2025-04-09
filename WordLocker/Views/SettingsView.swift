@@ -171,8 +171,8 @@ struct TutorialView: View {
             image: "link"
         ),
         TutorialStep(
-            title: "Enjoy trying out the app!",
-            description: "The app is free to use for storing up to 50 words or phrases after which you can buy a monthly, annual or lifetime subscription of the app to get access to storing unlimited words!",
+            title: "Hope you enjoy using the app!",
+            description: "",
             image: "sparkles"
         )
     ]

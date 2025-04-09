@@ -1,0 +1,827 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ACB8CE502DA03F3F001ECA50 /* InterVariable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */; };
+		ACB8CE522DA04135001ECA50 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */; };
+		ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */; };
+		ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */; };
+		ACB8CE582DA04861001ECA50 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */; };
+		ACB8CE5A2DA31351001ECA50 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */; };
+		C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */; };
+		C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */; };
+		C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */; };
+		F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = F7465CD32D8D938300C815DB /* GoogleGenerativeAI */; };
+		F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */; };
+		F7FCE17E2D8951C50032C827 /* WordLockerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7FCE1742D8951C50032C827 /* WordLockerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C737EE2F2D85029500DC5168 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C737EE142D85029400DC5168 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C737EE1B2D85029400DC5168;
+			remoteInfo = WordLocker;
+		};
+		C737EE392D85029500DC5168 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C737EE142D85029400DC5168 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C737EE1B2D85029400DC5168;
+			remoteInfo = WordLocker;
+		};
+		F7FCE17C2D8951C50032C827 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C737EE142D85029400DC5168 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7FCE1732D8951C50032C827;
+			remoteInfo = WordLockerShareExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F7FCE1832D8951C50032C827 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F7FCE17E2D8951C50032C827 /* WordLockerShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = InterVariable.ttf; sourceTree = "<group>"; };
+		ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
+		ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Bold.ttf"; sourceTree = "<group>"; };
+		ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
+		ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
+		ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		C737EE1C2D85029400DC5168 /* WordLocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordLocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C737EE2E2D85029500DC5168 /* WordLockerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordLockerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C737EE382D85029500DC5168 /* WordLockerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordLockerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BradleyHandITCTT-Bold.ttf"; sourceTree = "<group>"; };
+		C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bradleys Pen.ttf"; sourceTree = "<group>"; };
+		F7FCE1742D8951C50032C827 /* WordLockerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WordLockerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C737EF242D959CFE00DC5168 /* Exceptions for "WordLocker" folder in "WordLocker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C737EE1B2D85029400DC5168 /* WordLocker */;
+		};
+		F71C78F42D89849E0043EBC8 /* Exceptions for "WordLocker" folder in "WordLockerShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/CollectionModel.swift,
+				Models/PhraseModel.swift,
+				Models/SortOption.swift,
+				Models/WordModel.swift,
+				Services/DictionaryService.swift,
+				Services/GeminiAPI.swift,
+				Services/PhraseService.swift,
+				Services/WordService.swift,
+			);
+			target = F7FCE1732D8951C50032C827 /* WordLockerShareExtension */;
+		};
+		F7FCE17F2D8951C50032C827 /* Exceptions for "WordLockerShareExtension" folder in "WordLockerShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F7FCE1732D8951C50032C827 /* WordLockerShareExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C737EE1E2D85029400DC5168 /* WordLocker */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C737EF242D959CFE00DC5168 /* Exceptions for "WordLocker" folder in "WordLocker" target */,
+				F71C78F42D89849E0043EBC8 /* Exceptions for "WordLocker" folder in "WordLockerShareExtension" target */,
+			);
+			path = WordLocker;
+			sourceTree = "<group>";
+		};
+		F7FCE1752D8951C50032C827 /* WordLockerShareExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F7FCE17F2D8951C50032C827 /* Exceptions for "WordLockerShareExtension" folder in "WordLockerShareExtension" target */,
+			);
+			path = WordLockerShareExtension;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C737EE192D85029400DC5168 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7465CD42D8D938300C815DB /* GoogleGenerativeAI in Frameworks */,
+				F7AFC1E42D8ECF0F00BFE10F /* MarkdownUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE2B2D85029500DC5168 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE352D85029500DC5168 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7FCE1712D8951C50032C827 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C737EE132D85029400DC5168 = {
+			isa = PBXGroup;
+			children = (
+				ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */,
+				C737EE1E2D85029400DC5168 /* WordLocker */,
+				F7FCE1752D8951C50032C827 /* WordLockerShareExtension */,
+				C737EE1D2D85029400DC5168 /* Products */,
+				C737EF202D959C9E00DC5168 /* fonts */,
+			);
+			sourceTree = "<group>";
+		};
+		C737EE1D2D85029400DC5168 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C737EE1C2D85029400DC5168 /* WordLocker.app */,
+				C737EE2E2D85029500DC5168 /* WordLockerTests.xctest */,
+				C737EE382D85029500DC5168 /* WordLockerUITests.xctest */,
+				F7FCE1742D8951C50032C827 /* WordLockerShareExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C737EF202D959C9E00DC5168 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */,
+				ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */,
+				C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */,
+				C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */,
+				ACB8CE4F2DA03F3F001ECA50 /* InterVariable.ttf */,
+				ACB8CE512DA04135001ECA50 /* Inter-Medium.ttf */,
+				ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C737EE1B2D85029400DC5168 /* WordLocker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C737EE422D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLocker" */;
+			buildPhases = (
+				C737EE182D85029400DC5168 /* Sources */,
+				C737EE192D85029400DC5168 /* Frameworks */,
+				C737EE1A2D85029400DC5168 /* Resources */,
+				F7FCE1832D8951C50032C827 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F7FCE17D2D8951C50032C827 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C737EE1E2D85029400DC5168 /* WordLocker */,
+			);
+			name = WordLocker;
+			packageProductDependencies = (
+				F7465CD32D8D938300C815DB /* GoogleGenerativeAI */,
+				F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */,
+			);
+			productName = WordLocker;
+			productReference = C737EE1C2D85029400DC5168 /* WordLocker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C737EE2D2D85029500DC5168 /* WordLockerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C737EE452D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLockerTests" */;
+			buildPhases = (
+				C737EE2A2D85029500DC5168 /* Sources */,
+				C737EE2B2D85029500DC5168 /* Frameworks */,
+				C737EE2C2D85029500DC5168 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C737EE302D85029500DC5168 /* PBXTargetDependency */,
+			);
+			name = WordLockerTests;
+			packageProductDependencies = (
+			);
+			productName = WordLockerTests;
+			productReference = C737EE2E2D85029500DC5168 /* WordLockerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C737EE372D85029500DC5168 /* WordLockerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C737EE482D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLockerUITests" */;
+			buildPhases = (
+				C737EE342D85029500DC5168 /* Sources */,
+				C737EE352D85029500DC5168 /* Frameworks */,
+				C737EE362D85029500DC5168 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C737EE3A2D85029500DC5168 /* PBXTargetDependency */,
+			);
+			name = WordLockerUITests;
+			packageProductDependencies = (
+			);
+			productName = WordLockerUITests;
+			productReference = C737EE382D85029500DC5168 /* WordLockerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		F7FCE1732D8951C50032C827 /* WordLockerShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F7FCE1802D8951C50032C827 /* Build configuration list for PBXNativeTarget "WordLockerShareExtension" */;
+			buildPhases = (
+				F7FCE1702D8951C50032C827 /* Sources */,
+				F7FCE1712D8951C50032C827 /* Frameworks */,
+				F7FCE1722D8951C50032C827 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F7FCE1752D8951C50032C827 /* WordLockerShareExtension */,
+			);
+			name = WordLockerShareExtension;
+			packageProductDependencies = (
+				C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */,
+			);
+			productName = WordLockerShareExtension;
+			productReference = F7FCE1742D8951C50032C827 /* WordLockerShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C737EE142D85029400DC5168 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					C737EE1B2D85029400DC5168 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					C737EE2D2D85029500DC5168 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = C737EE1B2D85029400DC5168;
+					};
+					C737EE372D85029500DC5168 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = C737EE1B2D85029400DC5168;
+					};
+					F7FCE1732D8951C50032C827 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = C737EE172D85029400DC5168 /* Build configuration list for PBXProject "WordLocker" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C737EE132D85029400DC5168;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+				F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C737EE1D2D85029400DC5168 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C737EE1B2D85029400DC5168 /* WordLocker */,
+				C737EE2D2D85029500DC5168 /* WordLockerTests */,
+				C737EE372D85029500DC5168 /* WordLockerUITests */,
+				F7FCE1732D8951C50032C827 /* WordLockerShareExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C737EE1A2D85029400DC5168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */,
+				ACB8CE582DA04861001ECA50 /* Inter-Regular.ttf in Resources */,
+				C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */,
+				ACB8CE522DA04135001ECA50 /* Inter-Medium.ttf in Resources */,
+				ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */,
+				ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */,
+				ACB8CE502DA03F3F001ECA50 /* InterVariable.ttf in Resources */,
+				ACB8CE5A2DA31351001ECA50 /* Launch Screen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE2C2D85029500DC5168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE362D85029500DC5168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7FCE1722D8951C50032C827 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C737EE182D85029400DC5168 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE2A2D85029500DC5168 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C737EE342D85029500DC5168 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7FCE1702D8951C50032C827 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C737EE302D85029500DC5168 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C737EE1B2D85029400DC5168 /* WordLocker */;
+			targetProxy = C737EE2F2D85029500DC5168 /* PBXContainerItemProxy */;
+		};
+		C737EE3A2D85029500DC5168 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C737EE1B2D85029400DC5168 /* WordLocker */;
+			targetProxy = C737EE392D85029500DC5168 /* PBXContainerItemProxy */;
+		};
+		F7FCE17D2D8951C50032C827 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F7FCE1732D8951C50032C827 /* WordLockerShareExtension */;
+			targetProxy = F7FCE17C2D8951C50032C827 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C737EE402D85029500DC5168 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C737EE412D85029500DC5168 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C737EE432D85029500DC5168 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WordLocker/WordLocker.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WordLocker/Preview Content\"";
+				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordLocker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C737EE442D85029500DC5168 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WordLocker/WordLocker.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WordLocker/Preview Content\"";
+				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordLocker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C737EE462D85029500DC5168 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordLockerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordLocker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordLocker";
+			};
+			name = Debug;
+		};
+		C737EE472D85029500DC5168 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordLockerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordLocker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordLocker";
+			};
+			name = Release;
+		};
+		C737EE492D85029500DC5168 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordLockerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WordLocker;
+			};
+			name = Debug;
+		};
+		C737EE4A2D85029500DC5168 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Arun.WordLockerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WordLocker;
+			};
+			name = Release;
+		};
+		F7FCE1812D8951C50032C827 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WordLockerShareExtension/WordLockerShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordLockerShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker.WordLockerShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F7FCE1822D8951C50032C827 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WordLockerShareExtension/WordLockerShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WordLockerShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker.WordLockerShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C737EE172D85029400DC5168 /* Build configuration list for PBXProject "WordLocker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C737EE402D85029500DC5168 /* Debug */,
+				C737EE412D85029500DC5168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C737EE422D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLocker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C737EE432D85029500DC5168 /* Debug */,
+				C737EE442D85029500DC5168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C737EE452D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLockerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C737EE462D85029500DC5168 /* Debug */,
+				C737EE472D85029500DC5168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C737EE482D85029500DC5168 /* Build configuration list for PBXNativeTarget "WordLockerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C737EE492D85029500DC5168 /* Debug */,
+				C737EE4A2D85029500DC5168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F7FCE1802D8951C50032C827 /* Build configuration list for PBXNativeTarget "WordLockerShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F7FCE1812D8951C50032C827 /* Debug */,
+				F7FCE1822D8951C50032C827 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google-gemini/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+		F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+		F7465CD32D8D938300C815DB /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7465CD22D8D933300C815DB /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+		F7AFC1E32D8ECF0F00BFE10F /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7AFC1E22D8ECF0F00BFE10F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C737EE142D85029400DC5168 /* Project object */;
+}
