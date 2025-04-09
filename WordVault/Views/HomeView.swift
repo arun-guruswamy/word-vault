@@ -189,17 +189,19 @@ struct HomeView: View {
     }
     
     var currentCollectionName: String {
-        selectedCollectionName ?? "Word Vault"
+        selectedCollectionName ?? "Word Locker"
     }
     
     func onAddClick() {
-        let totalItemCount = words.count + phrases.count
-
-        if totalItemCount >= 50 {
-            isPremiumViewPresented = true
-        } else {
-            isAddWordPresented = true
-        }
+//        let totalItemCount = words.count + phrases.count
+//
+//        if totalItemCount >= 50 {
+//            isPremiumViewPresented = true
+//        } else {
+//            isAddWordPresented = true
+//        }
+        
+        isAddWordPresented = true
     }
     
     func isDeviceAniPad_SwiftUI() -> Bool {
@@ -233,11 +235,11 @@ struct HomeView: View {
                                         .foregroundColor(.black)
                                 }
                                 // Premium Button
-                                Button(action: { isPremiumViewPresented = true }) {
+//                                Button(action: { isPremiumViewPresented = true }) {
                                     Image(systemName: "sparkles")
                                         .font(.title2)
-                                        .foregroundColor(.black)
-                                }
+                                        .foregroundColor(.clear)
+//                                }
                             }
 
                             Spacer()
@@ -637,9 +639,9 @@ struct HomeView: View {
             .sheet(item: $collectionToEdit) { collection in
                 AddCollectionView(mode: .edit(collection))
             }
-            .sheet(isPresented: $isPremiumViewPresented) { // Add sheet for PremiumView
-                PremiumView()
-            }
+//            .sheet(isPresented: $isPremiumViewPresented) { // Add sheet for PremiumView
+//                PremiumView()
+//            }
             // Handle navigation requests from WordDetailsView
             .onChange(of: wordToNavigateTo) { _, newWord in
                 if let newWord = newWord {

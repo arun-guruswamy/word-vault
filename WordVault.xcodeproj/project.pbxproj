@@ -12,6 +12,7 @@
 		ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */; };
 		ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */; };
 		ACB8CE582DA04861001ECA50 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */; };
+		ACB8CE5A2DA31351001ECA50 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */; };
 		C737EEAF2D93470700DC5168 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = C737EEAE2D93470700DC5168 /* GoogleGenerativeAI */; };
 		C737EF212D959C9E00DC5168 /* Bradleys Pen.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1F2D959C9E00DC5168 /* Bradleys Pen.ttf */; };
 		C737EF222D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C737EF1E2D959C9E00DC5168 /* BradleyHandITCTT-Bold.ttf */; };
@@ -47,14 +48,14 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		F7FCE1832D8951C50032C827 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
 				F7FCE17E2D8951C50032C827 /* WordVaultShareExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -64,6 +65,7 @@
 		ACB8CE532DA0434B001ECA50 /* Inter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Bold.ttf"; sourceTree = "<group>"; };
 		ACB8CE552DA0455A001ECA50 /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
 		ACB8CE572DA04861001ECA50 /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
+		ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		C737EE1C2D85029400DC5168 /* WordVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE2E2D85029500DC5168 /* WordVaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C737EE382D85029500DC5168 /* WordVaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordVaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +163,7 @@
 		C737EE132D85029400DC5168 = {
 			isa = PBXGroup;
 			children = (
+				ACB8CE592DA31350001ECA50 /* Launch Screen.storyboard */,
 				C737EE1E2D85029400DC5168 /* WordVault */,
 				F7FCE1752D8951C50032C827 /* WordVaultShareExtension */,
 				C737EE1D2D85029400DC5168 /* Products */,
@@ -349,6 +352,7 @@
 				ACB8CE562DA0455A001ECA50 /* Inter-ExtraBold.ttf in Resources */,
 				ACB8CE542DA0434B001ECA50 /* Inter-Bold.ttf in Resources */,
 				ACB8CE502DA03F3F001ECA50 /* InterVariable.ttf in Resources */,
+				ACB8CE5A2DA31351001ECA50 /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,7 +564,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -569,7 +573,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -593,7 +597,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -602,7 +606,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordVault";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

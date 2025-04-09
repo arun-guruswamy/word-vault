@@ -12,5 +12,7 @@
 		<string>BradleyHandITCTT-Bold</string>
 		<string>Bradleys Pen</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>

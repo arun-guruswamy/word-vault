@@ -64,6 +64,6 @@ func fetchFunOpinion(for phrase: String) async -> String {
         return response.text ?? "No response received"
     } catch {
         print(error)
-        return "The Vault Overlord is currently preoccupied with more important matters."
+        return "The Locker Overlord is currently preoccupied with more important matters."
     }
 }

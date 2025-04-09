@@ -1,0 +1,32 @@
+{
+  "images" : [
+    {
+      "filename" : "ChatGPT Image Apr 6, 2025, 02_38_47 PM.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 512,
+          "top" : 510
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile"
+        },
+        "mode" : "3-part-vertical"
+      },
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

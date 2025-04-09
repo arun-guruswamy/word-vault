@@ -60,7 +60,7 @@ class ShareViewController: SLComposeServiceViewController {
         print("View did load")
         
         // Set the title and placeholder text
-        self.title = "Add to Word Vault"
+        self.title = "Add to Word Locker"
         self.placeholder = "Add a word or phrase"
         
         // Change "Post" button to "Add"
@@ -109,10 +109,10 @@ class ShareViewController: SLComposeServiceViewController {
             let existingPhrases = Phrase.fetchAll(modelContext: context)
             let totalItemCount = existingWords.count + existingPhrases.count
             
-            if totalItemCount >= 50 {
-                print("Item limit reached. Cannot save new item.")
-                return // Skip saving if item limit is reached
-            }
+//            if totalItemCount >= 50 {
+//                print("Item limit reached. Cannot save new item.")
+//                return // Skip saving if item limit is reached
+//            }
             
             let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
             

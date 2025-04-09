@@ -22,7 +22,7 @@ struct PremiumView: View {
                             .foregroundColor(.brown)
                             .padding(.top, 40)
 
-                        Text("Unlock Word Vault Premium")
+                        Text("Unlock Word Locker Premium")
                             .font(.custom("Marker Felt", size: 24))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)

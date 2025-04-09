@@ -302,7 +302,7 @@ struct PhraseDetailsView: View {
                 Image(systemName: "crown.fill")
                     .foregroundColor(.purple)
                 
-                Text("Vault Overlord's Opinion")
+                Text("Locker Overlord's Opinion")
                     .font(.custom("Marker Felt", size: 20))
                     .foregroundColor(.black)
                 

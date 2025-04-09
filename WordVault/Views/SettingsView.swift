@@ -126,8 +126,8 @@ struct TutorialView: View {
     
     let tutorialSteps = [
         TutorialStep(
-            title: "Welcome to Word Vault",
-            description: "Let's learn how to use Word Vault to build your vocabulary and store your favorite words or phrases!",
+            title: "Welcome to Word Locker",
+            description: "Let's learn how to use Word Locker to build your vocabulary and store your favorite words or phrases!",
             image: "book.fill"
         ),
         TutorialStep(
@@ -137,7 +137,7 @@ struct TutorialView: View {
         ),
         TutorialStep(
             title: "Adding Words or Phrases from other apps",
-            description: "You can also add words or phrases by highlighting them in other apps, and then sharing to the Word Vault app. The app automatically stores the text shared",
+            description: "You can also add words or phrases by highlighting them in other apps, and then sharing to the Word Locker app. The app automatically stores the text shared",
             image: "shareWord"
         ),
         TutorialStep(

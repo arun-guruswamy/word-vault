@@ -2,13 +2,15 @@
 
 To do list:
 P7:
-- Create new project for API key
 - Add loading image 
-- Add app icon 
-- Check 50 word block
+- Add app icon
 - Add secret content easter eggs
+- Publish App
+
+Monetization update:
+- Uncomment premium view
 - Connect paywall to payment options in app store
-- Make app aware of version/edition it is on
+- Make app aware of version/edition it is on, and check paywall appropriately
 
 Possible features later:
 - Word of the day
@@ -16,6 +18,7 @@ Possible features later:
 - Add Siri integration, store word when user says "Hey Siri, word vault <insert word>". Siri double checks spelling with user and asks confirmation (Should provide option to disable spelling check in settings)
 - Different Languages
 - Consider phrasal words
+- Word stats
 
 
 ## Cursor Rules
