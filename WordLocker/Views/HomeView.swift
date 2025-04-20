@@ -1,5 +1,11 @@
 import SwiftUI
 import SwiftData
+// Import services for direct adding
+import Foundation // For UUID
+import Combine // If needed for debouncing or other async ops
+
+// Assuming WordService and PhraseService are accessible
+// If not, ensure they are properly imported or available globally/via environment
 
 struct CustomSegmentedControl: UIViewRepresentable {
     @Binding var selection: Int
@@ -68,6 +74,12 @@ struct HomeView: View {
     @FocusState private var isSearchFocused: Bool
     @State private var isPremiumViewPresented = false // State for premium modal
     @State private var wordToNavigateTo: Word? = nil // Changed for word-only navigation
+    @State private var showAddOption: Bool = false // State to control showing the "Add" option
+
+    // Debouncer for search text to avoid rapid updates
+    @State private var searchTextDebounced = ""
+    private let searchDebouncer = PassthroughSubject<String, Never>()
+
 
     init() {
         // Initialize sortOptions based on defaultSortOrder
@@ -94,14 +106,16 @@ struct HomeView: View {
     struct Item: Identifiable {
         let id: UUID
         let text: String
-        let notes: String
-        let isFavorite: Bool
-        let isConfident: Bool
-        let createdAt: Date
-        let isPhrase: Bool
+        let notes: String? // Make optional for AddItem
+        let isFavorite: Bool? // Make optional for AddItem
+        let isConfident: Bool? // Make optional for AddItem
+        let createdAt: Date? // Make optional for AddItem
+        let isPhrase: Bool? // Make optional for AddItem
         let word: Word?
         let phrase: Phrase?
-        
+        let isAddItemPlaceholder: Bool // Flag for the special "Add" item
+
+        // Initializer for existing Word
         init(word: Word) {
             self.id = word.id
             self.text = word.wordText
@@ -112,8 +126,10 @@ struct HomeView: View {
             self.isPhrase = false
             self.word = word
             self.phrase = nil
+            self.isAddItemPlaceholder = false
         }
-        
+
+        // Initializer for existing Phrase
         init(phrase: Phrase) {
             self.id = phrase.id
             self.text = phrase.phraseText
@@ -124,79 +140,108 @@ struct HomeView: View {
             self.isPhrase = true
             self.word = nil
             self.phrase = phrase
+            self.isAddItemPlaceholder = false
         }
-    }
-    
-    var filteredItems: [Item] {
-        let words = if let collectionName = selectedCollectionName {
-            if collectionName == "Favorites" {
-                Word.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-                    .filter { $0.isFavorite }
-            } else {
-                Word.fetchWordsInCollection(collectionName: collectionName, modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-            }
-        } else {
-            Word.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-        }
-        
-        let phrases = if let collectionName = selectedCollectionName {
-            if collectionName == "Favorites" {
-                Phrase.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-                    .filter { $0.isFavorite }
-            } else {
-                Phrase.fetchPhrasesInCollection(collectionName: collectionName, modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-            }
-        } else {
-            Phrase.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false))
-        }
-        
-        // Convert to Items and combine
-        var items = words.map { Item(word: $0) } + phrases.map { Item(phrase: $0) }
-        
-        // Apply search filter if needed
-        if !searchText.isEmpty {
-            items = items.filter { item in
-                item.text.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-        
-        // Apply item type filter
-        switch itemFilter {
-        case .all:
-            break // Show everything
-        case .words:
-            items = items.filter { !$0.isPhrase } // First filter to words
-            
-            // Apply confidence subfilter if set
-            if let isConfident = searchConfidentWords {
-                items = items.filter { $0.isConfident == isConfident }
-            }
-        case .phrases:
-            items = items.filter { $0.isPhrase }
-        }
-        
-        // Sort based on current sort option
-        switch sortOptions.first {
-        case .dateAdded(let ascending):
-            items.sort { ascending ? $0.createdAt < $1.createdAt : $0.createdAt > $1.createdAt }
-        case .alphabetically(let ascending):
-            items.sort { ascending ? $0.text < $1.text : $0.text > $1.text }
-        case .none:
-            break
-        }
-        
-        // --- Filter out predefined items ONLY for the "All" view ---
-        let hiddenTag = "_predefined_secret_"
-        if selectedCollectionName == nil {
-            items = items.filter { item in
-                let names = item.isPhrase ? item.phrase?.collectionNames : item.word?.collectionNames
-                return !(names?.contains(hiddenTag) ?? false)
-            }
-        }
-        // --- End filter ---
 
-        return items
+        // Initializer for the "Add Item" placeholder
+        init(addItemPlaceholder text: String) {
+            self.id = UUID() // Unique ID for the placeholder
+            self.text = text // Will be like "Add '[searchText]'"
+            self.notes = nil
+            self.isFavorite = nil
+            self.isConfident = nil
+            self.createdAt = nil
+            self.isPhrase = nil // Type determined on add
+            self.word = nil
+            self.phrase = nil
+            self.isAddItemPlaceholder = true
+        }
     }
+
+    // Computed property for filtered items including the "Add" option
+    var displayedItems: [Item] {
+        // --- Start Filtering Logic ---
+        let baseWords = if let collectionName = selectedCollectionName {
+            if collectionName == "Favorites" {
+                Word.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Use actual words query
+                    .filter { $0.isFavorite } // Filter for favorites
+            } else {
+                Word.fetchWordsInCollection(collectionName: collectionName, modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Fetch by collection
+            }
+        } else {
+            Word.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Fetch all words
+        }
+
+        let basePhrases = if let collectionName = selectedCollectionName {
+            if collectionName == "Favorites" {
+                Phrase.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Use actual phrases query
+                    .filter { $0.isFavorite } // Filter for favorites
+            } else {
+                Phrase.fetchPhrasesInCollection(collectionName: collectionName, modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Fetch by collection
+            }
+        } else {
+            Phrase.fetchAll(modelContext: modelContext, sortBy: sortOptions.first ?? .dateAdded(ascending: false)) // Fetch all phrases
+        }
+
+        // Convert to Items and combine
+        var items = baseWords.map { Item(word: $0) } + basePhrases.map { Item(phrase: $0) }
+
+        // Apply search filter if needed (using debounced text)
+        let effectiveSearchText = searchTextDebounced.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !effectiveSearchText.isEmpty {
+            items = items.filter { item in
+                item.text.localizedCaseInsensitiveContains(effectiveSearchText)
+            }
+        }
+
+        // Apply item type filter (only if not searching, or if search yields results)
+        if effectiveSearchText.isEmpty || !items.isEmpty {
+            switch itemFilter {
+            case .all:
+                break // Show everything
+            case .words:
+                items = items.filter { $0.word != nil } // Filter to words
+                // Apply confidence subfilter if set
+                if let isConfident = searchConfidentWords {
+                    items = items.filter { $0.isConfident == isConfident }
+                }
+            case .phrases:
+                items = items.filter { $0.phrase != nil } // Filter to phrases
+            }
+        }
+
+        // Sort based on current sort option (only if not showing add option)
+        if items.isEmpty && !effectiveSearchText.isEmpty {
+             // If search yields no results, show the "Add" placeholder
+             // Use a specific ID or handle differently in the view
+             return [Item(addItemPlaceholder: "Add \"\(effectiveSearchText)\"...")]
+        } else {
+            // Otherwise, apply sorting
+            switch sortOptions.first {
+            case .dateAdded(let ascending):
+                // Ensure createdAt is not nil before sorting
+                items.sort { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) ? ascending : !ascending }
+            case .alphabetically(let ascending):
+                items.sort { $0.text.localizedCaseInsensitiveCompare($1.text) == (ascending ? .orderedAscending : .orderedDescending) }
+            case .none:
+                break // No sorting
+            }
+
+            // --- Filter out predefined items ONLY for the "All" view ---
+            let hiddenTag = "_predefined_secret_"
+            if selectedCollectionName == nil {
+                items = items.filter { item in
+                    // Ensure word/phrase is not nil before accessing collectionNames
+                    let names = item.isPhrase == true ? item.phrase?.collectionNames : item.word?.collectionNames
+                    return !(names?.contains(hiddenTag) ?? false)
+                }
+            }
+            // --- End filter ---
+            return items
+        }
+    }
+    // --- End Filtering Logic ---
+
 
     var currentCollectionName: String {
         selectedCollectionName ?? "Word Locker"
@@ -388,12 +433,26 @@ struct HomeView: View {
                                 .textFieldStyle(PlainTextFieldStyle())
                                 .font(.custom("BradleyHandITCTT-Bold", size: 16))
                                 .focused($isSearchFocused)
-                                .submitLabel(.done)
+                                .submitLabel(.search) // Change label for clarity
                                 .onSubmit {
+                                    // Trigger debounced update immediately on submit
+                                    searchTextDebounced = searchText
                                     isSearchFocused = false
                                 }
+                                .onChange(of: searchText) { _, newValue in
+                                     // Send changes to the debouncer
+                                     searchDebouncer.send(newValue)
+                                 }
+                                .onReceive(searchDebouncer.debounce(for: .milliseconds(300), scheduler: RunLoop.main)) { debouncedText in
+                                     // Update the debounced state after delay
+                                     searchTextDebounced = debouncedText
+                                 }
+
                             if !searchText.isEmpty {
-                                Button(action: { searchText = "" }) {
+                                Button(action: {
+                                    searchText = "" // Clear immediately
+                                    searchTextDebounced = "" // Clear debounced too
+                                }) {
                                     Image(systemName: "xmark.circle.fill")
                                         .foregroundColor(.black)
                                 }
@@ -442,25 +501,51 @@ struct HomeView: View {
                             }
                         }
                         
-                        // Word and Phrase Cards List
+                        // Word, Phrase Cards, or "Add" Option List
                         ScrollView {
                             LazyVStack(spacing: 16) {
-                                ForEach(filteredItems) { item in
-                                    ItemCardView(word: item.word, phrase: item.phrase)
-                                        .frame(height: geometry.size.height * 0.125) // Make height responsive
-                                        .onTapGesture {
-                                            if item.isPhrase {
-                                                selectedPhrase = item.phrase
-                                            } else {
-                                                selectedWord = item.word
+                                ForEach(displayedItems) { item in
+                                    if item.isAddItemPlaceholder {
+                                        // Special view/button for adding the item
+                                        Button(action: {
+                                            addItemDirectly(text: searchText) // Use original searchText
+                                        }) {
+                                            HStack {
+                                                Image(systemName: "plus.circle.fill")
+                                                Text(item.text) // Shows "Add '[searchText]'..."
+                                                    .font(.custom("Marker Felt", size: 18))
                                             }
+                                            .foregroundColor(.black)
+                                            .padding()
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .fill(Color.green.opacity(0.3)) // Distinct background
+                                                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 3)
+                                                            .stroke(Color.black.opacity(1), lineWidth: 2)
+                                                    )
+                                            )
                                         }
+                                    } else {
+                                        // Existing item card
+                                        ItemCardView(word: item.word, phrase: item.phrase)
+                                            .frame(height: geometry.size.height * 0.125) // Make height responsive
+                                            .onTapGesture {
+                                                if item.phrase != nil {
+                                                    selectedPhrase = item.phrase
+                                                } else if item.word != nil {
+                                                    selectedWord = item.word
+                                                }
+                                            }
+                                    }
                                 }
                             }
                             .padding()
                         }
                     }
-                    
+
                     // Update the add button to look more playful
                     VStack {
                         Spacer()
@@ -675,10 +760,75 @@ struct HomeView: View {
     }
 
     // Callback function for WordDetailsView to request navigation
+    // Function to determine if text is a phrase
+    private func isPhrase(_ text: String) -> Bool {
+        return text.trimmingCharacters(in: .whitespacesAndNewlines).contains(" ")
+    }
+
+    // Function to add item directly
+    @MainActor
+    private func addItemDirectly(text: String) {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else { return }
+
+        // Check for duplicates before adding
+        let existingWords = Word.fetchAll(modelContext: modelContext)
+        let existingPhrases = Phrase.fetchAll(modelContext: modelContext)
+
+        let isDuplicateWord = existingWords.contains { $0.wordText.lowercased() == trimmedText.lowercased() }
+        let isDuplicatePhrase = existingPhrases.contains { $0.phraseText.lowercased() == trimmedText.lowercased() }
+
+        if isDuplicateWord || isDuplicatePhrase {
+            // Optionally show an alert or feedback that it already exists
+            print("Item '\(trimmedText)' already exists.")
+            // Clear search text even if duplicate? Or leave it? Let's clear it.
+             searchText = ""
+             searchTextDebounced = ""
+            return
+        }
+
+        if isPhrase(trimmedText) {
+            // Add as Phrase using PhraseService
+            let newPhrase = PhraseService.shared.createPhrase(
+                text: trimmedText,
+                notes: "", // Default empty notes
+                isFavorite: false, // Default not favorite
+                collectionNames: [] // Default no collections
+            )
+            PhraseService.shared.savePhrase(newPhrase, modelContext: modelContext)
+            print("Added Phrase: \(trimmedText)")
+        } else {
+            // Add as Word using WordService (needs async handling)
+            Task {
+                 let newWord = await WordService.shared.createWord(
+                     text: trimmedText,
+                     notes: "", // Default empty notes
+                     isFavorite: false, // Default not favorite
+                     isConfident: false, // Default not confident
+                     collectionNames: [] // Default no collections
+                 )
+                 if let wordToSave = newWord {
+                     WordService.shared.saveWord(wordToSave, modelContext: modelContext)
+                     print("Added Word: \(trimmedText)")
+                 } else {
+                     print("Error creating word: \(trimmedText)")
+                     // Handle error if needed
+                 }
+            }
+        }
+
+        // Clear search text after adding
+        searchText = ""
+        searchTextDebounced = ""
+        isSearchFocused = false // Dismiss keyboard
+    }
+
+    // Callback function for WordDetailsView to request navigation
     private func handleNavigationRequest(word: Word) {
         wordToNavigateTo = word
     }
 }
+
 
 struct ItemCardView: View {
     let word: Word?

@@ -109,9 +109,11 @@ struct PhraseDetailsView: View {
     private var phraseHeaderCard: some View {
         VStack(spacing: 12) {
             Text(phrase.phraseText)
-                .font(.custom("Marker Felt", size: 30))
+                // Adjust font size based on phrase length
+                .font(.custom("Marker Felt", size: phrase.phraseText.count > 50 ? 24 : 30))
                 .foregroundColor(.black)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true) // Ensure text wraps and isn't cut off
                 .padding(.horizontal)
             
             // Favorite tag button

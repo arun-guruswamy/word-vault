@@ -1,9 +1,9 @@
 ### WordLocker is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
 
 To do list:
-P7:
-- Add secret content easter eggs
-- Publish App
+- Fix cutting of long phrases
+- Add ability to add words from search bar
+- 
 
 Monetization update:
 - Uncomment premium view
