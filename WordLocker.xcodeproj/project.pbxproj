@@ -297,6 +297,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C737EE1B2D85029400DC5168 = {
 						CreatedOnToolsVersion = 16.1;
@@ -554,17 +555,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WordLocker/WordLocker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WordLocker/Preview Content\"";
-				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				DEVELOPMENT_TEAM = 2NK9594L9B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WordLocker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -572,9 +574,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -587,17 +590,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WordLocker/WordLocker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WordLocker/Preview Content\"";
-				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				DEVELOPMENT_TEAM = 2NK9594L9B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WordLocker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -605,9 +609,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker";
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -688,7 +693,7 @@
 				CODE_SIGN_ENTITLEMENTS = WordLockerShareExtension/WordLockerShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				DEVELOPMENT_TEAM = 2NK9594L9B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WordLockerShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
@@ -700,7 +705,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker.WordLockerShareExtension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker1.WordLockerShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -715,7 +720,7 @@
 				CODE_SIGN_ENTITLEMENTS = WordLockerShareExtension/WordLockerShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5VGFNYT9PQ;
+				DEVELOPMENT_TEAM = 2NK9594L9B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WordLockerShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Word Locker";
@@ -727,7 +732,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker.WordLockerShareExtension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arun-guruswamy.WordLocker1.WordLockerShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -46,15 +46,15 @@ struct SettingsView: View {
                             }
                         }
 
-                        Button(action: { isShowingPremium = true }) {
-                            HStack {
-                                Image(systemName: "star")
-                                    .foregroundColor(.black)
-                                Text("Premium")
-                                    .font(.custom("Marker Felt", size: 16))
-                                    .foregroundColor(.black)
-                            }
-                        }
+//                        Button(action: { isShowingPremium = true }) {
+//                            HStack {
+//                                Image(systemName: "star")
+//                                    .foregroundColor(.black)
+//                                Text("Premium")
+//                                    .font(.custom("Marker Felt", size: 16))
+//                                    .foregroundColor(.black)
+//                            }
+//                        }
 
                         Link(destination: URL(string: "mailto:arunguruswamy22@gmail.com")!) {
                             HStack {
@@ -135,11 +135,11 @@ struct TutorialView: View {
             description: "Tap the + button to add new words or phrases. You can add notes, and organize them into collections.\n\nThe app automatically distinguishes between words and phrases based on whether there are any space separated characters in your input.",
             image: "plus.circle.fill"
         ),
-        TutorialStep(
-            title: "Adding Words or Phrases from other apps",
-            description: "You can also add words or phrases by highlighting them in other apps, and then sharing to the Word Locker app. The app automatically stores the text shared",
-            image: "shareWord"
-        ),
+//        TutorialStep(
+//            title: "Adding Words or Phrases from other apps",
+//            description: "You can also add words or phrases by highlighting them in other apps, and then sharing to the Word Locker app. The app automatically stores the text shared",
+//            image: "shareWord"
+//        ),
         TutorialStep(
             title: "Word Details",
         description: "Tap any word to view its details, including its definitions, pronounciation, examples, your personal notes, and even a fun fact!",

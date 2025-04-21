@@ -14,7 +14,7 @@ import Foundation
 // Import needed services and models from main app
 class ShareViewController: SLComposeServiceViewController {
     // App group identifier for shared container
-    private let appGroupIdentifier = "group.com.arun-guruswamy.WordLocker"
+    private let appGroupIdentifier = "group.com.arun-guruswamy.WordLocker1"
     
     // Use the same container setup as the main app with shared storage URL
     private var modelContainer: ModelContainer? = nil
@@ -107,7 +107,7 @@ class ShareViewController: SLComposeServiceViewController {
             // Fetch existing words and phrases to check item count
             let existingWords = Word.fetchAll(modelContext: context)
             let existingPhrases = Phrase.fetchAll(modelContext: context)
-            let totalItemCount = existingWords.count + existingPhrases.count
+//            let totalItemCount = existingWords.count + existingPhrases.count
             
 //            if totalItemCount >= 50 {
 //                print("Item limit reached. Cannot save new item.")

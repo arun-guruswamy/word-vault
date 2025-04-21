@@ -4,22 +4,19 @@ import Foundation
 
 @Model
 final class Phrase {
-    var id: UUID
-    var phraseText: String
-    var notes: String
-    var createdAt: Date
-    var collectionNames: [String]
-    var isFavorite: Bool
-    var funOpinion: String
+    var id: UUID = UUID()
+    var phraseText: String = ""
+    var notes: String = ""
+    var createdAt: Date = Date()
+    var collectionNames: [String] = []
+    var isFavorite: Bool = false
+    var funOpinion: String = ""
     
-    init(phraseText: String) {
-        self.id = UUID()
+    // Initializer can be simplified or removed if only default values are needed upon creation
+    // Keeping it for now in case specific phraseText initialization is still desired elsewhere
+    init(phraseText: String = "") { // Provide default for phraseText parameter too
         self.phraseText = phraseText
-        self.notes = ""
-        self.createdAt = Date()
-        self.collectionNames = []
-        self.isFavorite = false
-        self.funOpinion = ""
+        // Other properties are already initialized with defaults
     }
 }
 

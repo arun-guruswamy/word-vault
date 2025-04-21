@@ -1,14 +1,21 @@
 ### WordLocker is an app that allows the user to quickly store words or phrases they like at any time and learn more about them later.
 
 To do list:
-- Fix cutting of long phrases
-- Add ability to add words from search bar
-- 
+
+First major update:
+- Add ability to export words an phrases as csv
+- Add ability to import words and phrases as csv
+- Add Icloud backup for word data
+- Add ability to sync data across different devices
+
+Done:
+- Fix cutting of long phrases 
+- Added ability to quick add words or phrases from search bar
 
 Monetization update:
 - Uncomment premium view
 - Connect paywall to payment options in app store
-- Make app aware of version/edition it is on, and check paywall appropriately
+- Make app aware of version/edition it is on, and check paywall appropriately 
 
 Possible features later:
 - Word of the day

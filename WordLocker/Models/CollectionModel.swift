@@ -4,14 +4,15 @@ import Foundation
 
 @Model
 final class Collection {
-    var id: UUID
-    var name: String
-    var createdAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var createdAt: Date = Date()
     
-    init(name: String) {
-        self.id = UUID()
+    // Initializer can be simplified or removed if only default values are needed upon creation
+    // Keeping it for now in case specific name initialization is still desired elsewhere
+    init(name: String = "") { // Provide default for name parameter too
         self.name = name
-        self.createdAt = Date()
+        // id and createdAt are already initialized with defaults
     }
 }
 

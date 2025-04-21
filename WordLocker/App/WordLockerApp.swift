@@ -1,13 +1,18 @@
 import SwiftUI
 import SwiftData
 
+import SwiftUI
+import SwiftData
+
 @main
 struct WordLockerApp: App {
     @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
     @State private var showTutorial: Bool = false
 
+    // Removed service StateObjects
+
     // App group identifier for shared container
-    private let appGroupIdentifier = "group.com.arun-guruswamy.WordLocker"
+    private let appGroupIdentifier = "group.com.arun-guruswamy.WordLocker1"
     
     var sharedModelContainer: ModelContainer = {
         do {
@@ -16,18 +21,43 @@ struct WordLockerApp: App {
                 Phrase.self,
                 Collection.self
             ])
-            
-            // Create model configuration with app group container
-            let modelConfiguration = ModelConfiguration(
+
+            // Define identifiers
+            let appGroupID = "group.com.arun-guruswamy.WordLocker1"
+            let cloudKitContainerID = "iCloud.com.arun-guruswamy.WordLocker1" // Derived from Bundle ID
+
+            // Create configuration for App Group (local storage)
+            let appGroupConfiguration = ModelConfiguration(
+                "LocalData", // Give it a name
+                schema: schema,
                 isStoredInMemoryOnly: false,
                 allowsSave: true,
-                groupContainer: .identifier("group.com.arun-guruswamy.WordLocker")
+                groupContainer: .identifier(appGroupID)
             )
-            
-            print("Using shared app group container: group.com.arun-guruswamy.WordLocker")
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+
+            // --- CloudKit Configuration (Commented Out) ---
+            /*
+            let cloudKitConfiguration = ModelConfiguration(
+                "CloudData", // Give it a name
+                schema: schema,
+                isStoredInMemoryOnly: false,
+                allowsSave: true,
+                groupContainer: .identifier(appGroupID), // Can share the same group container
+                cloudKitDatabase: .automatic // Use automatic private database
+                // cloudKitContainerIdentifier is inferred from entitlements
+            )
+            */
+            // --- End CloudKit Configuration ---
+
+            print("Using App Group container: \(appGroupID)")
+            // print("Using CloudKit container: \(cloudKitContainerID)") // Commented out CloudKit log
+
+            // Pass ONLY the App Group configuration to the ModelContainer
+            // CloudKit syncing is disabled for now
+            return try ModelContainer(for: schema, configurations: [appGroupConfiguration]) // Removed cloudKitConfiguration
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Provide more context in the fatal error
+            fatalError("Could not create ModelContainer. Error: \(error). Check App Group and CloudKit configurations/entitlements.")
         }
     }()
 
@@ -48,6 +78,7 @@ struct WordLockerApp: App {
                     // Let's reuse the structure from SettingsView for consistency
                     TutorialView()
                 }
+                // Removed environmentObject injections
         }
         .modelContainer(sharedModelContainer)
     }

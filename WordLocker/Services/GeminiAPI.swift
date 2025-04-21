@@ -9,6 +9,7 @@ let config = GenerationConfig(
   responseMIMEType: "text/plain"
 )
 
+//let apiKey = "AIzaSyD_W4b5tjFmN_9SKUEFKjKkjToluCenOes"
 let apiKey = ProcessInfo.processInfo.environment["API_KEY"] ?? ""
 
 let model = GenerativeModel(

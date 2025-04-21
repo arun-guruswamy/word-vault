@@ -3,6 +3,7 @@ import SwiftData
 // Import services for direct adding
 import Foundation // For UUID
 import Combine // If needed for debouncing or other async ops
+import UniformTypeIdentifiers // Needed for file importer
 
 // Assuming WordService and PhraseService are accessible
 // If not, ensure they are properly imported or available globally/via environment
@@ -75,6 +76,10 @@ struct HomeView: View {
     @State private var isPremiumViewPresented = false // State for premium modal
     @State private var wordToNavigateTo: Word? = nil // Changed for word-only navigation
     @State private var showAddOption: Bool = false // State to control showing the "Add" option
+    @State private var isExportModalPresented = false // State for export modal
+    @State private var isImporting = false // State for file importer sheet
+    @State private var showImportAlert = false // State for showing the import result alert
+    @State private var importAlertMessage = "" // Message for the import result alert
 
     // Debouncer for search text to avoid rapid updates
     @State private var searchTextDebounced = ""
@@ -289,12 +294,7 @@ struct HomeView: View {
                                         .font(.title2)
                                         .foregroundColor(.black)
                                 }
-                                // Premium Button
-//                                Button(action: { isPremiumViewPresented = true }) {
-                                    Image(systemName: "sparkles")
-                                        .font(.title2)
-                                        .foregroundColor(.clear)
-//                                }
+                                // Import/Export buttons moved to side menu
                             }
 
                             Spacer()
@@ -307,14 +307,9 @@ struct HomeView: View {
                                 .multilineTextAlignment(.center)
                             
                             Spacer()
-                            
+
                             HStack(spacing: 16) {
-                                NavigationLink(destination: LearningView()) {
-                                    Image(systemName: "brain.head.profile")
-                                        .font(.title2)
-                                        .foregroundColor(.black)
-                                }
-                                
+                                // Learn button moved to side menu
                                 NavigationLink(destination: SettingsView()) {
                                     Image(systemName: "gear")
                                         .font(.title2)
@@ -598,6 +593,60 @@ struct HomeView: View {
                         
                         HStack(spacing: 0) {
                             VStack(alignment: .leading, spacing: geometry.size.height * 0.03) {
+                                Text("Menu")
+                                    .font(.custom("Marker Felt", size: 24))
+                                    .foregroundColor(.black)
+                                    .padding(.top, geometry.size.height * 0.06)
+
+                                Button(action: {
+                                    isImporting = true
+                                    isMenuOpen = false // Close menu on action
+                                }) {
+                                    HStack {
+                                        Image(systemName: "square.and.arrow.down")
+                                            .foregroundColor(.black)
+                                        Text("Import CSV")
+                                            .font(.custom("Marker Felt", size: 16))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 8)
+                                }
+
+                                Button(action: {
+                                    isExportModalPresented = true
+                                    isMenuOpen = false // Close menu on action
+                                }) {
+                                    HStack {
+                                        Image(systemName: "square.and.arrow.up")
+                                            .foregroundColor(.black)
+                                        Text("Export CSV")
+                                            .font(.custom("Marker Felt", size: 16))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 8)
+                                }
+
+                                NavigationLink(destination: LearningView()) {
+                                    HStack {
+                                        Image(systemName: "brain.head.profile")
+                                            .foregroundColor(.black)
+                                        Text("Learn")
+                                            .font(.custom("Marker Felt", size: 16))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 8)
+                                }
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    isMenuOpen = false // Close menu on navigation
+                                })
+                                // --- End Moved Options ---
+                                
+                                // --- Moved Options ---
+                                Divider().background(Color.gray.opacity(0.5)) // Visual separator
+                                
                                 // Header Section
                                 VStack(alignment: .leading, spacing: 8) {
                                     HStack {
@@ -614,8 +663,8 @@ struct HomeView: View {
                                         }
                                     }
                                 }
-                                .padding(.top, geometry.size.height * 0.06)
                                 .padding(.bottom, 8)
+                            
                                 
                                 // Collections List
                                 VStack(alignment: .leading, spacing: 12) {
@@ -691,7 +740,8 @@ struct HomeView: View {
                                     }
                                 }
                                 .padding(.vertical, 8)
-                                
+
+
                                 Spacer()
                             }
                             .padding()
@@ -719,6 +769,34 @@ struct HomeView: View {
                 .onTapGesture {
                     isSearchFocused = false
                 }
+            }
+            .fileImporter(
+                isPresented: $isImporting,
+                allowedContentTypes: [.commaSeparatedText], // Allow only CSV
+                allowsMultipleSelection: false
+            ) { result in
+                switch result {
+                case .success(let urls):
+                    guard let url = urls.first else { return }
+                    // Start the import process
+                    Task {
+                        await importCSV(from: url)
+                    }
+                case .failure(let error):
+                    print("Error selecting file: \(error.localizedDescription)")
+                    // Optionally show an error alert to the user
+                    importAlertMessage = "Error selecting file: \(error.localizedDescription)"
+                    showImportAlert = true
+                }
+            }
+            .alert("Import Results", isPresented: $showImportAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(importAlertMessage)
+            }
+            .sheet(isPresented: $isExportModalPresented) {
+                // Present the actual ExportView, assuming environment objects are provided upstream
+                ExportView()
             }
             .sheet(isPresented: $isAddWordPresented) {
                 ItemFormView(mode: .add)
@@ -826,6 +904,111 @@ struct HomeView: View {
     // Callback function for WordDetailsView to request navigation
     private func handleNavigationRequest(word: Word) {
         wordToNavigateTo = word
+    }
+
+    // Function to handle CSV import
+    @MainActor
+    private func importCSV(from url: URL) async {
+        // Securely access the file URL
+        guard url.startAccessingSecurityScopedResource() else {
+            importAlertMessage = "Failed to access file."
+            showImportAlert = true
+            return
+        }
+
+        defer { url.stopAccessingSecurityScopedResource() }
+
+        do {
+            let csvData = try String(contentsOf: url, encoding: .utf8)
+            let rows = csvData.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+
+            guard rows.count > 1 else { // Check if there's more than just a header
+                importAlertMessage = "CSV file is empty or contains only a header."
+                showImportAlert = true
+                return
+            }
+
+            // Simple CSV parsing (assumes comma delimiter, handles basic quotes)
+            // More robust parsing might be needed for complex CSVs
+            var addedCount = 0
+            var skippedCount = 0
+
+            // Fetch existing items for duplicate check (Optimization)
+            let existingWordsLowercased = Set(Word.fetchAll(modelContext: modelContext).map { $0.wordText.lowercased() })
+            let existingPhrasesLowercased = Set(Phrase.fetchAll(modelContext: modelContext).map { $0.phraseText.lowercased() })
+
+            // Sets to track items added *during this import* to prevent duplicates within the CSV
+            var addedWordsInBatch = Set<String>()
+            var addedPhrasesInBatch = Set<String>()
+
+            // Skip header row (index 0)
+            for rowString in rows.dropFirst() {
+                let columns = parseCSVRow(rowString) // Use a helper for parsing
+                guard columns.count >= 1, !columns[0].isEmpty else { continue } // Need at least the item text
+
+                let itemText = columns[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                let notesText = columns.count > 1 ? columns[1].trimmingCharacters(in: .whitespacesAndNewlines) : ""
+                let itemTextLowercased = itemText.lowercased()
+
+                // Check for duplicates (existing in DB OR already added in this batch)
+                if existingWordsLowercased.contains(itemTextLowercased) || existingPhrasesLowercased.contains(itemTextLowercased) ||
+                   addedWordsInBatch.contains(itemTextLowercased) || addedPhrasesInBatch.contains(itemTextLowercased) {
+                    skippedCount += 1
+                    continue // Skip duplicate
+                }
+
+                // Check if it's a phrase or a word
+                if isPhrase(itemText) {
+                    // Create and save a Phrase
+                    let newPhrase = Phrase(phraseText: itemText) // Use basic initializer
+                    newPhrase.notes = notesText
+                    modelContext.insert(newPhrase)
+                    addedPhrasesInBatch.insert(itemTextLowercased) // Track added phrase
+                    print("Imported Phrase: \(itemText)")
+                } else {
+                    // Create and save a Word
+                    let newWord = await Word(wordText: itemText) // Use await for the async initializer
+                    newWord.notes = notesText
+                    modelContext.insert(newWord)
+                    addedWordsInBatch.insert(itemTextLowercased) // Track added word
+                    print("Imported Word: \(itemText)")
+                }
+                addedCount += 1
+            }
+
+            // Save changes after processing all rows
+            try modelContext.save()
+
+            importAlertMessage = "Import Complete!\nAdded: \(addedCount)\nSkipped (duplicates): \(skippedCount)"
+
+        } catch {
+            print("Error reading or processing CSV: \(error)")
+            importAlertMessage = "Error processing CSV file: \(error.localizedDescription)"
+        }
+
+        showImportAlert = true // Show the results alert
+    }
+
+    // Helper function to parse a single CSV row (handles simple quotes)
+    private func parseCSVRow(_ row: String) -> [String] {
+        var columns: [String] = []
+        var currentColumn = ""
+        var inQuotes = false
+
+        for character in row {
+            switch character {
+            case "\"":
+                inQuotes.toggle()
+            case "," where !inQuotes:
+                columns.append(currentColumn)
+                currentColumn = ""
+            default:
+                currentColumn.append(character)
+            }
+        }
+        columns.append(currentColumn) // Add the last column
+        // Trim quotes from results if needed
+        return columns.map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "\"")) }
     }
 }
 

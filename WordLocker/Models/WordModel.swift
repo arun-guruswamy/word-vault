@@ -4,17 +4,17 @@ import Foundation
 
 @Model
 final class Word {
-    var id: UUID
-    var wordText: String
-    var notes: String
-    var meanings: [WordMeaning]
-    var createdAt: Date
-    var collectionNames: [String]
-    var isFavorite: Bool
-    var isConfident: Bool
-    var funFact: String
-    var audioURL: String?
-    var linkedItemIDs: [UUID] // Added for linking
+    var id: UUID = UUID()
+    var wordText: String = ""
+    var notes: String = ""
+    var meanings: [WordMeaning] = []
+    var createdAt: Date = Date()
+    var collectionNames: [String] = []
+    var isFavorite: Bool = false
+    var isConfident: Bool = false
+    var funFact: String = ""
+    var audioURL: String? // Already optional
+    var linkedItemIDs: [UUID] = [] // Added for linking
     
     struct WordMeaning: Codable {
         var partOfSpeech: String
@@ -32,20 +32,13 @@ final class Word {
         }
     }
     
-    @MainActor // Explicitly mark initializer as MainActor
-    init(wordText: String) async {
-        // Initialize all properties
-        self.id = UUID()
+    // Initializer can be simplified or removed if only default values are needed upon creation
+    // Keeping it for now in case specific wordText initialization is still desired elsewhere
+    // Keeping async and @MainActor as they were present before, though potentially unnecessary now
+    @MainActor 
+    init(wordText: String = "") async { // Provide default for wordText parameter too
         self.wordText = wordText
-        self.notes = ""
-        self.meanings = []
-        self.createdAt = Date()
-        self.collectionNames = []
-        self.isFavorite = false
-        self.isConfident = false
-        self.funFact = ""
-        self.audioURL = nil
-        self.linkedItemIDs = [] // Initialize as empty
+        // Other properties are already initialized with defaults
     }
 }
 

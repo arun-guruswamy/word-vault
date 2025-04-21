@@ -21,6 +21,20 @@
                ReferencedContainer = "container:WordLocker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F7FCE1732D8951C50032C827"
+               BuildableName = "WordLockerShareExtension.appex"
+               BlueprintName = "WordLockerShareExtension"
+               ReferencedContainer = "container:WordLocker.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -53,7 +67,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "API_KEY"
-            value = "AIzaSyD_W4b5tjFmN_9SKUEFKjKkjToluCenOes"
+            value = "AIzaSyAesqMpnYiv-ESUzUz6PTcVacJIqzV1ThU"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
