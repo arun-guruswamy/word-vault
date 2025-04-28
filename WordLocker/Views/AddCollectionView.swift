@@ -5,7 +5,8 @@ struct AddCollectionView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var collectionName = ""
-    @State private var showingAlert = false
+    @State private var showingEmptyNameAlert = false
+    @State private var showingDuplicateNameAlert = false
     
     // Mode and existing collection (if editing)
     private let mode: Mode
@@ -109,18 +110,36 @@ struct AddCollectionView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         let trimmedName = collectionName.trimmingCharacters(in: .whitespacesAndNewlines)
-                        if !trimmedName.isEmpty {
+                        if trimmedName.isEmpty {
+                            showingEmptyNameAlert = true
+                        } else {
                             switch mode {
                             case .add:
-                                let collection = Collection(name: trimmedName)
-                                Collection.save(collection, modelContext: modelContext)
+                                // Check for duplicate name
+                                let existingCollections = Collection.fetchAll(modelContext: modelContext)
+                                if existingCollections.contains(where: { $0.name.lowercased() == trimmedName.lowercased() }) {
+                                    showingDuplicateNameAlert = true
+                                } else {
+                                    let collection = Collection(name: trimmedName)
+                                    Collection.save(collection, modelContext: modelContext)
+                                    dismiss()
+                                }
                             case .edit(let collection):
-                                collection.name = trimmedName
-                                try? modelContext.save()
+                                // For editing, check for duplicate name only if the name has changed
+                                if collection.name.lowercased() != trimmedName.lowercased() {
+                                    let existingCollections = Collection.fetchAll(modelContext: modelContext)
+                                    if existingCollections.contains(where: { $0.name.lowercased() == trimmedName.lowercased() }) {
+                                        showingDuplicateNameAlert = true
+                                    } else {
+                                        collection.name = trimmedName
+                                        try? modelContext.save()
+                                        dismiss()
+                                    }
+                                } else {
+                                    // Name hasn't changed, just dismiss
+                                    dismiss()
+                                }
                             }
-                            dismiss()
-                        } else {
-                            showingAlert = true
                         }
                     }
                     .font(.custom("Marker Felt", size: 16))
@@ -128,11 +147,18 @@ struct AddCollectionView: View {
                     .disabled(collectionName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .alert("Invalid Name", isPresented: $showingAlert) {
+            // Alert for empty name
+            .alert("Invalid Name", isPresented: $showingEmptyNameAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text("Collection name cannot be empty or contain only whitespace.")
             }
+            // Alert for duplicate name
+            .alert("Duplicate Name", isPresented: $showingDuplicateNameAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("A collection with this name already exists. Please choose a different name.")
+            }
         }
     }
-} 
+}

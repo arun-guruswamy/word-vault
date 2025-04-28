@@ -8,50 +8,6 @@ import UniformTypeIdentifiers // Needed for file importer
 // Assuming WordService and PhraseService are accessible
 // If not, ensure they are properly imported or available globally/via environment
 
-struct CustomSegmentedControl: UIViewRepresentable {
-    @Binding var selection: Int
-    let items: [String]
-    
-    func makeUIView(context: Context) -> UISegmentedControl {
-        let control = UISegmentedControl(items: items)
-        control.selectedSegmentIndex = selection
-        control.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
-        
-        // Customize appearance
-        control.backgroundColor = .clear
-        control.setTitleTextAttributes([
-            .font: UIFont(name: "Marker Felt", size: 16) ?? .systemFont(ofSize: 16),
-            .foregroundColor: UIColor.black
-        ], for: .normal)
-        
-        control.setTitleTextAttributes([
-            .font: UIFont(name: "Marker Felt", size: 16) ?? .systemFont(ofSize: 16),
-            .foregroundColor: UIColor.black
-        ], for: .selected)
-        
-        return control
-    }
-    
-    func updateUIView(_ uiView: UISegmentedControl, context: Context) {
-        uiView.selectedSegmentIndex = selection
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject {
-        var parent: CustomSegmentedControl
-        
-        init(_ parent: CustomSegmentedControl) {
-            self.parent = parent
-        }
-        
-        @objc func valueChanged(_ sender: UISegmentedControl) {
-            parent.selection = sender.selectedSegmentIndex
-        }
-    }
-}
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
@@ -162,6 +118,14 @@ struct HomeView: View {
             self.isAddItemPlaceholder = true
         }
     }
+    
+    // Computed property for unique collections in the side menu
+    var uniqueCollections: [Collection] {
+        var seenNames = Set<String>()
+        return collections.filter { collection in
+            seenNames.insert(collection.name.lowercased()).inserted // Keep if name hasn't been seen (case-insensitive)
+        }
+    }
 
     // Computed property for filtered items including the "Add" option
     var displayedItems: [Item] {
@@ -189,7 +153,24 @@ struct HomeView: View {
         }
 
         // Convert to Items and combine
-        var items = baseWords.map { Item(word: $0) } + basePhrases.map { Item(phrase: $0) }
+        let combinedItems = baseWords.map { Item(word: $0) } + basePhrases.map { Item(phrase: $0) }
+
+        // --- Deduplication Logic ---
+        var deduplicatedItems: [Item] = []
+        var seenTexts = Set<String>()
+
+        for item in combinedItems {
+            let lowercasedText = item.text.lowercased()
+            if !seenTexts.contains(lowercasedText) {
+                deduplicatedItems.append(item)
+                seenTexts.insert(lowercasedText)
+            }
+            // If text is already seen, skip this item (it's a duplicate)
+        }
+        // --- End Deduplication Logic ---
+
+        // Use deduplicatedItems for further processing
+        var items = deduplicatedItems
 
         // Apply search filter if needed (using debounced text)
         let effectiveSearchText = searchTextDebounced.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -642,6 +623,21 @@ struct HomeView: View {
                                 .simultaneousGesture(TapGesture().onEnded {
                                     isMenuOpen = false // Close menu on navigation
                                 })
+                                
+                                NavigationLink(destination: StatsView()) { // <-- Stats Link Moved Here
+                                    HStack {
+                                        Image(systemName: "chart.bar.xaxis")
+                                            .foregroundColor(.black)
+                                        Text("Statistics")
+                                            .font(.custom("Marker Felt", size: 16))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 8)
+                                }
+                                .simultaneousGesture(TapGesture().onEnded {
+                                     isMenuOpen = false // Close menu on navigation
+                                 })
                                 // --- End Moved Options ---
                                 
                                 // --- Moved Options ---
@@ -664,13 +660,14 @@ struct HomeView: View {
                                     }
                                 }
                                 .padding(.bottom, 8)
-                            
-                                
-                                // Collections List
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Button(action: { selectedCollectionName = nil }) {
-                                        HStack {
-                                            Text("All")
+
+
+                                // Collections List (Scrollable)
+                                ScrollView { // Wrap the list in a ScrollView
+                                    VStack(alignment: .leading, spacing: 12) { // Keep items in a VStack inside ScrollView
+                                        Button(action: { selectedCollectionName = nil }) {
+                                            HStack {
+                                                Text("All")
                                                 .font(.custom("Marker Felt", size: 16))
                                                 .foregroundColor(.black)
                                                 .multilineTextAlignment(.leading) // Add this
@@ -701,10 +698,10 @@ struct HomeView: View {
                                         .padding(.vertical, 8)
                                     }
                                     
-                                    ForEach(collections) { collection in
+                                    ForEach(uniqueCollections) { collection in // Use uniqueCollections here
                                         HStack {
                                             Button(action: {
-                                                selectedCollectionName = collection.name
+                                                selectedCollectionName = collection.name // Keep original collection object for selection
                                             }) {
                                                 HStack {
                                                     Text(collection.name)
@@ -737,12 +734,13 @@ struct HomeView: View {
                                                     .foregroundColor(.black.opacity(0.6))
                                             }
                                         }
-                                    }
-                                }
-                                .padding(.vertical, 8)
+                                    } // End ForEach
+                                } // End VStack inside ScrollView
+                                .padding(.bottom) // Add padding at the bottom of the scrollable content
+                            } // End ScrollView
 
 
-                                Spacer()
+                                Spacer() // Spacer remains outside the ScrollView
                             }
                             .padding()
                             .frame(width: geometry.size.width * 0.525)
@@ -862,17 +860,19 @@ struct HomeView: View {
             // Clear search text even if duplicate? Or leave it? Let's clear it.
              searchText = ""
              searchTextDebounced = ""
-            return
+            return // Exit if duplicate
         }
 
+        // If not a duplicate, proceed to add
         if isPhrase(trimmedText) {
             // Add as Phrase using PhraseService
-            let newPhrase = PhraseService.shared.createPhrase(
-                text: trimmedText,
-                notes: "", // Default empty notes
-                isFavorite: false, // Default not favorite
-                collectionNames: [] // Default no collections
-            )
+            // Reconstruct the createPhrase call correctly
+             let newPhrase = PhraseService.shared.createPhrase(
+                 text: trimmedText,
+                 notes: "", // Default empty notes
+                 isFavorite: false, // Default not favorite
+                 collectionNames: [] // Default no collections
+             )
             PhraseService.shared.savePhrase(newPhrase, modelContext: modelContext)
             print("Added Phrase: \(trimmedText)")
         } else {

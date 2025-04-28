@@ -172,35 +172,36 @@ struct ItemFormView: View {
                                             )
                                     )
                                 }
-                                
-                                ForEach(collections) { collection in
-                                    Button(action: {
-                                        if selectedCollectionNames.contains(collection.name) {
-                                            selectedCollectionNames.remove(collection.name)
-                                        } else {
-                                            selectedCollectionNames.insert(collection.name)
-                                        }
-                                    }) {
-                                        HStack {
-                                            Text(collection.name)
-                                                .font(.custom("Marker Felt", size: 16))
-                                                .foregroundColor(.black)
-                                            Spacer()
+                                ScrollView {
+                                    ForEach(collections) { collection in
+                                        Button(action: {
                                             if selectedCollectionNames.contains(collection.name) {
-                                                Image(systemName: "checkmark")
-                                                    .foregroundColor(.blue)
+                                                selectedCollectionNames.remove(collection.name)
+                                            } else {
+                                                selectedCollectionNames.insert(collection.name)
                                             }
+                                        }) {
+                                            HStack {
+                                                Text(collection.name)
+                                                    .font(.custom("Marker Felt", size: 16))
+                                                    .foregroundColor(.black)
+                                                Spacer()
+                                                if selectedCollectionNames.contains(collection.name) {
+                                                    Image(systemName: "checkmark")
+                                                        .foregroundColor(.blue)
+                                                }
+                                            }
+                                            .padding()
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .fill(Color.white.opacity(0.9))
+                                                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 3)
+                                                            .stroke(Color.black.opacity(1), lineWidth: 2)
+                                                    )
+                                            )
                                         }
-                                        .padding()
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 3)
-                                                .fill(Color.white.opacity(0.9))
-                                                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 3)
-                                                        .stroke(Color.black.opacity(1), lineWidth: 2)
-                                                )
-                                        )
                                     }
                                 }
                             }

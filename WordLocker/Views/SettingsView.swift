@@ -1,7 +1,31 @@
 import SwiftUI
+import CloudKit // For account status
+import Network // For network monitoring
+
+// Helper class to manage NWPathMonitor lifecycle
+class NetworkMonitor: ObservableObject {
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "NetworkMonitor")
+    @Published var isConnected = true // Default to true, update on change
+
+    init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.isConnected = path.status == .satisfied
+            }
+        }
+        monitor.start(queue: queue)
+    }
+
+    deinit {
+        monitor.cancel()
+    }
+}
 
 struct SettingsView: View {
     @AppStorage("defaultSortOrder") private var defaultSortOrder = "newestFirst"
+    @State private var iCloudStatus: CKAccountStatus = .couldNotDetermine // State for iCloud status
+    @StateObject private var networkMonitor = NetworkMonitor() // Monitor network status
     @State private var isShowingTutorial = false
     @State private var isShowingPremium = false
     @Environment(\.dismiss) private var dismiss
@@ -98,8 +122,77 @@ struct SettingsView: View {
                             .foregroundColor(.black)
                     }
                     .listRowBackground(Color.white.opacity(0.7))
+
+                    // --- iCloud Sync Status Section ---
+                    Section {
+                        // Combine iCloud account status and network status
+                        switch (iCloudStatus, networkMonitor.isConnected) {
+                        case (.available, true):
+                            // Account available and network connected
+                            HStack {
+                                Image(systemName: "icloud.fill")
+                                    .foregroundColor(.blue)
+                                Text("iCloud Syncing Active")
+                                    .font(.custom("Marker Felt", size: 16))
+                                    .foregroundColor(.black)
+                            }
+                        case (.available, false):
+                            // Account available but no network connection for syncing
+                            HStack {
+                                Image(systemName: "icloud.slash.fill")
+                                    .foregroundColor(.gray)
+                                Text("Sync Paused - Waiting for Connection")
+                                    .font(.custom("Marker Felt", size: 16))
+                                    .foregroundColor(.gray)
+                            }
+                        case (.noAccount, _):
+                            // Handle noAccount specifically
+                            HStack {
+                                Image(systemName: "exclamationmark.icloud.fill")
+                                    .foregroundColor(.orange)
+                                Text("iCloud sync disabled. Check iCloud settings for Word Locker in the device Settings app.")
+                                    .font(.custom("Marker Felt", size: 16))
+                                    .foregroundColor(.black)
+                            }
+                        case (.restricted, _):
+                             // Handle restricted specifically
+                             HStack {
+                                 Image(systemName: "xmark.icloud.fill")
+                                     .foregroundColor(.red)
+                                 Text("iCloud sync disabled. Check iCloud settings for Word Locker in the device Settings app.")
+                                     .font(.custom("Marker Felt", size: 16))
+                                     .foregroundColor(.black)
+                             }
+                        case (.couldNotDetermine, _):
+                            // Status couldn't be determined yet
+                            HStack {
+                                Image(systemName: "questionmark.icloud.fill")
+                                    .foregroundColor(.gray)
+                                Text("Checking iCloud status...")
+                                    .font(.custom("Marker Felt", size: 16))
+                                    .foregroundColor(.gray)
+                            }
+                        @unknown default:
+                             // Use the same UI as restricted for any other unexpected states
+                             HStack {
+                                 Image(systemName: "xmark.icloud.fill")
+                                     .foregroundColor(.red)
+                                 Text("iCloud sync disabled due to an unknown status. Check iCloud settings.")
+                                     .font(.custom("Marker Felt", size: 16))
+                                     .foregroundColor(.black)
+                             }
+                        }
+                    } header: {
+                        Text("iCloud Sync")
+                            .font(.custom("Marker Felt", size: 18))
+                            .foregroundColor(.black)
+                    }
+                    .listRowBackground(Color.white.opacity(0.7))
+                    // --- End iCloud Sync Status Section ---
+
                 }
                 .scrollContentBackground(.hidden)
+                .onAppear(perform: checkiCloudStatus) // Check status when view appears
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -117,6 +210,20 @@ struct SettingsView: View {
             }
         }
         .accentColor(.black) // Set back button color to black
+    }
+
+    // Function to check iCloud account status
+    private func checkiCloudStatus() {
+        CKContainer.default().accountStatus { status, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error checking iCloud status: \(error.localizedDescription)")
+                    self.iCloudStatus = .couldNotDetermine // Keep as undetermined on error
+                } else {
+                    self.iCloudStatus = status
+                }
+            }
+        }
     }
 }
 

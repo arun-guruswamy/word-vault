@@ -11,55 +11,8 @@ struct WordLockerApp: App {
 
     // Removed service StateObjects
 
-    // App group identifier for shared container
-    private let appGroupIdentifier = "group.com.arun-guruswamy.WordLocker1"
-    
-    var sharedModelContainer: ModelContainer = {
-        do {
-            let schema = Schema([
-                Word.self,
-                Phrase.self,
-                Collection.self
-            ])
-
-            // Define identifiers
-            let appGroupID = "group.com.arun-guruswamy.WordLocker1"
-            let cloudKitContainerID = "iCloud.com.arun-guruswamy.WordLocker1" // Derived from Bundle ID
-
-            // Create configuration for App Group (local storage)
-            let appGroupConfiguration = ModelConfiguration(
-                "LocalData", // Give it a name
-                schema: schema,
-                isStoredInMemoryOnly: false,
-                allowsSave: true,
-                groupContainer: .identifier(appGroupID)
-            )
-
-            // --- CloudKit Configuration (Commented Out) ---
-            /*
-            let cloudKitConfiguration = ModelConfiguration(
-                "CloudData", // Give it a name
-                schema: schema,
-                isStoredInMemoryOnly: false,
-                allowsSave: true,
-                groupContainer: .identifier(appGroupID), // Can share the same group container
-                cloudKitDatabase: .automatic // Use automatic private database
-                // cloudKitContainerIdentifier is inferred from entitlements
-            )
-            */
-            // --- End CloudKit Configuration ---
-
-            print("Using App Group container: \(appGroupID)")
-            // print("Using CloudKit container: \(cloudKitContainerID)") // Commented out CloudKit log
-
-            // Pass ONLY the App Group configuration to the ModelContainer
-            // CloudKit syncing is disabled for now
-            return try ModelContainer(for: schema, configurations: [appGroupConfiguration]) // Removed cloudKitConfiguration
-        } catch {
-            // Provide more context in the fatal error
-            fatalError("Could not create ModelContainer. Error: \(error). Check App Group and CloudKit configurations/entitlements.")
-        }
-    }()
+    // Removed sharedModelContainer definition.
+    // Relying on the default .modelContainer modifier below and Xcode capabilities.
 
     var body: some Scene {
         WindowGroup {
@@ -80,6 +33,8 @@ struct WordLockerApp: App {
                 }
                 // Removed environmentObject injections
         }
-        .modelContainer(sharedModelContainer)
+        // Use the simpler modifier. SwiftData will create a default container.
+        // If iCloud capability is enabled in Xcode, it should default to using CloudKit.
+        .modelContainer(for: [Word.self, Phrase.self, Collection.self])
     }
 }
